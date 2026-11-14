@@ -12,7 +12,7 @@
 
   // ---------- storage (local now; sync adapter can wrap these two functions) ----------
   function loadProgress() {
-    try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; }
+    try { var p = JSON.parse(localStorage.getItem(KEY)); return (p && typeof p === 'object' && !Array.isArray(p)) ? p : {}; } catch (e) { return {}; }
   }
   function saveProgress() {
     try { localStorage.setItem(KEY, JSON.stringify(progress)); } catch (e) { /* private mode: keep in memory */ }
@@ -26,7 +26,7 @@
   function nextRank(xp) { for (var i = 0; i < RANKS.length; i++) if (xp < RANKS[i][0]) return RANKS[i]; return null; }
   function renderRank() {
     var xp = progress.xp || 0, r = rankOf(xp), n = nextRank(xp);
-    rankEl.innerHTML = '<b>' + r[1] + '</b><br>' + xp + ' poäng' + (n ? '' : ' ⭐');
+    rankEl.innerHTML = '<b>' + r[1] + '</b><br>' + xp + ' poäng' + (n ? '<span class="tonext"> · ' + (n[0] - xp) + ' kvar till ' + n[1] + '</span>' : ' ⭐');
   }
 
   // ---------- text helpers ----------
@@ -36,19 +36,20 @@
   function fmt(s) {
     var h = esc(s);
     h = h.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
-    h = h.replace(/(^|[^\d\/])(\d{1,2})\/(\d{1,2})(?![\d\/])/g, function (m, pre, n, d) { return pre + fracHTML(n, d); });
+    h = h.replace(/(^|[^\d\/])(\d{1,2})\/(\d{1,2})(?![\d\/])([?!.,:]?)/g, function (m, pre, n, d, p) { return pre + '<span class="nw">' + fracHTML(n, d) + p + '</span>'; });
     return h.replace(/\n/g, '<br>');
   }
   var NUM = ['noll', 'en', 'två', 'tre', 'fyra', 'fem', 'sex', 'sju', 'åtta', 'nio', 'tio', 'elva', 'tolv'];
   var ORD = { 3: 'tredjedel', 4: 'fjärdedel', 5: 'femtedel', 6: 'sjättedel', 7: 'sjundedel', 8: 'åttondel', 9: 'niondel', 10: 'tiondel', 11: 'elftedel', 12: 'tolftedel', 20: 'tjugondel' };
   function fracWords(n, d) {
     n = +n; d = +d;
+    if (d === 1) return (NUM[n] || n) + ' hela';
     if (d === 2) return n === 1 ? 'en halv' : (NUM[n] || n) + ' halvor';
     if (ORD[d] && n <= 12) return (NUM[n] || n) + ' ' + ORD[d] + (n === 1 ? '' : 'ar');
     return n + ' delat med ' + d;
   }
   function speechText(s) {
-    return String(s || '').replace(/\*\*/g, '').replace(/→/g, ', sedan ').replace(/=/g, ' är ').replace(/(\d{1,2})\/(\d{1,2})/g, function (m, n, d) { return fracWords(n, d); });
+    return String(s || '').replace(/\*\*/g, '').replace(/→/g, ', sedan ').replace(/=/g, ' blir ').replace(/(\d{1,2})\/(\d{1,2})/g, function (m, n, d) { return fracWords(n, d); });
   }
 
   // ---------- read aloud (Swedish) ----------
@@ -129,13 +130,14 @@
     o.rows.forEach(function (r, k) { s += lineRow(r, top + k * gap, true); });
     if (o.guide != null) {
       var gx = 30 + 260 * o.guide;
-      s += '<line x1="' + gx + '" y1="14" x2="' + gx + '" y2="' + (h - 30) + '" stroke="#e85d04" stroke-width="2" stroke-dasharray="6 5"/>';
+      o.rows.forEach(function (r, k) { var y = top + k * gap; s += '<line x1="' + gx + '" y1="' + (y - 22) + '" x2="' + gx + '" y2="' + (y + 10) + '" stroke="#e85d04" stroke-width="2.5" stroke-dasharray="5 4"/>'; });
     }
     return '<svg viewBox="0 0 320 ' + h + '" role="img" aria-label="' + esc(o.label || 'Tallinjer som jämförs') + '">' + s + '</svg>';
   }
   function groups(o) {
     var per = o.total / o.groups, cols = Math.min(per, 6), rows = Math.ceil(per / cols);
     var bw = cols * 30 + 16, bh = rows * 30 + 14, gpr = Math.max(1, Math.min(o.groups, Math.floor(300 / (bw + 8))));
+    if (o.groups === 4 && gpr === 3) gpr = 2;
     var grows = Math.ceil(o.groups / gpr), W = gpr * (bw + 8) + 8, H = grows * (bh + 10) + 6, s = '';
     for (var g = 0; g < o.groups; g++) {
       var gx = 8 + (g % gpr) * (bw + 8), gy = 6 + Math.floor(g / gpr) * (bh + 10), on = g < (o.highlight || 0);
@@ -165,24 +167,32 @@
       d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
     return d[m][n];
   }
-  // returns {status:'ok'|'near'|'no', shown, note}
+  // returns {status:'ok'|'near'|'no'|'digits', shown, key}
+  function parseNumber(raw) {
+    var m = String(raw || '').trim().toLowerCase().match(/^(-?\d+)\s*[a-zåäö]*\s*[.!]?$/);
+    return m ? m[1] : null;
+  }
   function checkText(q, raw) {
     var accepted = q.answer.map(norm), v = norm(raw);
-    if (q.input === 'fraction' || q.input === 'number') {
+    if (q.input === 'number') {
+      if (!/\d/.test(String(raw))) return { status: 'digits' };
+      var num = parseNumber(raw);
+      if (num == null) return { status: 'no', key: v.replace(/\s/g, '') };
+      return { status: accepted.indexOf(num) >= 0 ? 'ok' : 'no', key: num };
+    }
+    if (q.input === 'fraction') {
       v = v.replace(/\s/g, '');
-      if (q.input === 'number') { var mm = v.match(/^-?\d+/); if (mm) v = mm[0]; }
-      if (accepted.some(function (a) { return a.replace(/\s/g, '') === v; })) return { status: 'ok' };
-      return { status: 'no' };
+      return { status: accepted.some(function (a) { return a.replace(/\s/g, '') === v; }) ? 'ok' : 'no', key: v };
     }
     if (accepted.indexOf(v) >= 0) return { status: 'ok' };
-    if (q.strict) return { status: 'no' };
+    if (q.strict) return { status: 'no', key: v };
     for (var k = 0; k < accepted.length; k++) {
       var a = accepted[k];
       if (strip(a) === strip(v)) return { status: 'near', shown: q.answer[k] };
       var tol = a.length >= 8 ? 2 : (a.length >= 4 ? 1 : 0);
       if (tol && lev(a, v) <= tol) return { status: 'near', shown: q.answer[k] };
     }
-    return { status: 'no' };
+    return { status: 'no', key: v };
   }
   function sameSet(a, b) { if (a.length !== b.length) return false; var x = a.slice().sort(), y = b.slice().sort(); return x.every(function (v, i) { return v === y[i]; }); }
   function answerText(q) {
@@ -193,28 +203,34 @@
 
   // ---------- question rendering (shared by learn "try" and tests) ----------
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
-  function renderQuestion(q, box, onDone) {
+  function renderQuestion(q, box, onDone, opts) {
+    opts = opts || {};
     var order = (q.type === 'single' || q.type === 'multi') ? (q.keepOrder ? q.options.map(function (_, i) { return i; }) : shuffle(q.options.map(function (_, i) { return i; }))) : null;
     var name = 'q' + Math.random().toString(36).slice(2, 8);
+    var need = q.type === 'multi' ? q.answer.length : 1;
     var say = q.q + (order ? '. ' + order.map(function (oi, k) { return 'Svar ' + (k + 1) + ': ' + q.options[oi]; }).join('. ') : '');
     var html = '<div class="qrow"><div class="q">' + fmt(q.q) + '</div>' + speakBtn(say) + '</div>' + visual(q.visual);
-    if (q.type === 'multi') html += '<p class="hint-count">Välj ' + q.answer.length + ' svar.</p>';
+    if (q.type === 'multi') html += '<p class="hint-count" aria-live="polite">Välj ' + need + ' svar.</p>';
     if (order) {
-      html += '<div class="opts' + (q.options.length === 4 && q.options.every(function (o) { return String(o).length < 22; }) ? ' two' : '') + '">';
+      html += '<div class="opts' + (q.options.length === 4 && q.options.every(function (o) { return String(o).length < 22; }) ? ' two' : '') + '" role="' + (q.type === 'multi' ? 'group' : 'radiogroup') + '" aria-label="Svarsalternativ">';
       order.forEach(function (oi) {
-        html += '<label class="opt" data-i="' + oi + '"><input type="' + (q.type === 'multi' ? 'checkbox' : 'radio') + '" name="' + name + '" value="' + oi + '"><span>' + fmt(q.options[oi]) + '</span></label>';
+        html += '<label class="opt" data-i="' + oi + '"><input type="' + (q.type === 'multi' ? 'checkbox' : 'radio') + '" name="' + name + '" value="' + oi + '"><span class="otext">' + fmt(q.options[oi]) + '</span><span class="mark" aria-hidden="true"></span></label>';
       });
       html += '</div>';
     } else if (q.input === 'fraction') {
       html += '<div class="fracin"><input inputmode="numeric" pattern="[0-9]*" aria-label="Täljare" class="fn" autocomplete="off"><div class="bar"></div><input inputmode="numeric" pattern="[0-9]*" aria-label="Nämnare" class="fd" autocomplete="off"></div>';
     } else {
-      html += '<input class="txt" ' + (q.input === 'number' ? 'inputmode="numeric" pattern="[0-9]*"' : 'autocapitalize="off" spellcheck="false"') + ' autocomplete="off" aria-label="Skriv ditt svar" placeholder="Skriv ditt svar här">';
+      html += '<input class="txt" ' + (q.input === 'number' ? 'inputmode="numeric"' : 'autocapitalize="off" spellcheck="false"') + ' autocomplete="off" aria-label="Skriv ditt svar" placeholder="Skriv ditt svar här">';
     }
-    if (q.hint) html += '<details class="note" style="margin:8px 0"><summary>Behöver du en ledtråd?</summary>' + fmt(q.hint) + '</details>';
-    html += '<div class="fbwrap"></div><div class="row end"><button class="btn check" type="button" disabled>Kolla svaret</button></div>';
+    if (q.hint) html += '<details class="note hint"><summary>Behöver du en ledtråd?</summary>' + fmt(q.hint) + '</details>';
+    html += '<div class="fbwrap" aria-live="polite"></div><div class="row end"><button class="btn check" type="button" disabled>Kolla svaret</button></div>';
     box.innerHTML = html;
 
-    var checkBtn = box.querySelector('.check'), fbw = box.querySelector('.fbwrap'), answered = false;
+    // ignore taps for a moment so a double-tap on the previous button can't pick an answer
+    box.classList.add('guard');
+    setTimeout(function () { box.classList.remove('guard'); }, 450);
+
+    var checkBtn = box.querySelector('.check'), fbw = box.querySelector('.fbwrap'), countEl = box.querySelector('.hint-count'), answered = false;
     function current() {
       if (order) return Array.prototype.map.call(box.querySelectorAll('input:checked'), function (i) { return +i.value; });
       if (q.input === 'fraction') { var n = box.querySelector('.fn').value.trim(), d = box.querySelector('.fd').value.trim(); return (n && d) ? n + '/' + d : ''; }
@@ -223,36 +239,46 @@
     function refresh() {
       if (answered) return;
       var c = current();
-      checkBtn.disabled = Array.isArray(c) ? c.length === 0 : !String(c).trim();
+      if (q.type === 'multi') {
+        checkBtn.disabled = c.length !== need;
+        Array.prototype.forEach.call(box.querySelectorAll('input'), function (i) { i.disabled = !i.checked && c.length >= need; });
+        var left = need - c.length;
+        countEl.textContent = left > 0 ? 'Välj ' + left + (c.length ? ' till.' : ' svar.') : 'Klart! Tryck på Kolla svaret.';
+      } else checkBtn.disabled = Array.isArray(c) ? c.length === 0 : !String(c).trim();
       if (order) Array.prototype.forEach.call(box.querySelectorAll('.opt'), function (l) { l.classList.toggle('sel', l.querySelector('input').checked); });
     }
     box.addEventListener('input', refresh);
     box.addEventListener('change', refresh);
-    box.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !checkBtn.disabled && e.target.tagName === 'INPUT' && e.target.type !== 'checkbox' && e.target.type !== 'radio') { e.preventDefault(); checkBtn.click(); } });
+    box.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' || checkBtn.disabled || answered || e.target.tagName !== 'INPUT') return;
+      e.preventDefault(); checkBtn.click();
+    });
     checkBtn.addEventListener('click', function () {
       if (answered) return;
       var c = current(), res;
-      if (q.type === 'single') res = { status: c[0] === q.answer ? 'ok' : 'no', picked: c[0] };
-      else if (q.type === 'multi') res = { status: sameSet(c, q.answer) ? 'ok' : 'no', picked: c };
+      if (q.type === 'single') res = { status: c[0] === q.answer ? 'ok' : 'no', key: String(c[0]) };
+      else if (q.type === 'multi') res = { status: sameSet(c, q.answer) ? 'ok' : 'no', key: c.slice().sort().join(',') };
       else res = checkText(q, c);
+      if (res.status === 'digits') { fbw.innerHTML = '<div class="fb near pop"><span class="head">Skriv svaret med siffror</span>Till exempel: 5</div>'; return; }
       answered = true;
       Array.prototype.forEach.call(box.querySelectorAll('input'), function (i) { i.disabled = true; });
       if (order) Array.prototype.forEach.call(box.querySelectorAll('.opt'), function (l) {
-        var i = +l.getAttribute('data-i'), isRight = q.type === 'single' ? i === q.answer : q.answer.indexOf(i) >= 0;
-        if (isRight) l.classList.add('right'); else if (l.querySelector('input').checked) l.classList.add('wrong');
+        var i = +l.getAttribute('data-i'), isRight = q.type === 'single' ? i === q.answer : q.answer.indexOf(i) >= 0, picked = l.querySelector('input').checked, mk = l.querySelector('.mark');
+        if (isRight && picked) { l.classList.add('right'); mk.textContent = '✓ Ditt svar'; }
+        else if (isRight) { l.classList.add('right', 'missed'); mk.textContent = '✓ Rätt svar'; }
+        else if (picked) { l.classList.add('wrong'); mk.textContent = '✗ Ditt svar'; }
       });
-      var key = Array.isArray(c) ? String(c.length === 1 ? c[0] : c.slice().sort().join(',')) : norm(c).replace(/\s/g, '');
-      var custom = q.wrongFeedback && q.wrongFeedback[key];
+      var custom = res.status === 'no' && q.wrongFeedback && res.key != null && q.wrongFeedback[res.key];
       var msg;
-      if (res.status === 'ok') msg = '<div class="fb ok pop"><span class="head">' + pick(['Rätt! 🎉', 'Snyggt! ⭐', 'Precis! 🚀', 'Helt rätt! 💪']) + '</span>' + (q.explain ? fmt(q.explain) : '') + '</div>';
-      else if (res.status === 'near') msg = '<div class="fb near pop"><span class="head">Nästan rätt – räknas som rätt! 👍</span>Det stavas: <b>' + esc(res.shown) + '</b>' + (q.explain ? '<br>' + fmt(q.explain) : '') + '</div>';
-      else msg = '<div class="fb no pop"><span class="head">Inte riktigt – bra försök!</span>' + (custom ? fmt(custom) + '<br>' : '') + 'Rätt svar: <b>' + fmt(answerText(q)) + '</b>' + (q.explain ? '<br>' + fmt(q.explain) : '') + '</div>';
+      if (res.status === 'ok') msg = '<span class="head">' + pick(['Rätt! 🎉', 'Snyggt! ⭐', 'Precis! 🚀', 'Helt rätt! 💪']) + '</span>' + (q.explain ? fmt(q.explain) : '');
+      else if (res.status === 'near') msg = '<span class="head">Nästan rätt – räknas som rätt! 👍</span>Det stavas: <b>' + esc(res.shown) + '</b>' + (q.explain ? '<br>' + fmt(q.explain) : '');
+      else msg = '<span class="head">Inte riktigt – bra försök!</span>' + (custom ? fmt(custom) + '<br>' : '') + 'Rätt svar: <b>' + fmt(answerText(q)) + '</b>' + (q.explain ? '<br>' + fmt(q.explain) : '');
       var sayFb = (res.status === 'ok' ? 'Rätt! ' : res.status === 'near' ? 'Nästan rätt. Det stavas ' + res.shown + '. ' : 'Inte riktigt. ' + (custom || '') + ' Rätt svar: ' + answerText(q) + '. ') + (q.explain || '');
-      fbw.innerHTML = msg.replace(/<\/div>$/, '<div class="row end" style="margin-top:6px">' + speakBtn(sayFb) + '</div></div>');
+      fbw.innerHTML = '<div class="fb ' + (res.status === 'ok' ? 'ok' : res.status === 'near' ? 'near' : 'no') + ' pop">' + msg + '<div class="row end" style="margin-top:6px">' + speakBtn(sayFb) + '</div></div>';
       checkBtn.remove();
       onDone(res.status !== 'no', fbw);
     });
-    var first = box.querySelector('input'); if (first && q.type === 'text') setTimeout(function () { try { first.focus({ preventScroll: true }); } catch (e) { } }, 50);
+    var first = box.querySelector('input'); if (first && q.type === 'text' && opts.autofocus !== false) setTimeout(function () { try { first.focus({ preventScroll: true }); } catch (e) { } }, 50);
   }
   function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
 
@@ -270,9 +296,19 @@
 
   // ---------- views ----------
   function starsFor(best, total) { if (best == null) return ''; var r = best / total; return r >= 0.9 ? 3 : r >= 0.7 ? 2 : r >= 0.5 ? 1 : 0; }
-  function starHTML(n, label) { if (n === '' || n == null) return '<span class="stars note">' + (label || 'inte gjort än') + '</span>';
-    if (n === 0) return '<span class="note">Öva igen så kommer stjärnorna ✨</span>'; return '<span class="stars" aria-label="' + n + ' av 3 stjärnor">' + '★★★'.slice(0, n) + '<span style="color:#cdd7e3">' + '★★★'.slice(n) + '</span></span>'; }
+  function starHTML(n, label) {
+    if (n === '' || n == null) return '<span class="note">' + (label || 'inte gjort än') + '</span>';
+    if (n === 0) return '<span class="note">Öva igen så kommer stjärnorna ✨</span>';
+    return '<span class="stars" aria-label="' + n + ' av 3 stjärnor">' + '★★★'.slice(0, n) + '<span class="off">' + '★★★'.slice(n) + '</span></span>';
+  }
   function setView(html) { app.innerHTML = html; window.scrollTo(0, 0); try { app.focus({ preventScroll: true }); } catch (e) { } }
+  function assignmentStatus(a) {
+    // a = manifest entry; counts finished tests (needs topic ids, stored on manifest entry as parts)
+    var items = (progress.items || {}), done = 0, total = 0;
+    Object.keys(items).forEach(function (k) { if (k.indexOf(a.id + '/') === 0 && items[k].best != null) done++; });
+    total = a.parts || 0;
+    return { done: done, total: total };
+  }
 
   function viewSubject(sid) {
     loadManifest().then(function (m) {
@@ -282,30 +318,32 @@
       }).join('') + '</nav>';
       var list = m.assignments.filter(function (a) { return a.subject === subj.id; });
       var body = list.length ? list.map(function (a) {
-        var r = rec(a.id + ':all');
+        var st = assignmentStatus(a);
+        var prog = st.total ? '<p class="note" style="margin:6px 0 0">' + (st.done >= st.total ? '✅ Alla tester gjorda' : '🎯 ' + st.done + ' av ' + st.total + ' tester gjorda') + '</p>' : '';
         return '<a class="card tile" href="#/a/' + a.id + '"><div class="mission"><div class="ico">' + (a.icon || subj.icon) + '</div><div><h3>' + esc(a.title) + '</h3>' +
           '<span class="pill">' + esc(a.week || '') + '</span> ' + (a.due ? '<span class="note">Läxa till ' + esc(a.due) + '</span>' : '') +
-          '<p class="muted" style="margin:6px 0 0">' + esc(a.summary || '') + '</p></div></div></a>';
+          '<p class="muted" style="margin:6px 0 0">' + esc(a.summary || '') + '</p>' + prog + '</div></div></a>';
       }).join('') : '<div class="card empty"><div class="big">🛰️</div><p><b>Inga uppdrag här än.</b></p><p class="muted">Nya uppdrag dyker upp när skolan ger läxor eller prov i ' + esc(subj.name) + '.</p></div>';
-      setView(tabs + '<h1>' + subj.icon + ' ' + esc(subj.name) + '</h1>' + body);
+      setView(storageBanner() + tabs + '<h1>' + subj.icon + ' ' + esc(subj.name) + '</h1>' + body);
     }).catch(showError);
   }
+  function bestLine(best, total) { return best != null ? ' <span class="note">· Bästa: ' + best + ' av ' + total + '</span>' : ''; }
 
   function viewAssignment(aid) {
     loadAssignment(aid).then(function (a) {
       var html = '<a class="crumb" href="#/s/' + a.subject + '">← ' + esc(a.subjectName || 'Tillbaka') + '</a>';
       html += '<h1>' + (a.icon || '') + ' ' + esc(a.title) + '</h1>';
-      if (a.intro) html += '<div class="card"><div class="row between"><p class="lead" style="margin:0;flex:1">' + fmt(a.intro) + '</p>' + speakBtn(a.intro) + '</div></div>';
+      if (a.intro) html += '<div class="card"><div class="row between" style="flex-wrap:nowrap;align-items:flex-start"><p class="lead" style="margin:0;flex:1">' + fmt(a.intro) + '</p>' + speakBtn(a.intro) + '</div></div>';
       a.topics.forEach(function (t, i) {
         var r = rec(a.id + '/' + t.id), sTest = starsFor(r.best, t.test.length);
         html += '<div class="card"><h2 style="margin-top:0">Del ' + (i + 1) + ': ' + esc(t.title) + '</h2><ul class="steps">' +
           '<li class="step"><span class="lbl">📘 Lär dig ' + (r.learned ? '<span class="note">✓ klar</span>' : '') + '</span><a class="btn small' + (r.learned ? ' secondary' : '') + '" href="#/a/' + a.id + '/t/' + t.id + '/learn/0">' + (r.learned ? 'Igen' : 'Starta') + '</a></li>' +
-          '<li class="step"><span class="lbl">🎯 Testa dig <span class="note">(' + t.test.length + ' frågor)</span><br>' + starHTML(sTest) + '</span><a class="btn small' + (r.best != null ? ' secondary' : '') + '" href="#/a/' + a.id + '/t/' + t.id + '/test">' + (r.best != null ? 'Igen' : 'Starta') + '</a></li>' +
+          '<li class="step"><span class="lbl">🎯 Testa dig <span class="note">(' + t.test.length + ' frågor)</span><br>' + starHTML(sTest) + bestLine(r.best, t.test.length) + '</span><a class="btn small' + (r.best != null ? ' secondary' : '') + '" href="#/a/' + a.id + '/t/' + t.id + '/test">' + (r.best != null ? 'Igen' : 'Starta') + '</a></li>' +
           '</ul></div>';
       });
       if (a.mixed && a.mixed.length) {
         var rm = rec(a.id + '/mixed');
-        html += '<div class="card"><h2 style="margin-top:0">🏆 Blandat test</h2><p class="muted">Frågor från alla delar. Gör det en annan dag än delarna – då minns hjärnan bättre.</p><div class="row between">' + starHTML(starsFor(rm.best, a.mixed.length)) + '<a class="btn small' + (rm.best != null ? ' secondary' : '') + '" href="#/a/' + a.id + '/mixed">' + (rm.best != null ? 'Igen' : 'Starta') + '</a></div></div>';
+        html += '<div class="card"><h2 style="margin-top:0">🏆 Blandat test</h2><p class="muted">Frågor från alla delar. Gör det en annan dag än delarna – då minns hjärnan bättre.</p><div class="row between"><span>' + starHTML(starsFor(rm.best, a.mixed.length)) + bestLine(rm.best, a.mixed.length) + '</span><a class="btn small' + (rm.best != null ? ' secondary' : '') + '" href="#/a/' + a.id + '/mixed">' + (rm.best != null ? 'Igen' : 'Starta') + '</a></div></div>';
       }
       setView(html);
     }).catch(showError);
@@ -320,7 +358,7 @@
       var dots = '<div class="dots" aria-label="Kort ' + (idx + 1) + ' av ' + t.learn.length + '">' + t.learn.map(function (_, i) { return '<i class="' + (i <= idx ? 'on' : '') + '"></i>'; }).join('') + '</div>';
       var html = '<a class="crumb" href="#/a/' + a.id + '">← ' + esc(a.title) + '</a>' +
         '<p class="note" style="margin:0">📘 ' + esc(t.title) + ' · kort ' + (idx + 1) + ' av ' + t.learn.length + '</p>' + dots +
-        '<div class="card pop"><div class="row between"><h2 style="margin:0;flex:1">' + esc(c.title) + '</h2>' + speakBtn(c.title + '. ' + c.text) + '</div>' +
+        '<div class="card pop"><div class="row between" style="flex-wrap:nowrap"><h2 style="margin:0;flex:1">' + esc(c.title) + '</h2>' + speakBtn(c.title + '. ' + c.text + (c.visual && c.visual.caption ? '. ' + c.visual.caption : '')) + '</div>' +
         '<p class="lead">' + fmt(c.text) + '</p>' + visual(c.visual) +
         (c.try ? '<div class="try"><h4>Prova själv!</h4><div class="trybox"></div></div>' : '') + '</div>' +
         '<div class="row between">' +
@@ -328,9 +366,32 @@
         (last ? '<a class="btn next" href="#/a/' + a.id + '/t/' + t.id + '/test">Klar! Till testet →</a>' : '<a class="btn" href="#/a/' + a.id + '/t/' + t.id + '/learn/' + (idx + 1) + '">Nästa →</a>') +
         '</div>';
       setView(html);
-      if (c.try) renderQuestion(c.try, app.querySelector('.trybox'), function () { });
+      if (c.try) {
+        var tb = app.querySelector('.trybox');
+        var runTry = function () {
+          renderQuestion(c.try, tb, function (ok, fbw) {
+            if (ok) return;
+            var r = document.createElement('div'); r.className = 'row end';
+            r.innerHTML = '<button class="btn secondary small again" type="button">Försök igen</button>';
+            fbw.parentNode.appendChild(r);
+            r.querySelector('button').addEventListener('click', runTry);
+          }, { autofocus: false });
+        };
+        runTry();
+      }
       if (last) { var r = rec(a.id + '/' + t.id); if (!r.learned) { r.learned = true; saveProgress(); } }
     }).catch(showError);
+  }
+
+  // quiz session survives reloads (iPad Safari reloads background tabs)
+  var SKEY = 'ovb-session-v1';
+  function saveSession() {
+    try { sessionStorage.setItem(SKEY, JSON.stringify({ aid: session.a.id, tid: session.tid, idxs: session.idxs, pos: session.pos, right: session.right, missed: session.missed, retry: session.retry })); } catch (e) { }
+  }
+  function clearSession() { try { sessionStorage.removeItem(SKEY); } catch (e) { } }
+  function readSession(aid, tid) {
+    try { var s = JSON.parse(sessionStorage.getItem(SKEY)); if (s && s.aid === aid && s.tid === tid && s.pos < s.idxs.length) return s; } catch (e) { }
+    return null;
   }
 
   function startQuiz(aid, tid, onlyIdx) {
@@ -338,9 +399,11 @@
       var t = tid === 'mixed' ? null : a.topics.filter(function (x) { return x.id === tid; })[0];
       var all = tid === 'mixed' ? a.mixed : (t && t.test);
       if (!all) throw new Error('Hittar inte testet');
+      var saved = onlyIdx ? null : readSession(aid, tid);
       var idxs = onlyIdx || all.map(function (_, i) { return i; });
-      if (!onlyIdx && rec(a.id + '/' + tid).best != null && idxs.length > 3) idxs = idxs.slice(0, 2).concat(shuffle(idxs.slice(2)));
+      if (!onlyIdx && !saved && rec(a.id + '/' + tid).best != null && idxs.length > 3) idxs = idxs.slice(0, 2).concat(shuffle(idxs.slice(2)));
       session = { t: t, a: a, tid: tid, title: tid === 'mixed' ? 'Blandat test' : t.title, all: all, idxs: idxs, pos: 0, right: 0, missed: [], retry: !!onlyIdx };
+      if (saved && saved.idxs.every(function (i) { return i < all.length; })) { session.idxs = saved.idxs; session.pos = saved.pos; session.right = saved.right; session.missed = saved.missed; session.retry = saved.retry; }
       renderQuizStep();
     }).catch(showError);
   }
@@ -348,6 +411,7 @@
   function renderQuizStep() {
     var s = session, n = s.idxs.length;
     if (s.pos >= n) return renderQuizEnd();
+    saveSession();
     var base = s.all[s.idxs[s.pos]], q = (s.retry && base.twin) ? base.twin : base;
     var html = '<div class="row between"><a class="crumb" href="#/a/' + s.a.id + '">← Avbryt</a><span class="note">' + (s.retry ? 'Öva igen · ' : '') + esc(s.title) + '</span></div>' +
       '<div class="progress" aria-hidden="true"><i style="width:' + Math.round(100 * s.pos / n) + '%"></i></div>' +
@@ -357,11 +421,12 @@
     app.querySelector('.qbox').setAttribute('data-idx', s.idxs[s.pos]);
     renderQuestion(q, app.querySelector('.qbox'), function (ok, fbw) {
       if (ok) s.right++; else s.missed.push(s.idxs[s.pos]);
+      s.pos++; saveSession(); // answer is locked in even if the page reloads now
       var b = document.createElement('div'); b.className = 'row end';
-      b.innerHTML = '<button class="btn nextq" type="button">' + (s.pos + 1 < n ? 'Nästa fråga →' : 'Se resultatet →') + '</button>';
+      b.innerHTML = '<button class="btn nextq" type="button">' + (s.pos < n ? 'Nästa fråga →' : 'Se resultatet →') + '</button>';
       fbw.parentNode.appendChild(b);
-      var nb = b.querySelector('button');
-      nb.addEventListener('click', function () { s.pos++; renderQuizStep(); });
+      var nb = b.querySelector('button'), used = false;
+      nb.addEventListener('click', function () { if (used) return; used = true; renderQuizStep(); });
       try { nb.focus({ preventScroll: true }); } catch (e) { }
       try { b.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) { }
     });
@@ -369,26 +434,39 @@
 
   function renderQuizEnd() {
     var s = session, n = s.idxs.length, key = s.a.id + '/' + s.tid, r = rec(key);
-    var gained = s.right * 10;
+    clearSession();
+    try { history.replaceState(null, '', '#/a/' + s.a.id); } catch (e) { }
+    var gained = s.right * (s.retry ? 5 : 10);
     progress.xp = (progress.xp || 0) + gained;
     var before = rankOf(progress.xp - gained)[1], after = rankOf(progress.xp)[1];
-    var stars = null;
+    var stars = null, ratio = s.right / n;
     if (!s.retry) { r.best = Math.max(r.best || 0, s.right); r.last = s.right; stars = starsFor(s.right, n); }
     r.updated = new Date().toISOString();
     saveProgress();
-    var big = s.right === n ? '🏆' : s.right / n >= 0.7 ? '🚀' : '💪';
-    var msg = s.right === n ? 'Fullpott! Alla rätt!' : s.right / n >= 0.7 ? 'Riktigt bra jobbat!' : 'Bra kämpat! Varje försök gör hjärnan starkare.';
+    var big = s.right === n ? '🏆' : ratio >= 0.7 ? '🚀' : '💪';
+    var msg = s.right === n ? 'Fullpott! Alla rätt!' : ratio >= 0.7 ? 'Riktigt bra jobbat!' : 'Bra kämpat! Varje försök gör hjärnan starkare.';
+    var nextTip = '';
+    if (!s.retry && ratio >= 0.7) nextTip = s.tid === 'mixed' ? '🎖️ Uppdraget klart! Ta en välförtjänt paus.' : '🎖️ Dags för paus! Nästa steg kan vänta till i morgon.';
+    if (!s.retry && ratio < 0.5 && s.t) nextTip = '📘 Tips: titta på Lär dig en gång till och gör sedan testet igen.';
+    var m = s.missed.length;
+    var retryLabel = m === 1 ? 'Öva igen på frågan' : 'Öva igen på ' + m + ' frågor';
+    var learnBtn = (m && s.t) ? '<a class="btn' + (ratio < 0.5 ? '' : ' secondary') + ' wide" href="#/a/' + s.a.id + '/t/' + s.t.id + '/learn/0">📘 Repetera Lär dig</a>' : '';
+    var retryBtn = m ? '<button class="btn' + (ratio < 0.5 ? ' secondary' : '') + ' wide retry" type="button">' + retryLabel + '</button>' : '';
     var html = '<div class="card result pop"><div class="big">' + big + '</div><p class="score">' + s.right + ' av ' + n + ' rätt</p>' +
       (stars != null ? '<p>' + starHTML(stars) + '</p>' : '') + '<p class="lead">' + msg + '</p>' +
       '<p><span class="badge">+' + gained + ' poäng</span></p>' +
       (before !== after ? '<p class="lead">🎖️ Ny grad: <b>' + after + '</b>!</p>' : '') + '</div>' +
-      (s.tid !== 'mixed' && !s.retry ? '<p class="note" style="text-align:center">🎖️ Dags för paus! Nästa del kan vänta till i morgon.</p>' : '') +
-      '<div class="row between">' + '<a class="btn secondary" href="#/a/' + s.a.id + '">Till uppdraget</a>' +
-      (s.missed.length && s.t ? '<a class="btn secondary" href="#/a/' + s.a.id + '/t/' + s.t.id + '/learn/0">📘 Repetera Lär dig</a>' : '') +
-      (s.missed.length ? '<button class="btn retry" type="button">Öva på de ' + s.missed.length + ' som blev fel</button>' : '') + '</div>';
+      (nextTip ? '<p class="note" style="text-align:center">' + nextTip + '</p>' : '') +
+      '<div class="stack">' + (ratio < 0.5 ? learnBtn + retryBtn : retryBtn + learnBtn) +
+      '<a class="btn secondary wide" href="#/a/' + s.a.id + '">Till uppdraget</a></div>';
     setView(html);
     var rb = app.querySelector('.retry');
     if (rb) rb.addEventListener('click', function () { startQuiz(s.a.id, s.tid, s.missed.slice()); });
+  }
+
+  function storageBanner() {
+    try { localStorage.setItem('ovb-t', '1'); localStorage.removeItem('ovb-t'); return ''; }
+    catch (e) { return '<div class="card note" style="padding:10px 14px">⚠️ Framsteg sparas inte i privat läge.</div>'; }
   }
 
   function showError(e) {

@@ -1,11 +1,31 @@
 {
   "version": 1,
   "subjects": [
-    { "id": "matte", "name": "Matte", "icon": "➗" },
-    { "id": "no", "name": "NO", "icon": "🔬" },
-    { "id": "so", "name": "SO", "icon": "🗺️" },
-    { "id": "svenska", "name": "Svenska", "icon": "📖" },
-    { "id": "engelska", "name": "Engelska", "icon": "💬" }
+    {
+      "id": "matte",
+      "name": "Matte",
+      "icon": "➗"
+    },
+    {
+      "id": "no",
+      "name": "NO",
+      "icon": "🔬"
+    },
+    {
+      "id": "so",
+      "name": "SO",
+      "icon": "🗺️"
+    },
+    {
+      "id": "svenska",
+      "name": "Svenska",
+      "icon": "📖"
+    },
+    {
+      "id": "engelska",
+      "name": "Engelska",
+      "icon": "💬"
+    }
   ],
   "assignments": [
     {
@@ -15,7 +35,8 @@
       "icon": "🚢",
       "week": "Vecka 47",
       "summary": "Del av antal, bråk på tallinjen och enklaste form.",
-      "file": "content/matte-brak-v47.json"
+      "file": "content/matte-brak-v47.json",
+      "parts": 3
     }
   ]
 }

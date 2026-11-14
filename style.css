@@ -90,3 +90,23 @@ p{margin:8px 0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 .pop{animation:pop .35s ease-out}
 @keyframes pop{0%{transform:scale(.96);opacity:.4}100%{transform:scale(1);opacity:1}}
+/* QA round 1 */
+.guard{pointer-events:none}
+.opt .otext{flex:1}
+.opt .mark{font-size:15px;font-weight:700;white-space:nowrap}
+.opt.right .mark{color:var(--ok)}
+.opt.wrong .mark{color:var(--no)}
+.opt.missed{border-style:dashed}
+.stack{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.btn.wide{width:100%}
+.btn:focus-visible,.opt:focus-within,.tab:focus-visible,input:focus-visible,summary:focus-visible,.speak:focus-visible{outline:3px solid #e85d04;outline-offset:2px}
+.rank{min-width:0;overflow-wrap:anywhere}
+.tonext{display:block;font-size:12px;opacity:.8}
+@media (max-width:379px){.brand span{display:none}.tonext{display:none}}
+details.hint{margin:8px 0}
+details.hint summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
+.stars{color:#e0a100}
+.stars .off{color:#a9b6c6}
+.tabs{flex-wrap:wrap;overflow:visible}
+.nw{white-space:nowrap}
+.vis svg{max-width:520px}
