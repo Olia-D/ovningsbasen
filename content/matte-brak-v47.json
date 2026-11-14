@@ -1,0 +1,661 @@
+{
+  "id": "matte-brak-v47",
+  "subject": "matte",
+  "subjectName": "Matte",
+  "title": "Bråk",
+  "icon": "🚢",
+  "intro": "Hej, kadett! Ditt nya uppdrag heter **Bråk**.\nDag 1: Del 1. Dag 2: Del 2. Dag 3: Blandat test.\nEtt steg i taget – du klarar det!",
+  "topics": [
+    {
+      "id": "del-av-antal",
+      "title": "Del av antal",
+      "learn": [
+        {
+          "title": "Vad är ett bråk?",
+          "text": "Ett bråk visar en **del av något helt**. Här är en chokladkaka delad i 4 lika stora bitar. Du äter 1 bit. Då har du ätit 1/4 av kakan – en fjärdedel.",
+          "visual": {
+            "type": "bar",
+            "parts": 4,
+            "filled": 1,
+            "caption": "1 av 4 lika stora delar = 1/4"
+          }
+        },
+        {
+          "title": "Täljare och nämnare",
+          "text": "Talet **under** strecket heter **nämnare**. Det visar hur många lika stora delar det hela är delat i.\nTalet **över** strecket heter **täljare**. Det visar hur många delar vi tar.\nKnep: **N**ämnaren är **n**ere!",
+          "visual": {
+            "type": "bar",
+            "parts": 5,
+            "filled": 3,
+            "caption": "3/5: delat i 5 delar, vi tar 3"
+          },
+          "try": {
+            "type": "single",
+            "q": "Vilket tal är nämnaren i 3/5?",
+            "options": [
+              "3",
+              "5"
+            ],
+            "answer": 1,
+            "keepOrder": true,
+            "explain": "Nämnaren står nere, under strecket. Det är 5."
+          }
+        },
+        {
+          "title": "En del av ett antal",
+          "text": "På ett hangarfartyg står 12 flygplan. Hur många är 1/3 av planen?\nDela de 12 planen i **3 lika stora grupper**. Varje grupp har 4 plan.\nAlltså är 1/3 av 12 = **4**.\nProva hemma: lägg 12 legobitar i 3 lika stora högar!",
+          "visual": {
+            "type": "groups",
+            "total": 12,
+            "groups": 3,
+            "highlight": 1,
+            "icon": "✈️",
+            "caption": "12 plan i 3 grupper. En grupp = 4 plan."
+          }
+        },
+        {
+          "title": "Fler delar",
+          "text": "Hur många är 2/3 av 12 plan?\nVi vet redan att 1/3 är 4 plan. Nu tar vi **2 grupper**: 4 + 4 = **8**.\nAlltså är 2/3 av 12 = 8.",
+          "visual": {
+            "type": "groups",
+            "total": 12,
+            "groups": 3,
+            "highlight": 2,
+            "icon": "✈️",
+            "caption": "2 av 3 grupper = 8 plan"
+          }
+        },
+        {
+          "title": "Superknepet",
+          "text": "1. **Dela** antalet med nämnaren.\n2. Ta svaret **gånger** täljaren.\nExempel: 3/4 av 8\n8 delat med 4 = 2\n2 gånger 3 = **6**",
+          "visual": {
+            "type": "groups",
+            "total": 8,
+            "groups": 4,
+            "highlight": 3,
+            "icon": "🧱",
+            "caption": "8 block i 4 grupper. 3 grupper = 6 block."
+          },
+          "try": {
+            "type": "text",
+            "input": "number",
+            "q": "Prova knepet: Hur mycket är 2/5 av 15?",
+            "answer": [
+              "6"
+            ],
+            "explain": "15 delat med 5 = 3. Sedan 3 gånger 2 = 6.",
+            "wrongFeedback": {
+              "3": "3 är bara 1/5. Du ska ta 2 femtedelar: 3 gånger 2."
+            }
+          }
+        }
+      ],
+      "test": [
+        {
+          "type": "single",
+          "q": "Vad heter talet 5 i bråket 2/5?",
+          "options": [
+            "Täljare",
+            "Nämnare",
+            "Bråkstreck"
+          ],
+          "answer": 1,
+          "keepOrder": true,
+          "explain": "Talet under strecket heter nämnare."
+        },
+        {
+          "type": "single",
+          "q": "Hur stor del är färgad?",
+          "visual": {
+            "type": "bar",
+            "parts": 6,
+            "filled": 2
+          },
+          "options": [
+            "2/6",
+            "4/6",
+            "2/4",
+            "6/2"
+          ],
+          "answer": 0,
+          "explain": "Rutan har 6 lika stora delar. 2 är färgade. Alltså 2/6.",
+          "wrongFeedback": {
+            "1": "4/6 är de delar som **inte** är färgade.",
+            "3": "Nämnaren ska vara hur många delar det finns totalt – den står nere."
+          }
+        },
+        {
+          "type": "text",
+          "input": "number",
+          "q": "Hur mycket är 1/2 av 10?",
+          "answer": [
+            "5"
+          ],
+          "explain": "10 delat med 2 = 5.",
+          "wrongFeedback": {
+            "20": "Du räknade gånger. Hälften av 10 blir mindre än 10."
+          }
+        },
+        {
+          "type": "text",
+          "input": "number",
+          "q": "Ett tåg har 20 vagnar. Hur många vagnar är 1/4 av vagnarna?",
+          "visual": {
+            "type": "groups",
+            "total": 20,
+            "groups": 4,
+            "highlight": 0,
+            "icon": "🚃"
+          },
+          "answer": [
+            "5"
+          ],
+          "explain": "20 delat med 4 = 5 vagnar.",
+          "wrongFeedback": {
+            "80": "Du räknade gånger. En fjärdedel av 20 är mindre än 20 – dela med 4."
+          }
+        },
+        {
+          "type": "single",
+          "q": "Hur mycket är 1/3 av 15?",
+          "options": [
+            "3",
+            "5",
+            "12",
+            "45"
+          ],
+          "answer": 1,
+          "explain": "15 delat med 3 = 5.",
+          "wrongFeedback": {
+            "0": "3 är nämnaren. Dela 15 med 3 i stället.",
+            "3": "Där räknade du 15 gånger 3. Du ska dela med nämnaren.",
+            "2": "Du räknade 15 minus 3. Dela 15 med 3 i stället."
+          }
+        },
+        {
+          "type": "text",
+          "input": "number",
+          "q": "Hur mycket är 2/3 av 9?",
+          "visual": {
+            "type": "groups",
+            "total": 9,
+            "groups": 3,
+            "highlight": 0,
+            "icon": "⚓"
+          },
+          "answer": [
+            "6"
+          ],
+          "hint": "Dela 9 ankare i 3 grupper. Hur många är 2 grupper?",
+          "explain": "9 delat med 3 = 3. Sedan 3 gånger 2 = 6.",
+          "wrongFeedback": {
+            "3": "3 är bara **en** grupp, alltså 1/3. Du ska ta 2 grupper."
+          }
+        },
+        {
+          "type": "multi",
+          "q": "Vilka av dessa blir 4?",
+          "options": [
+            "1/2 av 8",
+            "1/4 av 16",
+            "1/3 av 9",
+            "1/5 av 10"
+          ],
+          "answer": [
+            0,
+            1
+          ],
+          "explain": "1/2 av 8 = 4 och 1/4 av 16 = 4. Men 1/3 av 9 = 3 och 1/5 av 10 = 2."
+        },
+        {
+          "type": "text",
+          "input": "number",
+          "q": "En flygskvadron har 12 plan. 3/4 av planen flyger ut på uppdrag. Hur många plan flyger ut?",
+          "answer": [
+            "9"
+          ],
+          "hint": "Dela först 12 med 4. Ta sedan svaret gånger 3.",
+          "explain": "12 delat med 4 = 3. Sedan 3 gånger 3 = 9 plan.",
+          "wrongFeedback": {
+            "3": "3 plan är 1/4. Du ska ta 3 fjärdedelar: 3 gånger 3.",
+            "4": "Du delade med täljaren 3. Dela med **nämnaren** 4 först."
+          }
+        },
+        {
+          "type": "single",
+          "q": "Yoda delar 20 kristaller lika mellan 4 elever. Hur stor del av kristallerna får varje elev?",
+          "options": [
+            "1/4",
+            "1/20",
+            "1/5",
+            "4/20"
+          ],
+          "answer": 0,
+          "explain": "4 elever = 4 lika delar. Varje elev får 1/4. Det är 20 delat med 4 = 5 kristaller.",
+          "wrongFeedback": {
+            "1": "1/20 är bara en kristall. Varje elev får en hel grupp.",
+            "2": "Nämnaren är antalet lika delar – här 4 elever."
+          }
+        },
+        {
+          "type": "text",
+          "input": "number",
+          "q": "Steve har 24 block. Han bygger ett torn med 5/6 av blocken. Hur många block använder han?",
+          "answer": [
+            "20"
+          ],
+          "hint": "Dela 24 med 6. Ta sedan svaret gånger 5.",
+          "explain": "24 delat med 6 = 4. Sedan 4 gånger 5 = 20 block.",
+          "wrongFeedback": {
+            "4": "4 block är bara 1/6. Du ska ta 5 sjättedelar: 4 gånger 5."
+          }
+        }
+      ]
+    },
+    {
+      "id": "tallinjen-enklaste-form",
+      "title": "Bråk på tallinjen och enklaste form",
+      "learn": [
+        {
+          "title": "Tåget mellan 0 och 1",
+          "text": "Ett tåg kör från station 0 till station 1. Sträckan är delad i **4 lika långa** delar. Tåget har kört 3 delar. Då har det kört 3/4 av vägen.",
+          "visual": {
+            "type": "numberLine",
+            "den": 4,
+            "highlight": 3,
+            "labels": "all",
+            "icon": "🚂",
+            "caption": "Tåget står på 3/4"
+          }
+        },
+        {
+          "title": "Räkna stegen",
+          "text": "Så hittar du ett bråk på tallinjen:\n1. Räkna **mellanrummen** mellan 0 och 1 – inte strecken. Det blir **nämnaren**.\n2. Räkna hur många steg pilen står från 0. Det blir **täljaren**.",
+          "visual": {
+            "type": "numberLine",
+            "den": 5,
+            "arrow": 3,
+            "labels": "ends",
+            "caption": "Räkna mellanrummen: hoppa från streck till streck."
+          },
+          "try": {
+            "type": "single",
+            "q": "Vilket bråk pekar pilen på?",
+            "options": [
+              "3/5",
+              "5/3",
+              "3/4"
+            ],
+            "answer": 0,
+            "explain": "5 lika delar, och pilen står 3 steg från 0. Alltså 3/5.",
+            "wrongFeedback": {
+              "2": "Du räknade strecken i mitten. Räkna mellanrummen – de är 5."
+            }
+          }
+        },
+        {
+          "title": "Samma plats – olika namn",
+          "text": "Titta på de tre tallinjerna. 1/2, 2/4 och 3/6 hamnar på **exakt samma plats**! De är lika stora. Bråk som är lika stora kallas **likvärdiga bråk**.",
+          "visual": {
+            "type": "compareLines",
+            "rows": [
+              {
+                "den": 2,
+                "highlight": 1
+              },
+              {
+                "den": 4,
+                "highlight": 2,
+                "color": "#ffb703"
+              },
+              {
+                "den": 6,
+                "highlight": 3
+              }
+            ],
+            "guide": 0.5,
+            "caption": "1/2 = 2/4 = 3/6"
+          }
+        },
+        {
+          "title": "Enklaste form",
+          "text": "2/6 och 1/3 står på **samma plats**. De är lika stora!\n1/3 är bråkets **enklaste form**: samma värde, men så små tal som möjligt.\nSå gör du: dela **både** täljaren och nämnaren med 2. Det kallas att **förkorta**.",
+          "visual": {
+            "type": "compareLines",
+            "rows": [
+              {
+                "den": 6,
+                "highlight": 2
+              },
+              {
+                "den": 3,
+                "highlight": 1,
+                "color": "#ffb703"
+              }
+            ],
+            "guide": 0.3333333,
+            "caption": "2/6 och 1/3 står på samma plats"
+          }
+        },
+        {
+          "title": "Förenkla som ett proffs",
+          "text": "Är båda talen **jämna**? Dela båda med 2.\nGör det igen tills det inte går längre.\nGår det inte med 2? Prova 3 eller 5.\nExempel: 8/12 → 4/6 → **2/3**",
+          "try": {
+            "type": "text",
+            "input": "fraction",
+            "q": "Skriv 4/8 i enklaste form.",
+            "answer": [
+              "1/2"
+            ],
+            "explain": "Dela både 4 och 8 med 4. Då blir det 1/2.",
+            "wrongFeedback": {
+              "2/4": "2/4 är lika mycket som 1/2, men det går att förenkla mer! Dela med 2 en gång till.",
+              "4/8": "Det är samma bråk som i frågan. Dela både 4 och 8 med samma tal."
+            }
+          }
+        }
+      ],
+      "test": [
+        {
+          "type": "single",
+          "q": "Vilket bråk pekar pilen på?",
+          "visual": {
+            "type": "numberLine",
+            "den": 4,
+            "arrow": 1,
+            "labels": "ends"
+          },
+          "options": [
+            "1/4",
+            "1/3",
+            "4/1",
+            "1/2"
+          ],
+          "answer": 0,
+          "explain": "4 lika delar mellan 0 och 1. Pilen står 1 steg från 0: 1/4.",
+          "wrongFeedback": {
+            "1": "Du räknade strecken i mitten. Räkna mellanrummen – de är 4."
+          }
+        },
+        {
+          "type": "single",
+          "q": "Vilket bråk pekar pilen på?",
+          "visual": {
+            "type": "numberLine",
+            "den": 6,
+            "arrow": 5,
+            "labels": "ends"
+          },
+          "options": [
+            "5/6",
+            "6/5",
+            "1/6",
+            "5/5"
+          ],
+          "answer": 0,
+          "explain": "6 lika delar. Pilen står 5 steg från 0: 5/6.",
+          "wrongFeedback": {
+            "2": "1/6 är steget som är **kvar** till 1. Räkna stegen från 0.",
+            "3": "Du räknade strecken i mitten. Räkna mellanrummen – de är 6."
+          }
+        },
+        {
+          "type": "text",
+          "input": "fraction",
+          "q": "Skriv bråket som pilen pekar på.",
+          "visual": {
+            "type": "numberLine",
+            "den": 3,
+            "arrow": 2,
+            "labels": "ends"
+          },
+          "answer": [
+            "2/3"
+          ],
+          "explain": "3 lika delar. Pilen står 2 steg från 0: 2/3.",
+          "wrongFeedback": {
+            "3/2": "Täljare och nämnare har bytt plats. Antalet delar står nere.",
+            "2/2": "Du räknade strecken i mitten. Räkna mellanrummen – de är 3."
+          }
+        },
+        {
+          "type": "text",
+          "input": "fraction",
+          "q": "Skriv 2/6 i enklaste form.",
+          "answer": [
+            "1/3"
+          ],
+          "explain": "Dela både 2 och 6 med 2: 1/3.",
+          "wrongFeedback": {
+            "1/6": "Du delade bara täljaren. Dela **båda** med 2.",
+            "2/3": "Du delade bara nämnaren. Dela **båda** med 2."
+          }
+        },
+        {
+          "type": "text",
+          "input": "fraction",
+          "q": "Skriv 5/10 i enklaste form.",
+          "answer": [
+            "1/2"
+          ],
+          "explain": "Dela både 5 och 10 med 5: 1/2.",
+          "wrongFeedback": {
+            "5/10": "Det är samma bråk som i frågan. Vilket tal kan båda delas med?"
+          }
+        },
+        {
+          "type": "multi",
+          "q": "Vilka bråk är lika med 1/2?",
+          "options": [
+            "2/4",
+            "3/6",
+            "2/3",
+            "1/4"
+          ],
+          "answer": [
+            0,
+            1
+          ],
+          "explain": "2/4 och 3/6 hamnar på samma plats som 1/2 på tallinjen."
+        },
+        {
+          "type": "single",
+          "q": "Vilket bråk står redan i enklaste form?",
+          "options": [
+            "3/9",
+            "4/6",
+            "3/5",
+            "6/8"
+          ],
+          "answer": 2,
+          "explain": "3 och 5 kan inte båda delas med samma tal (förutom 1). De andra kan förenklas: 3/9 = 1/3, 4/6 = 2/3 och 6/8 = 3/4.",
+          "wrongFeedback": {
+            "1": "Båda talen är jämna – då går det att dela med 2.",
+            "3": "Båda talen är jämna – då går det att dela med 2."
+          }
+        },
+        {
+          "type": "text",
+          "input": "fraction",
+          "q": "Skriv 6/9 i enklaste form.",
+          "answer": [
+            "2/3"
+          ],
+          "hint": "Vilket tal kan både 6 och 9 delas med?",
+          "explain": "Dela både 6 och 9 med 3: 2/3.",
+          "wrongFeedback": {
+            "6/9": "Det är samma bråk som i frågan. Vilket tal kan båda delas med?"
+          }
+        },
+        {
+          "type": "text",
+          "input": "fraction",
+          "q": "Skriv bråket som pilen pekar på i enklaste form.",
+          "visual": {
+            "type": "numberLine",
+            "den": 6,
+            "arrow": 3,
+            "labels": "ends"
+          },
+          "answer": [
+            "1/2"
+          ],
+          "hint": "Räkna mellanrummen och stegen först. Förkorta sedan.",
+          "explain": "6 delar och 3 steg: 3/6. Dela båda med 3: 1/2.",
+          "wrongFeedback": {
+            "3/6": "Rätt plats! Pilen står på 3/6. Men skriv det i enklaste form: dela båda med 3."
+          }
+        },
+        {
+          "type": "single",
+          "q": "Vilket bråk är lika stort som 3/4?",
+          "options": [
+            "6/8",
+            "3/8",
+            "4/3",
+            "6/4"
+          ],
+          "answer": 0,
+          "explain": "Förkorta 6/8: dela båda med 2 → 3/4. Samma plats på tallinjen!",
+          "wrongFeedback": {
+            "1": "Du ändrade bara nämnaren. Då blir det mindre. 3/8 är hälften av 3/4.",
+            "2": "Täljare och nämnare har bytt plats."
+          }
+        }
+      ]
+    }
+  ],
+  "mixed": [
+    {
+      "type": "text",
+      "input": "number",
+      "q": "Hur mycket är 1/2 av 14?",
+      "answer": [
+        "7"
+      ],
+      "explain": "14 delat med 2 = 7."
+    },
+    {
+      "type": "single",
+      "q": "Vilket bråk pekar pilen på?",
+      "visual": {
+        "type": "numberLine",
+        "den": 5,
+        "arrow": 4,
+        "labels": "ends"
+      },
+      "options": [
+        "4/5",
+        "5/4",
+        "1/5",
+        "4/4"
+      ],
+      "answer": 0,
+      "explain": "5 lika delar. Pilen står 4 steg från 0: 4/5.",
+      "wrongFeedback": {
+        "3": "Du räknade strecken i mitten. Räkna mellanrummen – de är 5."
+      }
+    },
+    {
+      "type": "text",
+      "input": "fraction",
+      "q": "Skriv 4/12 i enklaste form.",
+      "answer": [
+        "1/3"
+      ],
+      "explain": "Dela både 4 och 12 med 4: 1/3.",
+      "wrongFeedback": {
+        "2/6": "2/6 är lika mycket som 1/3, men det går att förenkla mer. Dela med 2 igen."
+      }
+    },
+    {
+      "type": "single",
+      "q": "Hur mycket är 2/4 av 8?",
+      "options": [
+        "2",
+        "4",
+        "6",
+        "16"
+      ],
+      "answer": 1,
+      "explain": "8 delat med 4 = 2. Sedan 2 gånger 2 = 4. Smart knep: 2/4 är samma sak som 1/2, och hälften av 8 är 4."
+    },
+    {
+      "type": "multi",
+      "q": "Vilka bråk är lika med 2/3?",
+      "options": [
+        "4/6",
+        "6/9",
+        "3/2",
+        "2/6"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explain": "4/6 och 6/9 kan båda förenklas till 2/3."
+    },
+    {
+      "type": "text",
+      "input": "number",
+      "q": "Ett tåg har 15 vagnar. 1/5 av vagnarna är restaurangvagnar. Hur många restaurangvagnar finns det?",
+      "answer": [
+        "3"
+      ],
+      "explain": "15 delat med 5 = 3."
+    },
+    {
+      "type": "text",
+      "input": "fraction",
+      "q": "Skriv bråket som pilen pekar på i enklaste form.",
+      "visual": {
+        "type": "numberLine",
+        "den": 8,
+        "arrow": 6,
+        "labels": "ends"
+      },
+      "answer": [
+        "3/4"
+      ],
+      "hint": "Räkna mellanrummen och stegen först. Förkorta sedan.",
+      "explain": "8 delar och 6 steg: 6/8. Dela båda med 2: 3/4.",
+      "wrongFeedback": {
+        "6/8": "Rätt plats! Pilen står på 6/8. Men skriv det i enklaste form: dela båda med 2."
+      }
+    },
+    {
+      "type": "text",
+      "input": "fraction",
+      "q": "Skriv 8/10 i enklaste form.",
+      "answer": [
+        "4/5"
+      ],
+      "explain": "Dela både 8 och 10 med 2: 4/5."
+    },
+    {
+      "type": "single",
+      "q": "Steve har 18 diamanter. Han ger bort 2/6 av dem. Hur många diamanter ger han bort?",
+      "options": [
+        "6",
+        "3",
+        "12",
+        "9"
+      ],
+      "answer": 0,
+      "explain": "18 delat med 6 = 3. Sedan 3 gånger 2 = 6. Eller: 2/6 = 1/3, och 1/3 av 18 = 6.",
+      "wrongFeedback": {
+        "2": "12 är de diamanter han **behåller**.",
+        "1": "3 är bara 1/6. Du ska ta 2 sjättedelar: 3 + 3."
+      }
+    },
+    {
+      "type": "text",
+      "input": "number",
+      "q": "Hur mycket är 3/4 av 16?",
+      "answer": [
+        "12"
+      ],
+      "explain": "16 delat med 4 = 4. Sedan 4 gånger 3 = 12."
+    }
+  ]
+}
