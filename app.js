@@ -26,7 +26,7 @@
   function nextRank(xp) { for (var i = 0; i < RANKS.length; i++) if (xp < RANKS[i][0]) return RANKS[i]; return null; }
   function renderRank() {
     var xp = progress.xp || 0, r = rankOf(xp), n = nextRank(xp);
-    rankEl.innerHTML = '<b>' + r[1] + '</b><br>' + xp + ' poäng' + (n ? '<span class="tonext"> · ' + (n[0] - xp) + ' kvar till ' + n[1] + '</span>' : ' ⭐');
+    rankEl.innerHTML = '<b>' + r[1] + '</b><br>' + xp + ' poäng' + (n ? '<span class="tonext">' + (n[0] - xp) + ' kvar till ' + n[1] + '</span>' : ' ⭐');
   }
 
   // ---------- text helpers ----------
@@ -259,6 +259,7 @@
       if (q.type === 'single') res = { status: c[0] === q.answer ? 'ok' : 'no', key: String(c[0]) };
       else if (q.type === 'multi') res = { status: sameSet(c, q.answer) ? 'ok' : 'no', key: c.slice().sort().join(',') };
       else res = checkText(q, c);
+      if (countEl && res.status !== 'digits') countEl.remove();
       if (res.status === 'digits') { fbw.innerHTML = '<div class="fb near pop"><span class="head">Skriv svaret med siffror</span>Till exempel: 5</div>'; return; }
       answered = true;
       Array.prototype.forEach.call(box.querySelectorAll('input'), function (i) { i.disabled = true; });
@@ -390,7 +391,7 @@
   }
   function clearSession() { try { sessionStorage.removeItem(SKEY); } catch (e) { } }
   function readSession(aid, tid) {
-    try { var s = JSON.parse(sessionStorage.getItem(SKEY)); if (s && s.aid === aid && s.tid === tid && s.pos < s.idxs.length) return s; } catch (e) { }
+    try { var s = JSON.parse(sessionStorage.getItem(SKEY)); if (s && s.aid === aid && s.tid === tid && !s.retry && s.pos <= s.idxs.length) return s; } catch (e) { }
     return null;
   }
 
@@ -413,7 +414,7 @@
     if (s.pos >= n) return renderQuizEnd();
     saveSession();
     var base = s.all[s.idxs[s.pos]], q = (s.retry && base.twin) ? base.twin : base;
-    var html = '<div class="row between"><a class="crumb" href="#/a/' + s.a.id + '">← Avbryt</a><span class="note">' + (s.retry ? 'Öva igen · ' : '') + esc(s.title) + '</span></div>' +
+    var html = '<div class="row between"><a class="crumb cancel" href="#/a/' + s.a.id + '">← Avbryt</a><span class="note">' + (s.retry ? 'Öva igen · ' : '') + esc(s.title) + '</span></div>' +
       '<div class="progress" aria-hidden="true"><i style="width:' + Math.round(100 * s.pos / n) + '%"></i></div>' +
       '<p class="note" style="margin:0 0 4px">Fråga ' + (s.pos + 1) + ' av ' + n + '</p>' +
       '<div class="card qbox pop"></div>';
@@ -446,7 +447,7 @@
     var big = s.right === n ? '🏆' : ratio >= 0.7 ? '🚀' : '💪';
     var msg = s.right === n ? 'Fullpott! Alla rätt!' : ratio >= 0.7 ? 'Riktigt bra jobbat!' : 'Bra kämpat! Varje försök gör hjärnan starkare.';
     var nextTip = '';
-    if (!s.retry && ratio >= 0.7) nextTip = s.tid === 'mixed' ? '🎖️ Uppdraget klart! Ta en välförtjänt paus.' : '🎖️ Dags för paus! Nästa steg kan vänta till i morgon.';
+    if (!s.retry && ratio >= 0.7) nextTip = s.tid === 'mixed' ? '🎖️ Blandat test klart! Ta en välförtjänt paus.' : '🎖️ Dags för paus! Nästa steg kan vänta till i morgon.';
     if (!s.retry && ratio < 0.5 && s.t) nextTip = '📘 Tips: titta på Lär dig en gång till och gör sedan testet igen.';
     var m = s.missed.length;
     var retryLabel = m === 1 ? 'Öva igen på frågan' : 'Öva igen på ' + m + ' frågor';
@@ -491,6 +492,14 @@
     }).catch(showError);
   }
   window.__ovbTest = { checkText: checkText, fracWords: fracWords };
+  // same-hash links (e.g. after replaceState) must still navigate; Avbryt cancels the saved quiz
+  document.addEventListener('click', function (e) {
+    var l = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!l) return;
+    if (l.classList.contains('cancel')) clearSession();
+    if (l.getAttribute('href') === location.hash) { e.preventDefault(); route(); }
+  });
+  window.addEventListener('popstate', function () { setTimeout(route, 0); });
   window.addEventListener('hashchange', route);
   renderRank();
   route();

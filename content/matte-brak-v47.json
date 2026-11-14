@@ -524,11 +524,11 @@
           "twin": {
             "type": "text",
             "input": "fraction",
-            "q": "Skriv 3/9 i enklaste form.",
+            "q": "Skriv 2/8 i enklaste form.",
             "answer": [
-              "1/3"
+              "1/4"
             ],
-            "explain": "Dela både 3 och 9 med 3: 1/3."
+            "explain": "Dela både 2 och 8 med 2: 1/4."
           }
         },
         {
@@ -545,11 +545,11 @@
           "twin": {
             "type": "text",
             "input": "fraction",
-            "q": "Skriv 3/6 i enklaste form.",
+            "q": "Skriv 4/10 i enklaste form.",
             "answer": [
-              "1/2"
+              "2/5"
             ],
-            "explain": "Dela både 3 och 6 med 3: 1/2."
+            "explain": "Dela både 4 och 10 med 2: 2/5."
           }
         },
         {
@@ -577,7 +577,7 @@
             "6/8"
           ],
           "answer": 2,
-          "explain": "3 och 5 kan inte båda delas med samma tal (förutom 1). De andra kan förenklas: 3/9 = 1/3, 4/6 = 2/3 och 6/8 = 3/4.",
+          "explain": "3 och 5 kan inte båda delas med samma tal (förutom 1). De andra kan förkortas: 3/9 = 1/3, 4/6 = 2/3 och 6/8 = 3/4.",
           "wrongFeedback": {
             "1": "Båda talen är jämna – då går det att dela med 2.",
             "3": "Båda talen är jämna – då går det att dela med 2.",
@@ -599,11 +599,11 @@
           "twin": {
             "type": "text",
             "input": "fraction",
-            "q": "Skriv 4/6 i enklaste form.",
+            "q": "Skriv 6/8 i enklaste form.",
             "answer": [
-              "2/3"
+              "3/4"
             ],
-            "explain": "Dela både 4 och 6 med 2: 2/3."
+            "explain": "Dela både 6 och 8 med 2: 3/4."
           }
         },
         {
@@ -630,14 +630,14 @@
             "q": "Skriv bråket som pilen pekar på i enklaste form.",
             "visual": {
               "type": "numberLine",
-              "den": 8,
-              "arrow": 4,
+              "den": 6,
+              "arrow": 2,
               "labels": "ends"
             },
             "answer": [
-              "1/2"
+              "1/3"
             ],
-            "explain": "8 mellanrum och 4 steg: 4/8. Förkorta: 1/2."
+            "explain": "6 mellanrum och 2 steg: 2/6. Förkorta: 1/3."
           }
         },
         {
@@ -748,7 +748,7 @@
         0,
         1
       ],
-      "explain": "4/6 och 6/9 kan båda förenklas till 2/3."
+      "explain": "4/6 och 6/9 kan båda förkortas till 2/3."
     },
     {
       "type": "text",
@@ -761,11 +761,11 @@
       "twin": {
         "type": "text",
         "input": "number",
-        "q": "Ett tåg har 12 vagnar. 1/4 av vagnarna är sovvagnar. Hur många sovvagnar finns det?",
+        "q": "Ett tåg har 20 vagnar. 1/5 av vagnarna är sovvagnar. Hur många sovvagnar finns det?",
         "answer": [
-          "3"
+          "4"
         ],
-        "explain": "12 delat med 4 = 3."
+        "explain": "20 delat med 5 = 4."
       }
     },
     {
