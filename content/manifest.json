@@ -29,6 +29,17 @@
   ],
   "assignments": [
     {
+      "id": "engelska-glosor-v47",
+      "subject": "engelska",
+      "title": "Glosor: smak och mat",
+      "icon": "🍓",
+      "week": "Vecka 47",
+      "due": "måndag 16/11",
+      "summary": "10 glosor om mat och smak – lyssna, lär dig och testa stavningen.",
+      "parts": 3,
+      "file": "content/engelska-glosor-v47.json"
+    },
+    {
       "id": "matte-brak-v47",
       "subject": "matte",
       "title": "Bråk",

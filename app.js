@@ -53,24 +53,28 @@
   }
 
   // ---------- read aloud (Swedish) ----------
-  var svVoice = null;
+  var voices = {};
   function pickVoice() {
     if (!('speechSynthesis' in window)) return;
     var vs = speechSynthesis.getVoices() || [];
-    svVoice = vs.filter(function (v) { return /^sv/i.test(v.lang); })[0] || null;
+    voices.sv = vs.filter(function (v) { return /^sv/i.test(v.lang); })[0] || null;
+    voices.en = vs.filter(function (v) { return /^en-GB/i.test(v.lang); })[0] || vs.filter(function (v) { return /^en/i.test(v.lang); })[0] || null;
   }
   if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
-  function speakBtn(text) {
+  function speakBtn(text, lang, label) {
     if (!('speechSynthesis' in window)) return '';
-    return '<button class="speak" type="button" data-say="' + esc(speechText(text)) + '" aria-label="Läs upp">🔊</button>';
+    var en = lang === 'en';
+    return '<button class="speak' + (label ? ' speak-lbl' : '') + '" type="button" data-say="' + esc(en ? text : speechText(text)) + '"' + (en ? ' data-lang="en"' : '') + ' aria-label="' + (en ? 'Lyssna på engelska' : 'Läs upp') + '">🔊' + (label ? ' ' + esc(label) : '') + '</button>';
   }
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('[data-say]');
     if (!b) return;
     try {
       speechSynthesis.cancel();
+      var en = b.getAttribute('data-lang') === 'en';
       var u = new SpeechSynthesisUtterance(b.getAttribute('data-say'));
-      u.lang = 'sv-SE'; u.rate = 0.92; if (svVoice) u.voice = svVoice;
+      u.lang = en ? 'en-GB' : 'sv-SE'; u.rate = en ? 0.85 : 0.92;
+      var v = en ? voices.en : voices.sv; if (v) u.voice = v;
       speechSynthesis.speak(u);
     } catch (err) { /* ignore */ }
   });
@@ -149,8 +153,12 @@
     }
     return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="max-width:' + Math.max(W, 200) + 'px" role="img" aria-label="' + esc(o.label || (o.total + ' saker i ' + o.groups + ' lika stora grupper')) + '">' + s + '</svg>';
   }
+  function word(v) {
+    return '<div class="word"><div class="emo" aria-hidden="true">' + esc(v.emoji || '') + '</div><div class="en" lang="en">' + esc(v.en) + '</div><div class="sv">' + esc(v.sv) + '</div>' + speakBtn(v.en, 'en', 'Lyssna') + '</div>';
+  }
   function visual(v) {
     if (!v) return '';
+    if (v.type === 'word') return '<div class="vis">' + word(v) + '</div>';
     var f = { bar: bar, compareBars: compareBars, numberLine: numberLine, compareLines: compareLines, groups: groups }[v.type];
     var svg = f ? f(v) : (v.type === 'emoji' ? '<div style="font-size:48px">' + esc(v.text) + '</div>' : '');
     return '<div class="vis">' + svg + (v.caption ? '<div class="note">' + fmt(v.caption) + '</div>' : '') + '</div>';
@@ -361,6 +369,7 @@
         '<p class="note" style="margin:0">📘 ' + esc(t.title) + ' · kort ' + (idx + 1) + ' av ' + t.learn.length + '</p>' + dots +
         '<div class="card pop"><div class="row between" style="flex-wrap:nowrap"><h2 style="margin:0;flex:1">' + esc(c.title) + '</h2>' + speakBtn(c.title + '. ' + c.text + (c.visual && c.visual.caption ? '. ' + c.visual.caption : '')) + '</div>' +
         '<p class="lead">' + fmt(c.text) + '</p>' + visual(c.visual) +
+        (c.example ? '<div class="ex"><div class="row between" style="flex-wrap:nowrap"><span lang="en" class="exen">' + fmt(c.example.en) + '</span>' + speakBtn(c.example.en.replace(/\*\*/g, ''), 'en') + '</div><div class="note">' + fmt(c.example.sv) + '</div></div>' : '') +
         (c.try ? '<div class="try"><h4>Prova själv!</h4><div class="trybox"></div></div>' : '') + '</div>' +
         '<div class="row between">' +
         (idx > 0 ? '<a class="btn secondary" href="#/a/' + a.id + '/t/' + t.id + '/learn/' + (idx - 1) + '">← Bakåt</a>' : '<span></span>') +

@@ -1,0 +1,385 @@
+{
+  "id": "engelska-glosor-v47",
+  "subject": "engelska",
+  "subjectName": "Engelska",
+  "title": "Glosor: smak och mat",
+  "icon": "🍓",
+  "intro": "Hej, kadett! Rymdkocken behöver din hjälp. Veckans glosor handlar om **mat och smak**.\nLär dig 5 ord i taget och tryck på 🔊 för att höra hur orden låter.\nGlosorna ska du kunna på måndag!",
+  "topics": [
+    {
+      "id": "ord-1-5",
+      "title": "Ord 1–5",
+      "learn": [
+        {
+          "title": "Different = olika",
+          "text": "När två saker **inte** är likadana är de olika. På engelska: **different**.",
+          "visual": { "type": "word", "emoji": "🍎🍌", "en": "different", "sv": "olika" },
+          "example": { "en": "An apple and a banana are **different**.", "sv": "Ett äpple och en banan är olika." },
+          "try": {
+            "type": "single",
+            "q": "Vad betyder **different**?",
+            "options": ["olika", "likadana", "salt"],
+            "answer": 0,
+            "explain": "different = olika"
+          }
+        },
+        {
+          "title": "A piece of = en bit",
+          "text": "Vill du ha en bit av något? Då säger du **a piece of**.\nTips: **piece** stavas med **ie** i mitten.",
+          "visual": { "type": "word", "emoji": "🍰", "en": "a piece of", "sv": "en bit" },
+          "example": { "en": "Can I have **a piece of** cake?", "sv": "Kan jag få en bit tårta?" }
+        },
+        {
+          "title": "Smell good = lukta gott",
+          "text": "Nybakat bröd och pizza luktar gott. På engelska: **smell good**.",
+          "visual": { "type": "word", "emoji": "🍕👃", "en": "smell good", "sv": "lukta gott" },
+          "example": { "en": "Flowers **smell good**.", "sv": "Blommor luktar gott." },
+          "try": {
+            "type": "single",
+            "q": "Vad betyder **smell good**?",
+            "options": ["lukta gott", "smaka gott", "se bra ut"],
+            "answer": 0,
+            "explain": "smell = lukta, good = gott. smell good = lukta gott."
+          }
+        },
+        {
+          "title": "Chewy = seg",
+          "text": "Godis som du måste tugga länge är segt. På engelska: **chewy**.\nKnep: **chew** betyder tugga!",
+          "visual": { "type": "word", "emoji": "🍬", "en": "chewy", "sv": "seg" },
+          "example": { "en": "Gummy bears are **chewy**.", "sv": "Gelégodis är segt." },
+          "try": {
+            "type": "text",
+            "strict": true,
+            "q": "Skriv på engelska: **seg**",
+            "answer": ["chewy"],
+            "explain": "seg = chewy"
+          }
+        },
+        {
+          "title": "Salty = salt",
+          "text": "Chips och popcorn smakar salt. På engelska: **salty**.\nObs! När något **smakar** salt säger man **salty** – med y på slutet.",
+          "visual": { "type": "word", "emoji": "🥨🧂", "en": "salty", "sv": "salt" },
+          "example": { "en": "The chips are **salty**.", "sv": "Chipsen är salta." },
+          "try": {
+            "type": "single",
+            "q": "Vilket ord passar? The popcorn is very ___.",
+            "options": ["salty", "different", "a piece of"],
+            "answer": 0,
+            "explain": "The popcorn is very salty = Popcornen är väldigt salta."
+          }
+        }
+      ],
+      "test": [
+        {
+          "type": "single",
+          "q": "Vad betyder **chewy**?",
+          "options": ["seg", "salt", "kryddig", "söt"],
+          "answer": 0,
+          "explain": "chewy = seg"
+        },
+        {
+          "type": "single",
+          "q": "Vad heter **olika** på engelska?",
+          "options": ["different", "difficult", "chewy", "salty"],
+          "answer": 0,
+          "explain": "olika = different",
+          "wrongFeedback": { "1": "difficult betyder svår. olika = **different**." }
+        },
+        {
+          "type": "text",
+          "strict": true,
+          "q": "Skriv på engelska: **salt** (som i \"chipsen är salta\")",
+          "answer": ["salty"],
+          "explain": "När något smakar salt heter det salty.",
+          "wrongFeedback": { "salt": "salt är själva saltet i saltkaret. När något **smakar** salt heter det **salty**." },
+          "twin": { "type": "text", "strict": true, "q": "Fyll i: The crisps are very ___ . (salta)", "answer": ["salty"], "explain": "salt (smak) = salty" }
+        },
+        {
+          "type": "text",
+          "strict": true,
+          "q": "Skriv på engelska: **seg**",
+          "answer": ["chewy"],
+          "explain": "seg = chewy. Knep: chew = tugga.",
+          "wrongFeedback": { "chewey": "Nästan! Det stavas **chewy** – utan e före y.", "chevy": "Nästan! Det stavas **chewy** – med w." },
+          "twin": { "type": "text", "strict": true, "q": "Fyll i: This toffee is ___ . (seg)", "answer": ["chewy"], "explain": "seg = chewy" }
+        },
+        {
+          "type": "single",
+          "q": "Vilket ord passar? Can I have ___ cake?",
+          "options": ["a piece of", "smell good", "chewy", "different"],
+          "answer": 0,
+          "explain": "Can I have a piece of cake? = Kan jag få en bit tårta?"
+        },
+        {
+          "type": "text",
+          "strict": true,
+          "q": "Skriv på engelska: **lukta gott**",
+          "answer": ["smell good"],
+          "explain": "lukta gott = smell good",
+          "wrongFeedback": { "smells good": "Nästan! Glosan är **smell good** – utan s.", "smel good": "Nästan! **smell** stavas med två l." },
+          "twin": { "type": "text", "strict": true, "q": "Fyll i: Cookies ___ ___ . (luktar gott)", "answer": ["smell good"], "explain": "luktar gott = smell good" }
+        },
+        {
+          "type": "multi",
+          "q": "Vilka ord beskriver hur mat kan smaka eller kännas i munnen?",
+          "options": ["chewy", "salty", "different", "a piece of"],
+          "answer": [0, 1],
+          "explain": "chewy (seg) och salty (salt) beskriver mat. different = olika, a piece of = en bit."
+        },
+        {
+          "type": "text",
+          "strict": true,
+          "q": "Fyll i: The pretzel is very ___ . (salt)",
+          "answer": ["salty"],
+          "explain": "salt (smak) = salty",
+          "wrongFeedback": { "salt": "Nästan! När något **smakar** salt heter det **salty** – med y." },
+          "twin": { "type": "text", "strict": true, "q": "Skriv på engelska: **salt** (smaken)", "answer": ["salty"], "explain": "salt (smak) = salty" }
+        },
+        {
+          "type": "single",
+          "q": "Vad betyder **a piece of**?",
+          "options": ["en bit", "en tårta", "en smak", "ett land"],
+          "answer": 0,
+          "explain": "a piece of = en bit"
+        },
+        {
+          "type": "text",
+          "strict": true,
+          "q": "Skriv på engelska: **olika**",
+          "answer": ["different"],
+          "explain": "olika = different. Tänk: diff-er-ent.",
+          "wrongFeedback": { "diffrent": "Nästan! Det stavas **different** – diff-er-ent, med ett e i mitten.", "diferent": "Nästan! **different** stavas med två f.", "difrent": "Nästan! Det stavas **different** – diff-er-ent." },
+          "twin": { "type": "text", "strict": true, "q": "Fyll i: Cats and dogs are ___ . (olika)", "answer": ["different"], "explain": "olika = different" }
+        }
+      ]
+    },
+    {
+      "id": "ord-6-10",
+      "title": "Ord 6–10",
+      "learn": [
+        {
+          "title": "Spicy = kryddig",
+          "text": "Chili och tacos kan vara starka och kryddiga. På engelska: **spicy**.",
+          "visual": { "type": "word", "emoji": "🌶️", "en": "spicy", "sv": "kryddig" },
+          "example": { "en": "This taco is **spicy**!", "sv": "Den här tacon är kryddig!" },
+          "try": {
+            "type": "single",
+            "q": "Vad betyder **spicy**?",
+            "options": ["kryddig", "seg", "olika"],
+            "answer": 0,
+            "explain": "spicy = kryddig"
+          }
+        },
+        {
+          "title": "The final one = den sista",
+          "text": "När det bara finns en kvar är det den sista. På engelska: **the final one**.",
+          "visual": { "type": "word", "emoji": "🍪", "en": "the final one", "sv": "den sista" },
+          "example": { "en": "This cookie is **the final one**.", "sv": "Den här kakan är den sista." }
+        },
+        {
+          "title": "Flavour = smak",
+          "text": "Glass finns i många smaker: choklad, vanilj, jordgubb. På engelska: **flavour**.\nTips: i USA stavas det **flavor** – båda är rätt.",
+          "visual": { "type": "word", "emoji": "🍦", "en": "flavour", "sv": "smak" },
+          "example": { "en": "What **flavour** do you want?", "sv": "Vilken smak vill du ha?" },
+          "try": {
+            "type": "single",
+            "q": "Vilket ord passar? Chocolate is my favourite ice cream ___.",
+            "options": ["flavour", "country", "spicy"],
+            "answer": 0,
+            "explain": "Choklad är min favoritsmak på glass = Chocolate is my favourite ice cream flavour."
+          }
+        },
+        {
+          "title": "Strawberry = jordgubbe",
+          "text": "Röd, söt och god på sommaren! På engelska: **strawberry**.\nStavning: straw + berry. Två r i slutet!",
+          "visual": { "type": "word", "emoji": "🍓", "en": "strawberry", "sv": "jordgubbe" },
+          "example": { "en": "I love **strawberry** ice cream.", "sv": "Jag älskar jordgubbsglass." },
+          "try": {
+            "type": "text",
+            "strict": true,
+            "q": "Skriv på engelska: **jordgubbe**",
+            "answer": ["strawberry"],
+            "explain": "jordgubbe = strawberry (straw + berry)"
+          }
+        },
+        {
+          "title": "Country = land",
+          "text": "Sverige, Norge och Ukraina är länder. På engelska: **country**.\nStavning: c-o-u-n-t-r-y.",
+          "visual": { "type": "word", "emoji": "🗺️", "en": "country", "sv": "land" },
+          "example": { "en": "Sweden is a **country**.", "sv": "Sverige är ett land." },
+          "try": {
+            "type": "single",
+            "q": "Vad betyder **country**?",
+            "options": ["land", "stad", "smak"],
+            "answer": 0,
+            "explain": "country = land"
+          }
+        }
+      ],
+      "test": [
+        {
+          "type": "single",
+          "q": "Vad betyder **spicy**?",
+          "options": ["kryddig", "söt", "sur", "seg"],
+          "answer": 0,
+          "explain": "spicy = kryddig"
+        },
+        {
+          "type": "single",
+          "q": "Vad heter **land** på engelska?",
+          "options": ["country", "city", "flavour", "candy"],
+          "answer": 0,
+          "explain": "land = country",
+          "wrongFeedback": { "1": "city betyder stad. land = **country**." }
+        },
+        {
+          "type": "text",
+          "strict": true,
+          "q": "Skriv på engelska: **jordgubbe**",
+          "answer": ["strawberry"],
+          "explain": "jordgubbe = strawberry (straw + berry)",
+          "wrongFeedback": { "strawbery": "Nästan! **strawberry** har två r i slutet: straw-ber-ry.", "strawbarry": "Nästan! Det stavas **strawberry** – med e: straw-ber-ry." },
+          "twin": { "type": "text", "strict": true, "q": "Fyll i: My favourite berry is the ___ . (jordgubbe)", "answer": ["strawberry"], "explain": "jordgubbe = strawberry" }
+        },
+        {
+          "type": "text",
+          "strict": true,
+          "q": "Skriv på engelska: **smak**",
+          "answer": ["flavour", "flavor"],
+          "explain": "smak = flavour (i USA: flavor)",
+          "wrongFeedback": { "flavur": "Nästan! Det stavas **flavour** – med ou.", "flavoure": "Nästan! Det stavas **flavour** – utan e på slutet." },
+          "twin": { "type": "text", "strict": true, "q": "Fyll i: What ___ is this juice? (smak)", "answer": ["flavour", "flavor"], "explain": "smak = flavour" }
+        },
+        {
+          "type": "single",
+          "q": "Vilket ord passar? This cookie is ___. There are no more!",
+          "options": ["the final one", "a piece of", "different", "spicy"],
+          "answer": 0,
+          "explain": "the final one = den sista"
+        },
+        {
+          "type": "text",
+          "strict": true,
+          "q": "Skriv på engelska: **kryddig**",
+          "answer": ["spicy"],
+          "explain": "kryddig = spicy",
+          "wrongFeedback": { "spicey": "Nästan! Det stavas **spicy** – utan e.", "spaisy": "Nästan! Det stavas **spicy** – det låter som \"spajsi\" men skrivs s-p-i-c-y." },
+          "twin": { "type": "text", "strict": true, "q": "Fyll i: The chili is very ___ . (kryddig)", "answer": ["spicy"], "explain": "kryddig = spicy" }
+        },
+        {
+          "type": "multi",
+          "q": "Vilka ord har med mat och smak att göra?",
+          "options": ["strawberry", "spicy", "country", "the final one"],
+          "answer": [0, 1],
+          "explain": "strawberry (jordgubbe) och spicy (kryddig) handlar om mat. country = land, the final one = den sista."
+        },
+        {
+          "type": "text",
+          "strict": true,
+          "q": "Fyll i: Sweden is a ___ . (land)",
+          "answer": ["country"],
+          "explain": "land = country",
+          "wrongFeedback": { "contry": "Nästan! Det stavas **country** – med ou: c-o-u-n-t-r-y.", "cuntry": "Nästan! Det stavas **country** – c-o-u-n-t-r-y.", "land": "land finns på engelska också men betyder mark. Ett land som Sverige = **country**." },
+          "twin": { "type": "text", "strict": true, "q": "Skriv på engelska: **land** (som Sverige)", "answer": ["country"], "explain": "land = country" }
+        },
+        {
+          "type": "single",
+          "q": "Vilket ord passar? What ___ is your ice cream? Strawberry!",
+          "options": ["flavour", "country", "spicy", "chewy"],
+          "answer": 0,
+          "explain": "What flavour is your ice cream? = Vilken smak har din glass?"
+        },
+        {
+          "type": "text",
+          "strict": true,
+          "q": "Skriv på engelska: **den sista**",
+          "answer": ["the final one"],
+          "explain": "den sista = the final one",
+          "wrongFeedback": { "the last one": "Bra engelska! Men veckans glosa är **the final one**.", "final one": "Nästan! Glöm inte **the** i början: the final one.", "the finale one": "Nästan! Det stavas **final** – utan e på slutet." },
+          "twin": { "type": "text", "strict": true, "q": "Fyll i: Take it – it's ___ ___ ___ . (den sista)", "answer": ["the final one"], "explain": "den sista = the final one" }
+        }
+      ]
+    }
+  ],
+  "mixed": [
+    {
+      "type": "single",
+      "q": "Vad betyder **flavour**?",
+      "options": ["smak", "doft", "färg", "land"],
+      "answer": 0,
+      "explain": "flavour = smak"
+    },
+    {
+      "type": "text",
+      "strict": true,
+      "q": "Skriv på engelska: **en bit**",
+      "answer": ["a piece of"],
+      "explain": "en bit = a piece of",
+      "wrongFeedback": { "a peace of": "Nästan! **piece** (bit) stavas med ie. **peace** betyder fred.", "piece of": "Nästan! Glöm inte **a** i början: a piece of.", "a pice of": "Nästan! **piece** stavas med ie: p-i-e-c-e." },
+      "twin": { "type": "text", "strict": true, "q": "Fyll i: Can I have ___ ___ ___ pizza? (en bit)", "answer": ["a piece of"], "explain": "en bit = a piece of" }
+    },
+    {
+      "type": "single",
+      "q": "Vilket ord passar? Chili is very ___.",
+      "options": ["spicy", "chewy", "different", "the final one"],
+      "answer": 0,
+      "explain": "Chili is very spicy = Chili är väldigt kryddig."
+    },
+    {
+      "type": "text",
+      "strict": true,
+      "q": "Skriv på engelska: **land**",
+      "answer": ["country"],
+      "explain": "land = country",
+      "wrongFeedback": { "contry": "Nästan! Det stavas **country** – c-o-u-n-t-r-y." },
+      "twin": { "type": "text", "strict": true, "q": "Fyll i: Ukraine is a big ___ . (land)", "answer": ["country"], "explain": "land = country" }
+    },
+    {
+      "type": "multi",
+      "q": "Vilka meningar är rätt?",
+      "options": ["Flowers smell good.", "The chips are salty.", "Sweden is a flavour.", "This candy is a country."],
+      "answer": [0, 1],
+      "explain": "Blommor luktar gott och chipsen är salta – det stämmer. Sverige är ett land (country), inte en smak."
+    },
+    {
+      "type": "text",
+      "strict": true,
+      "q": "Fyll i: Gummy bears are ___ . (sega)",
+      "answer": ["chewy"],
+      "explain": "seg = chewy",
+      "twin": { "type": "text", "strict": true, "q": "Skriv på engelska: **seg**", "answer": ["chewy"], "explain": "seg = chewy" }
+    },
+    {
+      "type": "single",
+      "q": "Vad heter **den sista** på engelska?",
+      "options": ["the final one", "the first one", "a piece of", "different"],
+      "answer": 0,
+      "explain": "den sista = the final one",
+      "wrongFeedback": { "1": "the first one betyder den första." }
+    },
+    {
+      "type": "text",
+      "strict": true,
+      "q": "Skriv på engelska: **smak**",
+      "answer": ["flavour", "flavor"],
+      "explain": "smak = flavour",
+      "twin": { "type": "text", "strict": true, "q": "Skriv på engelska: **kryddig**", "answer": ["spicy"], "explain": "kryddig = spicy" }
+    },
+    {
+      "type": "single",
+      "q": "Vad betyder **smell good**?",
+      "options": ["lukta gott", "smaka gott", "se bra ut", "låta bra"],
+      "answer": 0,
+      "explain": "smell good = lukta gott"
+    },
+    {
+      "type": "text",
+      "strict": true,
+      "q": "Fyll i: My favourite ice cream is ___ . (jordgubbe)",
+      "answer": ["strawberry"],
+      "explain": "jordgubbe = strawberry",
+      "wrongFeedback": { "strawbery": "Nästan! **strawberry** har två r i slutet." },
+      "twin": { "type": "text", "strict": true, "q": "Skriv på engelska: **olika**", "answer": ["different"], "explain": "olika = different" }
+    }
+  ]
+}
