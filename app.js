@@ -36,6 +36,7 @@
   function fmt(s) {
     var h = esc(s);
     h = h.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+    h = h.replace(/\[\[~(.+?)~\]\]/g, '<s lang="en">$1</s>');
     h = h.replace(/\[\[(.+?)\]\]/g, '<span lang="en" class="enw">$1</span>');
     h = h.replace(/(^|[^\d\/])(\d{1,2})\/(\d{1,2})(?![\d\/])([?!.,:]?)/g, function (m, pre, n, d, p) { return pre + '<span class="nw">' + fracHTML(n, d) + p + '</span>'; });
     return h.replace(/\n/g, '<br>');
@@ -50,7 +51,7 @@
     return n + ' delat med ' + d;
   }
   function speechText(s) {
-    return String(s || '').replace(/\*\*/g, '').replace(/→/g, ', sedan ').replace(/(\d\s*)=/g, '$1 blir ').replace(/=/g, ', ').replace(/_{2,}/g, ', … ,').replace(/(\d{1,2})\/(\d{1,2})/g, function (m, n, d) { return fracWords(n, d); });
+    return String(s || '').replace(/\*\*/g, '').replace(/→/g, ', sedan ').replace(/(\d\s*)=/g, '$1 blir ').replace(/=\s*(?=\d)/g, ' blir ').replace(/=/g, ', ').replace(/_{2,}/g, ', … ,').replace(/(\d{1,2})\/(\d{1,2})/g, function (m, n, d) { return fracWords(n, d); });
   }
 
   // ---------- read aloud (Swedish) ----------
@@ -75,7 +76,7 @@
       var allEn = b.getAttribute('data-lang') === 'en';
       String(b.getAttribute('data-say')).split(/\[\[|\]\]/).forEach(function (seg, i) {
         var en = allEn || i % 2 === 1;
-        seg = en ? seg.replace(/\*\*/g, '').replace(/_{2,}/g, ', … ,') : speechText(seg);
+        seg = en ? seg.replace(/\*\*|~/g, '').replace(/_{2,}/g, ', … ,') : speechText(seg);
         if (!seg.replace(/[\s.,…]/g, '')) return;
         var u = new SpeechSynthesisUtterance(seg);
         u.lang = en ? 'en-GB' : 'sv-SE'; u.rate = en ? 0.85 : 0.92;
@@ -209,10 +210,11 @@
     return { status: 'no', key: v };
   }
   function sameSet(a, b) { if (a.length !== b.length) return false; var x = a.slice().sort(), y = b.slice().sort(); return x.every(function (v, i) { return v === y[i]; }); }
+  var answerLang = null; // set per assignment ("en" for glosor)
   function answerText(q) {
     if (q.type === 'single') return q.options[q.answer];
-    if (q.type === 'multi') return q.answer.map(function (i) { return q.options[i]; }).join(' och ');
-    return q.answer[0];
+    if (q.type === 'multi') return q.answer.map(function (i) { return String(q.options[i]).replace(/\.(\]\])?$/, '$1'); }).join(' och ');
+    return answerLang === 'en' ? '[[' + q.answer[0] + ']]' : q.answer[0];
   }
 
   // ---------- question rendering (shared by learn "try" and tests) ----------
@@ -301,6 +303,9 @@
   function getJSON(url) { return fetch(url, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(url); return r.json(); }); }
   function loadManifest() { return manifest ? Promise.resolve(manifest) : getJSON('content/manifest.json').then(function (m) { manifest = m; return m; }); }
   function loadAssignment(id) {
+    return loadAssignmentRaw(id).then(function (d) { answerLang = d.answerLang || null; return d; });
+  }
+  function loadAssignmentRaw(id) {
     if (cache[id]) return Promise.resolve(cache[id]);
     return loadManifest().then(function (m) {
       var a = m.assignments.filter(function (x) { return x.id === id; })[0];

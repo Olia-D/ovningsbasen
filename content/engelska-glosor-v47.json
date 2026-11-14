@@ -4,7 +4,7 @@
   "subjectName": "Engelska",
   "title": "Glosor: smak och mat",
   "icon": "🍓",
-  "intro": "Hej, kadett! Rymdkocken behöver din hjälp. Veckans glosor handlar om **mat och smak**.\nLär dig 5 ord i taget och tryck på 🔊 för att höra hur orden låter.\nGlosorna ska du kunna på måndag!",
+  "intro": "Hej, kadett! Veckans glosor handlar om **mat och smak**.\nLär dig 5 ord i taget och tryck på 🔊 för att höra hur orden låter.\nGlosorna ska du kunna på måndag!",
   "topics": [
     {
       "id": "ord-1-5",
@@ -82,7 +82,7 @@
               "se bra ut"
             ],
             "answer": 0,
-            "explain": "smell = lukta, good = gott. [[smell good]] = lukta gott."
+            "explain": "[[smell]] = lukta, [[good]] = gott. [[smell good]] = lukta gott."
           }
         },
         {
@@ -171,7 +171,7 @@
           ],
           "explain": "salt (smak) = [[salty]]",
           "wrongFeedback": {
-            "salt": "salt är själva saltet i saltkaret. När något **smakar** salt heter det **[[salty]]**."
+            "salt": "[[salt]] är själva saltet i saltkaret. När något **smakar** salt heter det **[[salty]]**."
           },
           "twin": {
             "type": "text",
@@ -264,7 +264,7 @@
           ],
           "explain": "en bit = [[a piece of]]. Knep: [[a piece of]] [[pie]] – båda har ie.",
           "wrongFeedback": {
-            "a peace of": "Nästan! **[[piece]]** (bit) stavas med ie. **[[peace]]** betyder fred.",
+            "a peace of": "Nästan! **[[piece]]** (bit) stavas med ie. [[~peace~]] betyder fred.",
             "a pice of": "Nästan! **[[piece]]** stavas med ie: [[p-i-e-c-e]].",
             "piece of": "Nästan! Glöm inte **a** i början: [[a piece of]].",
             "a piece": "Nästan! Glöm inte **of** på slutet: [[a piece of]].",
@@ -374,7 +374,7 @@
         },
         {
           "title": "[[Flavour]] = smak",
-          "text": "Glass finns i många smaker: choklad, vanilj, jordgubb. På engelska: **[[flavour]]**.\nTips: i USA skriver man [[flavor]], men vi lär oss **[[flavour]]** med **ou** – precis som på glosorna.",
+          "text": "Glass finns i många smaker: choklad, vanilj, jordgubb. På engelska: **[[flavour]]**.\nTips: i USA skriver man [[~flavor~]], men vi lär oss **[[flavour]]** med **ou** – precis som på glosorna.",
           "visual": {
             "type": "word",
             "emoji": "🍦",
@@ -394,7 +394,7 @@
               "[[spicy]]"
             ],
             "answer": 0,
-            "explain": "Choklad är min favoritsmak på glass = Chocolate is my favourite ice cream [[flavour]]."
+            "explain": "[[Chocolate is my favourite ice cream flavour.]] = Choklad är min favoritsmak på glass."
           }
         },
         {
@@ -546,7 +546,7 @@
           "wrongFeedback": {
             "spicey": "Nästan! Det stavas **[[spicy]]** – utan e.",
             "spaisy": "Nästan! Det stavas **[[spicy]]** – det låter som \"spajsi\" men skrivs [[s-p-i-c-y]].",
-            "hot": "hot betyder het/stark. Veckans glosa för kryddig är **[[spicy]]**."
+            "hot": "[[hot]] betyder het/stark. Veckans glosa för kryddig är **[[spicy]]**."
           },
           "twin": {
             "type": "text",
@@ -584,7 +584,7 @@
           "wrongFeedback": {
             "contry": "Nästan! Det stavas **[[country]]** – med ou: [[c-o-u-n-t-r-y]].",
             "cuntry": "Nästan! Det stavas **[[country]]** – [[c-o-u-n-t-r-y]].",
-            "land": "land finns på engelska också men betyder mark. Ett land som Sverige = **[[country]]**."
+            "land": "[[land]] finns på engelska också men betyder mark. Ett land som Sverige = **[[country]]**."
           },
           "twin": {
             "type": "text",
@@ -660,7 +660,7 @@
       ],
       "explain": "en bit = [[a piece of]]",
       "wrongFeedback": {
-        "a peace of": "Nästan! **[[piece]]** (bit) stavas med ie. **[[peace]]** betyder fred.",
+        "a peace of": "Nästan! **[[piece]]** (bit) stavas med ie. [[~peace~]] betyder fred.",
         "piece of": "Nästan! Glöm inte **a** i början: [[a piece of]].",
         "a pice of": "Nästan! **[[piece]]** stavas med ie: [[p-i-e-c-e]].",
         "a piece": "Nästan! Glöm inte **of** på slutet: [[a piece of]].",
@@ -699,7 +699,7 @@
       "explain": "land = [[country]]",
       "wrongFeedback": {
         "contry": "Nästan! Det stavas **[[country]]** – [[c-o-u-n-t-r-y]].",
-        "land": "land finns på engelska också men betyder mark. Ett land som Sverige = **[[country]]**."
+        "land": "[[land]] finns på engelska också men betyder mark. Ett land som Sverige = **[[country]]**."
       },
       "twin": {
         "type": "text",
@@ -814,5 +814,6 @@
         "explain": "jordgubbe = [[strawberry]] ([[straw]] + [[berry]])"
       }
     }
-  ]
+  ],
+  "answerLang": "en"
 }
