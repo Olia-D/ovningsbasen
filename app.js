@@ -496,11 +496,16 @@
   document.addEventListener('click', function (e) {
     var l = e.target.closest && e.target.closest('a[href^="#"]');
     if (!l) return;
-    if (l.classList.contains('cancel')) clearSession();
-    if (l.getAttribute('href') === location.hash) { e.preventDefault(); route(); }
+    if (l.classList.contains('cancel')) {
+      if (session && session.pos >= session.idxs.length) { e.preventDefault(); renderQuizEnd(); return; } // finished: show the result instead of throwing it away
+      clearSession();
+    }
+    if (l.getAttribute('href') === location.hash) { e.preventDefault(); schedule(); }
   });
-  window.addEventListener('popstate', function () { setTimeout(route, 0); });
-  window.addEventListener('hashchange', route);
+  var routeTimer;
+  function schedule() { clearTimeout(routeTimer); routeTimer = setTimeout(route, 0); }
+  window.addEventListener('popstate', schedule);
+  window.addEventListener('hashchange', schedule);
   renderRank();
   route();
 })();
