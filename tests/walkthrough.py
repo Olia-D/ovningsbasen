@@ -49,7 +49,7 @@ with sync_playwright() as p:
             for t in data["topics"]:
                 for i, c in enumerate(t["learn"]):
                     page.goto(f"{BASE}/#/a/{a['id']}/t/{t['id']}/learn/{i}"); page.wait_for_selector(".card h2")
-                    if page.locator(".card h2").first.inner_text().strip() != c["title"]:
+                    if page.locator(".card h2").first.inner_text().strip() != c["title"].replace("[[","").replace("]]","").replace("**",""):
                         problems.append(f"learn title mismatch {t['id']}#{i}")
                     if c.get("try"):
                         answer(page, c["try"], page.locator(".trybox"), True)

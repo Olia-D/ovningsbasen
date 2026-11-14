@@ -36,6 +36,7 @@
   function fmt(s) {
     var h = esc(s);
     h = h.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+    h = h.replace(/\[\[(.+?)\]\]/g, '<span lang="en" class="enw">$1</span>');
     h = h.replace(/(^|[^\d\/])(\d{1,2})\/(\d{1,2})(?![\d\/])([?!.,:]?)/g, function (m, pre, n, d, p) { return pre + '<span class="nw">' + fracHTML(n, d) + p + '</span>'; });
     return h.replace(/\n/g, '<br>');
   }
@@ -49,7 +50,7 @@
     return n + ' delat med ' + d;
   }
   function speechText(s) {
-    return String(s || '').replace(/\*\*/g, '').replace(/→/g, ', sedan ').replace(/=/g, ' blir ').replace(/(\d{1,2})\/(\d{1,2})/g, function (m, n, d) { return fracWords(n, d); });
+    return String(s || '').replace(/\*\*/g, '').replace(/→/g, ', sedan ').replace(/(\d\s*)=/g, '$1 blir ').replace(/=/g, ', ').replace(/_{2,}/g, ', … ,').replace(/(\d{1,2})\/(\d{1,2})/g, function (m, n, d) { return fracWords(n, d); });
   }
 
   // ---------- read aloud (Swedish) ----------
@@ -64,18 +65,23 @@
   function speakBtn(text, lang, label) {
     if (!('speechSynthesis' in window)) return '';
     var en = lang === 'en';
-    return '<button class="speak' + (label ? ' speak-lbl' : '') + '" type="button" data-say="' + esc(en ? text : speechText(text)) + '"' + (en ? ' data-lang="en"' : '') + ' aria-label="' + (en ? 'Lyssna på engelska' : 'Läs upp') + '">🔊' + (label ? ' ' + esc(label) : '') + '</button>';
+    return '<button class="speak' + (label ? ' speak-lbl' : '') + '" type="button" data-say="' + esc(text) + '"' + (en ? ' data-lang="en"' : '') + ' aria-label="' + (en ? 'Lyssna på engelska' : 'Läs upp') + '">🔊' + (label ? ' ' + esc(label) : '') + '</button>';
   }
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('[data-say]');
     if (!b) return;
     try {
       speechSynthesis.cancel();
-      var en = b.getAttribute('data-lang') === 'en';
-      var u = new SpeechSynthesisUtterance(b.getAttribute('data-say'));
-      u.lang = en ? 'en-GB' : 'sv-SE'; u.rate = en ? 0.85 : 0.92;
-      var v = en ? voices.en : voices.sv; if (v) u.voice = v;
-      speechSynthesis.speak(u);
+      var allEn = b.getAttribute('data-lang') === 'en';
+      String(b.getAttribute('data-say')).split(/\[\[|\]\]/).forEach(function (seg, i) {
+        var en = allEn || i % 2 === 1;
+        seg = en ? seg.replace(/\*\*/g, '').replace(/_{2,}/g, ', … ,') : speechText(seg);
+        if (!seg.replace(/[\s.,…]/g, '')) return;
+        var u = new SpeechSynthesisUtterance(seg);
+        u.lang = en ? 'en-GB' : 'sv-SE'; u.rate = en ? 0.85 : 0.92;
+        var v = en ? voices.en : voices.sv; if (v) u.voice = v;
+        speechSynthesis.speak(u);
+      });
     } catch (err) { /* ignore */ }
   });
 
@@ -165,7 +171,7 @@
   }
 
   // ---------- answer checking ----------
-  function norm(s) { return String(s || '').toLowerCase().replace(/\s+/g, ' ').trim().replace(/[.!?,;:]+$/, ''); }
+  function norm(s) { return String(s || '').toLowerCase().replace(/\s+/g, ' ').trim().replace(/^["'“”]+|[.!?,;:"'“”]+$/g, '').trim(); }
   function strip(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, ''); }
   function lev(a, b) {
     var m = a.length, n = b.length, d = [], i, j;
@@ -228,7 +234,7 @@
     } else if (q.input === 'fraction') {
       html += '<div class="fracin"><input inputmode="numeric" pattern="[0-9]*" aria-label="Täljare" class="fn" autocomplete="off"><div class="bar"></div><input inputmode="numeric" pattern="[0-9]*" aria-label="Nämnare" class="fd" autocomplete="off"></div>';
     } else {
-      html += '<input class="txt" ' + (q.input === 'number' ? 'inputmode="numeric"' : 'autocapitalize="off" spellcheck="false"') + ' autocomplete="off" aria-label="Skriv ditt svar" placeholder="Skriv ditt svar här">';
+      html += '<input class="txt" ' + (q.input === 'number' ? 'inputmode="numeric"' : 'autocapitalize="off" autocorrect="off" spellcheck="false"') + ' autocomplete="off" aria-label="Skriv ditt svar" placeholder="Skriv ditt svar här">';
     }
     if (q.hint) html += '<details class="note hint"><summary>Behöver du en ledtråd?</summary>' + fmt(q.hint) + '</details>';
     html += '<div class="fbwrap" aria-live="polite"></div><div class="row end"><button class="btn check" type="button" disabled>Kolla svaret</button></div>';
@@ -367,7 +373,7 @@
       var dots = '<div class="dots" aria-label="Kort ' + (idx + 1) + ' av ' + t.learn.length + '">' + t.learn.map(function (_, i) { return '<i class="' + (i <= idx ? 'on' : '') + '"></i>'; }).join('') + '</div>';
       var html = '<a class="crumb" href="#/a/' + a.id + '">← ' + esc(a.title) + '</a>' +
         '<p class="note" style="margin:0">📘 ' + esc(t.title) + ' · kort ' + (idx + 1) + ' av ' + t.learn.length + '</p>' + dots +
-        '<div class="card pop"><div class="row between" style="flex-wrap:nowrap"><h2 style="margin:0;flex:1">' + esc(c.title) + '</h2>' + speakBtn(c.title + '. ' + c.text + (c.visual && c.visual.caption ? '. ' + c.visual.caption : '')) + '</div>' +
+        '<div class="card pop"><div class="row between" style="flex-wrap:nowrap"><h2 style="margin:0;flex:1">' + fmt(c.title) + '</h2>' + speakBtn(c.title + '. ' + c.text + (c.visual && c.visual.caption ? '. ' + c.visual.caption : '')) + '</div>' +
         '<p class="lead">' + fmt(c.text) + '</p>' + visual(c.visual) +
         (c.example ? '<div class="ex"><div class="row between" style="flex-wrap:nowrap"><span lang="en" class="exen">' + fmt(c.example.en) + '</span>' + speakBtn(c.example.en.replace(/\*\*/g, ''), 'en') + '</div><div class="note">' + fmt(c.example.sv) + '</div></div>' : '') +
         (c.try ? '<div class="try"><h4>Prova själv!</h4><div class="trybox"></div></div>' : '') + '</div>' +
