@@ -11,11 +11,11 @@
  "topics": [
   {
    "id": "tallinje",
-   "title": "Tallinjen: varmare och kallare",
+   "title": "Tallinjen: upp och ner, plus och minus",
    "learn": [
     {
-     "title": "Tallinjen är en liggande termometer",
-     "text": "En termometer står upp. En tallinje ligger ner – men den fungerar likadant.\n**Varmare** = hoppa åt höger. **Kallare** = hoppa åt vänster.\nNoll är gränsen mellan plus och minus.",
+     "title": "Tallinjen visar plus och minus",
+     "text": "Tallinjen kan visa grader, våningar i en hiss eller meter över och under havsytan.\n**Mer / upp / varmare** = hoppa åt höger. **Mindre / ner / kallare** = hoppa åt vänster.\nNoll är gränsen mellan plus och minus.",
      "visual": {
       "type": "intLine",
       "min": -10,
@@ -27,7 +27,7 @@
         "label": "noll"
        }
       ],
-      "caption": "Vänster om noll: minusgrader. Höger om noll: plusgrader."
+      "caption": "Vänster om noll: minus. Höger om noll: plus."
      }
     },
     {
@@ -168,49 +168,52 @@
     {
      "type": "mission",
      "sentences": [
-      "På morgonen är det −4 grader.",
-      "Till lunch blir det 6 grader varmare.",
-      "Hur varmt är det till lunch?"
+      "En hiss står på våning 2.",
+      "Den åker ner 5 våningar till garaget.",
+      "På vilken våning är garaget?"
      ],
      "steps": [
       {
        "kind": "word",
        "sentence": 1,
        "answer": [
-        "varmare"
+        "ner"
        ],
-       "why": "**Varmare** betyder att vi hoppar åt höger."
+       "why": "**Ner** betyder att vi hoppar åt vänster.",
+       "prompt": "Tryck på ordet som visar åt vilket håll hissen åker.",
+       "wrong": "Inte det ordet. Vilket ord säger åt vilket håll hissen åker?"
       },
       {
        "kind": "numberline",
-       "start": -4,
+       "start": 2,
        "min": -10,
        "max": 10,
        "labels": {
-        "up": "Varmare",
-        "down": "Kallare"
+        "up": "Upp",
+        "down": "Ner"
        },
        "jumps": [
-        4,
-        2
+        -2,
+        -3
        ],
-       "why": "Från −4 till noll är 4 steg, sedan 2 steg till. Vi landar på 2."
+       "prompt": "Gör hoppet på tallinjen. Tips: först ner till våning 0, sedan resten.",
+       "why": "Från 2 ner till 0 är 2 våningar. Sedan 3 till. Vi landar på −3."
       },
       {
        "kind": "calc",
        "answer": [
-        "2"
+        "-3"
        ],
-       "why": "−4 + 6 = 2.",
+       "why": "2 − 5 = −3. Garaget är på våning −3.",
        "allowNeg": true,
-       "expr": "−4 + 6 = ?",
+       "expr": "2 − 5 = ?",
        "wrongFeedback": {
-        "-10": "Varmare betyder åt höger, uppåt.",
-        "10": "Börja på −4, inte på 4."
+        "3": "Titta på tallinjen – på vilken sida om noll landade du?",
+        "7": "Hissen åker **ner** – åt vänster."
        }
       }
      ],
-     "explain": "Gick du förbi noll? Då byter talet från minus till plus."
+     "explain": "Våningar under marken har minus – precis som minusgrader."
     },
     {
      "type": "mission",
@@ -331,9 +334,9 @@
     {
      "type": "mission",
      "sentences": [
-      "I Kiruna är det −8 grader.",
-      "I Malmö är det 3 grader.",
-      "Hur många grader varmare är det i Malmö?"
+      "En mås flyger 3 meter över havsytan.",
+      "En fisk simmar 8 meter under havsytan.",
+      "Hur långt är det mellan måsen och fisken?"
      ],
      "steps": [
       {
@@ -348,17 +351,18 @@
        "min": -10,
        "max": 6,
        "labels": {
-        "up": "Varmare",
-        "down": "Kallare"
+        "up": "Uppåt",
+        "down": "Nedåt"
        },
        "target": 3,
-       "targetLabel": "Malmö",
+       "targetLabel": "måsen",
        "showJumps": [
         8,
         3
        ],
-       "prompt": "Hoppa från Kiruna (−8) till Malmö (3). Gärna i två hopp: först till noll.",
-       "why": "Från −8 till 0 är 8 steg. Från 0 till 3 är 3 steg."
+       "prompt": "Havsytan är 0. Fisken är på −8, måsen på 3. Hoppa från fisken till måsen.",
+       "why": "Från −8 till 0 är 8 meter. Från 0 till 3 är 3 meter.",
+       "startWrong": "Under havsytan blir minus."
       },
       {
        "kind": "tool",
@@ -379,7 +383,7 @@
         ]
        },
        "answer": "8 + 3",
-       "why": "8 steg till noll och 3 steg till: 8 + 3.",
+       "why": "8 meter upp till havsytan och 3 meter till: 8 + 3.",
        "hint": "Titta på modellen: söker du helheten, en del eller skillnaden?"
       },
       {
@@ -387,16 +391,15 @@
        "answer": [
         "11"
        ],
-       "why": "8 + 3 = 11. Det är 11 grader varmare i Malmö.",
-       "unit": "grader",
+       "why": "8 + 3 = 11 meter.",
+       "unit": "meter",
        "wrongFeedback": {
-        "5": "8 − 3 = 5 – men vi går över nollan! Räkna stegen till noll och sedan vidare.",
-        "3": "Räkna hela vägen från −8 till 3.",
-        "8": "Det är 8 steg till noll – men sedan 3 steg till."
+        "5": "8 − 3 = 5 – men vi går över noll! Räkna till noll och sedan vidare.",
+        "3": "Räkna hela vägen från −8 till 3."
        }
       }
      ],
-     "explain": "Skillnad = hur långt det är mellan talen på tallinjen."
+     "explain": "Avståndet = hur långt det är mellan talen på tallinjen."
     }
    ]
   },
@@ -485,10 +488,11 @@
     {
      "type": "mission",
      "sentences": [
-      "Två lokförare, Omar och Sara, kör var sitt tåg: ett till Umeå (−9 °C) och ett till Malmö (5 °C)."
+      "Omar och Sara köper var sin glass.",
+      "En glass kostar 25 kr och en kostar 30 kr."
      ],
      "clues": [
-      "Sara kör till den varmaste staden."
+      "Sara köper den dyraste glassen."
      ],
      "steps": [
       {
@@ -499,22 +503,22 @@
        ],
        "cols": [
         {
-         "name": "Stad",
+         "name": "Pris",
          "options": [
-          "Umeå",
-          "Malmö"
+          "25 kr",
+          "30 kr"
          ]
         }
        ],
        "answer": [
         [
-         "Umeå"
+         "25 kr"
         ],
         [
-         "Malmö"
+         "30 kr"
         ]
        ],
-       "why": "Varmast är Malmö (5 °C) – dit kör Sara. Umeå blir kvar till Omar."
+       "why": "Dyrast är 30 kr – den köper Sara. Omar får 25 kr."
       }
      ],
      "explain": "En ledtråd räckte för hela tabellen."
@@ -608,52 +612,16 @@
     {
      "type": "mission",
      "sentences": [
-      "Tre barn bor i Kiruna, Umeå och Stockholm.",
-      "Temperaturerna där är −15 °C, −12 °C och −1 °C."
+      "Nils, Ida och Tom springer 60 meter.",
+      "Deras tider är 9 sekunder, 10 sekunder och 12 sekunder."
      ],
      "clues": [
-      "Det är kallast i Kiruna.",
-      "Det är 3 grader varmare i Umeå än i Kiruna.",
-      "Nils bor i Stockholm.",
-      "Ida bor inte i Kiruna."
+      "Tom är snabbast.",
+      "Ida är 2 sekunder snabbare än Nils."
      ],
      "steps": [
       {
        "kind": "table",
-       "label": "Städernas grader",
-       "prompt": "Först städerna: vilken temperatur har varje stad? (ledtråd 1 och 2)",
-       "rows": [
-        "Kiruna",
-        "Umeå",
-        "Stockholm"
-       ],
-       "cols": [
-        {
-         "name": "Temperatur",
-         "options": [
-          "−15 °C",
-          "−12 °C",
-          "−1 °C"
-         ]
-        }
-       ],
-       "answer": [
-        [
-         "−15 °C"
-        ],
-        [
-         "−12 °C"
-        ],
-        [
-         "−1 °C"
-        ]
-       ],
-       "why": "Kallast i Kiruna: −15. Umeå är 3 grader varmare: −12. Stockholm får −1."
-      },
-      {
-       "kind": "table",
-       "label": "Vem bor var",
-       "prompt": "Nu barnen: vem bor i vilken stad? (ledtråd 3 och 4)",
        "rows": [
         "Nils",
         "Ida",
@@ -661,29 +629,30 @@
        ],
        "cols": [
         {
-         "name": "Stad",
+         "name": "Tid",
          "options": [
-          "Kiruna",
-          "Umeå",
-          "Stockholm"
+          "9 sekunder",
+          "10 sekunder",
+          "12 sekunder"
          ]
         }
        ],
        "answer": [
         [
-         "Stockholm"
+         "12 sekunder"
         ],
         [
-         "Umeå"
+         "10 sekunder"
         ],
         [
-         "Kiruna"
+         "9 sekunder"
         ]
        ],
-       "why": "Nils: Stockholm. Ida: inte Kiruna – alltså Umeå. Tom: Kiruna."
+       "prompt": "Fyll i tabellen. Tänk efter: den snabbaste har **kortast** tid!",
+       "why": "Snabbast = kortast tid: Tom 9 sekunder. Ida är 2 sekunder snabbare än Nils: Ida 10, Nils 12."
       }
      ],
-     "explain": "Två tabeller: först städerna, sedan barnen."
+     "explain": "Snabbare betyder **färre** sekunder – se upp med det!"
     },
     {
      "type": "mission",
@@ -888,9 +857,9 @@
     {
      "type": "mission",
      "sentences": [
-      "På en flygplats står 14 plan.",
-      "Sedan landar 9 plan till.",
-      "Hur många plan står där nu?"
+      "Sam har 45 kr i spargrisen.",
+      "Han får 30 kr till på sin födelsedag.",
+      "Hur mycket pengar har Sam nu?"
      ],
      "steps": [
       {
@@ -904,30 +873,31 @@
        "model": {
         "type": "partwhole",
         "sizes": [
-         14,
-         9
+         45,
+         30
         ]
        },
        "slots": {
         "whole": "?",
-        "p0": "14",
-        "p1": "9"
+        "p0": "45",
+        "p1": "30"
        },
        "labels": {
-        "whole": "Alla plan",
-        "parts": "Stod där | Landade"
+        "whole": "Alla pengar",
+        "parts": "Hade | Fick"
        },
-       "why": "14 och 9 är delar. Alla plan tillsammans är helheten: ?"
+       "why": "45 kr och 30 kr är delar. Allt tillsammans är helheten: ?"
       },
       {
        "kind": "calc",
        "answer": [
-        "23"
+        "75"
        ],
-       "why": "14 + 9 = 23 plan.",
-       "expr": "14 + 9 = ?",
+       "why": "45 + 30 = 75 kr.",
+       "unit": "kr",
+       "expr": "45 + 30 = ?",
        "wrongFeedback": {
-        "5": "Planen landade – blir de fler eller färre? Vi söker helheten."
+        "15": "Sam **får** pengar – blir det mer eller mindre? Vi söker helheten."
        }
       }
      ],
@@ -1060,39 +1030,47 @@
     {
      "type": "mission",
      "sentences": [
-      "I en hangar finns 8 röda, 6 gröna och 11 gula plan.",
-      "Hur många plan finns det i hangaren?"
+      "En film har tre delar.",
+      "Första delen är 25 minuter, andra 40 minuter och tredje 15 minuter.",
+      "Hur lång är hela filmen?"
      ],
      "steps": [
+      {
+       "kind": "tap",
+       "answer": [
+        2
+       ]
+      },
       {
        "kind": "bar",
        "model": {
         "type": "partwhole",
         "sizes": [
-         8,
-         6,
-         11
+         25,
+         40,
+         15
         ]
        },
        "slots": {
         "whole": "?",
-        "p0": "8",
-        "p1": "6",
-        "p2": "11"
+        "p0": "25",
+        "p1": "40",
+        "p2": "15"
        },
        "labels": {
-        "whole": "Alla plan",
-        "parts": "Röda | Gröna | Gula"
+        "whole": "Hela filmen",
+        "parts": "Del 1 | Del 2 | Del 3"
        },
-       "why": "Tre delar: 8, 6 och 11. Helheten är ?",
+       "why": "Tre delar: 25, 40 och 15 minuter. Helheten är ?",
        "prompt": "Bygg modellen. Här finns tre delar!"
       },
       {
        "kind": "calc",
        "answer": [
-        "25"
+        "80"
        ],
-       "why": "8 + 6 + 11 = 25 plan."
+       "why": "25 + 40 + 15 = 80 minuter. Det är 1 timme och 20 minuter.",
+       "unit": "minuter"
       }
      ],
      "explain": "Fler delar funkar likadant: lägg ihop alla."
@@ -1402,9 +1380,9 @@
     {
      "type": "mission",
      "sentences": [
-      "I en hangar står planen i 6 rader.",
-      "Det står 4 plan i varje rad.",
-      "Hur många plan står det i hangaren?"
+      "Mira köper 6 paket med samlarkort.",
+      "I varje paket finns 8 kort.",
+      "Hur många kort får hon?"
      ],
      "steps": [
       {
@@ -1432,7 +1410,7 @@
         ]
        },
        "answer": "groups",
-       "why": "Lika många i varje grupp – då passar **lika grupper**.",
+       "why": "Lika många kort i varje paket – då passar **lika grupper**.",
        "hint": "Finns det delar och en helhet, en jämförelse, eller lika många i varje grupp?"
       },
       {
@@ -1443,26 +1421,26 @@
        },
        "slots": {
         "whole": "?",
-        "per": "4"
+        "per": "8"
        },
        "labels": {
-        "whole": "Alla plan",
-        "parts": "6 rader"
+        "whole": "Alla kort",
+        "parts": "6 paket"
        },
-       "why": "6 lika stora grupper med 4 i varje. Totalt: ?",
-       "wrong": "Läs igen: hur många är det totalt, och hur många är det i varje grupp?",
+       "why": "6 lika stora grupper med 8 i varje. Totalt: ?",
        "extra": [
         "6"
-       ]
+       ],
+       "wrong": "Läs igen: hur många är det totalt, och hur många är det i varje grupp?"
       },
       {
        "kind": "calc",
        "answer": [
-        "24"
+        "48"
        ],
-       "why": "6 × 4 = 24 plan.",
+       "why": "6 × 8 = 48 kort.",
        "wrongFeedback": {
-        "10": "Lika stora grupper: 6 rader med 4 i varje. Det är 6 × 4."
+        "14": "Lika stora grupper: 6 paket med 8 i varje. Det är 6 × 8."
        }
       }
      ],
@@ -1471,20 +1449,21 @@
     {
      "type": "mission",
      "sentences": [
-      "32 passagerare ska delas lika på 4 vagnar.",
-      "Hur många passagerare blir det i varje vagn?"
+      "Fyra kompisar har tjänat 120 kr tillsammans.",
+      "Pengarna ska delas lika mellan dem.",
+      "Hur mycket får varje kompis?"
      ],
      "steps": [
       {
        "kind": "word",
-       "sentence": 0,
+       "sentence": 1,
        "answer": [
         "delas",
         "lika"
        ],
        "why": "**Delas lika** betyder lika stora grupper.",
        "prompt": "Tryck på orden som visar att något delas i lika stora grupper.",
-       "wrong": "Inte det ordet. Vilka ord säger att alla ska få lika många?"
+       "wrong": "Inte det ordet. Vilka ord säger att alla ska få lika mycket?"
       },
       {
        "kind": "tool",
@@ -1505,7 +1484,7 @@
         ]
        },
        "answer": "groups",
-       "why": "Lika många i varje grupp – då passar **lika grupper**.",
+       "why": "Alla får lika mycket – då passar **lika grupper**.",
        "hint": "Finns det delar och en helhet, en jämförelse, eller lika många i varje grupp?"
       },
       {
@@ -1515,50 +1494,51 @@
         "n": 4
        },
        "slots": {
-        "whole": "32",
+        "whole": "120",
         "per": "?"
        },
        "labels": {
-        "whole": "Alla",
-        "parts": "4 vagnar"
+        "whole": "Alla pengar",
+        "parts": "4 kompisar"
        },
-       "why": "32 är totalt. 4 lika stora delar. Hur många i varje: ?",
-       "wrong": "Läs igen: hur många är det totalt, och hur många är det i varje grupp?",
+       "why": "120 kr är totalt. 4 lika stora delar. Hur mycket i varje: ?",
        "extra": [
         "4"
-       ]
+       ],
+       "wrong": "Läs igen: hur många är det totalt, och hur många är det i varje grupp?"
       },
       {
        "kind": "tool",
        "label": "Välj uträkning",
        "prompt": "Vilken uträkning passar modellen?",
        "options": {
-        "32 ÷ 4": [
+        "120 ÷ 4": [
          "",
-         "32 ÷ 4"
+         "120 ÷ 4"
         ],
-        "32 × 4": [
+        "120 × 4": [
          "",
-         "32 × 4"
+         "120 × 4"
         ],
-        "32 − 4": [
+        "120 − 4": [
          "",
-         "32 − 4"
+         "120 − 4"
         ]
        },
-       "answer": "32 ÷ 4",
-       "why": "32 delas i 4 lika stora grupper: 32 ÷ 4.",
+       "answer": "120 ÷ 4",
+       "why": "120 kr delas i 4 lika stora delar: 120 ÷ 4.",
        "hint": "Titta på modellen: söker du helheten, en del eller skillnaden?"
       },
       {
        "kind": "calc",
        "answer": [
-        "8"
+        "30"
        ],
-       "why": "32 ÷ 4 = 8 passagerare i varje vagn.",
+       "why": "120 ÷ 4 = 30 kr var.",
+       "unit": "kr",
        "wrongFeedback": {
-        "128": "Vi delar – varje vagn får en del av 32. Det blir mindre än 32.",
-        "28": "Dela lika: 32 delat med 4."
+        "480": "Vi delar – varje kompis får en del av 120. Det blir mindre än 120.",
+        "116": "Dela lika: 120 delat med 4."
        }
       }
      ],
@@ -1646,9 +1626,9 @@
   {
    "type": "mission",
    "sentences": [
-    "Det är −3 grader på morgonen.",
-    "På eftermiddagen är det 7 grader varmare.",
-    "Hur varmt är det på eftermiddagen?"
+    "En hiss står på våning −2 i garaget.",
+    "Den åker upp 5 våningar.",
+    "På vilken våning stannar hissen?"
    ],
    "steps": [
     {
@@ -1659,33 +1639,33 @@
     },
     {
      "kind": "numberline",
-     "start": -3,
+     "start": -2,
      "min": -10,
      "max": 10,
      "labels": {
-      "up": "Varmare",
-      "down": "Kallare"
+      "up": "Upp",
+      "down": "Ner"
      },
      "jumps": [
-      3,
-      4
+      2,
+      3
      ],
-     "why": "Från −3 till noll är 3 steg, sedan 4 till. Vi landar på 4."
+     "why": "Från −2 upp till 0 är 2 våningar, sedan 3 till. Vi landar på 3."
     },
     {
      "kind": "calc",
      "answer": [
-      "4"
+      "3"
      ],
-     "why": "−3 + 7 = 4.",
+     "why": "−2 + 5 = 3. Hissen stannar på våning 3.",
      "allowNeg": true,
      "wrongFeedback": {
-      "-10": "Varmare = åt höger.",
-      "10": "Börja på −3, inte på 3."
+      "-7": "Hissen åker **upp** – åt höger.",
+      "7": "Börja på −2, inte på 2."
      }
     }
    ],
-   "explain": "Tallinjen passade."
+   "explain": "Tallinjen passade – fast det handlade om en hiss."
   },
   {
    "type": "mission",
@@ -1811,9 +1791,9 @@
   {
    "type": "mission",
    "sentences": [
-    "Det finns 5 flygplan.",
-    "I varje plan sitter 9 passagerare.",
-    "Hur många passagerare är det totalt?"
+    "Ett paket klistermärken kostar 12 kr.",
+    "Sam köper 4 paket.",
+    "Hur mycket kostar det?"
    ],
    "steps": [
     {
@@ -1841,37 +1821,39 @@
       ]
      },
      "answer": "groups",
-     "why": "Lika många i varje grupp – då passar **lika grupper**.",
+     "why": "4 paket som kostar lika mycket – då passar **lika grupper**.",
      "hint": "Finns det delar och en helhet, en jämförelse, eller lika många i varje grupp?"
     },
     {
      "kind": "bar",
      "model": {
       "type": "groups",
-      "n": 5
+      "n": 4
      },
      "slots": {
       "whole": "?",
-      "per": "9"
+      "per": "12"
      },
      "labels": {
-      "whole": "Alla",
-      "parts": "5 plan"
+      "whole": "Kostar totalt",
+      "parts": "4 paket"
      },
-     "why": "5 lika stora grupper med 9 i varje. Totalt: ?",
-     "wrong": "Läs igen: hur många är det totalt, och hur många är det i varje grupp?",
+     "why": "4 lika stora grupper med 12 kr i varje. Totalt: ?",
      "extra": [
-      "5"
-     ]
+      "4"
+     ],
+     "wrong": "Läs igen: hur många är det totalt, och hur många är det i varje grupp?"
     },
     {
      "kind": "calc",
      "answer": [
-      "45"
+      "48"
      ],
-     "why": "5 × 9 = 45 passagerare.",
+     "why": "4 × 12 = 48 kr.",
+     "unit": "kr",
      "wrongFeedback": {
-      "14": "Lika grupper: 5 plan med 9 i varje. Det är 5 × 9."
+      "16": "Lika grupper: 4 paket för 12 kr. Det är 4 × 12.",
+      "3": "Sam köper 4 paket – vi söker totalt, inte i varje."
      }
     }
    ],
