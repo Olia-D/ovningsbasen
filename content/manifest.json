@@ -1,63 +1,64 @@
 {
-  "version": 1,
-  "subjects": [
-    {
-      "id": "matte",
-      "name": "Matte",
-      "icon": "➗"
-    },
-    {
-      "id": "no",
-      "name": "NO",
-      "icon": "🔬"
-    },
-    {
-      "id": "so",
-      "name": "SO",
-      "icon": "🗺️"
-    },
-    {
-      "id": "svenska",
-      "name": "Svenska",
-      "icon": "📖"
-    },
-    {
-      "id": "engelska",
-      "name": "Engelska",
-      "icon": "💬"
-    }
-  ],
-  "assignments": [
-    {
-      "id": "matte-problemlosning",
-      "subject": "matte",
-      "title": "Problemlösning: bygg en modell",
-      "icon": "🧰",
-      "week": "Pågående",
-      "summary": "Bygg en modell först – sedan räknar du. Tallinje, tabell och stapelmodell.",
-      "parts": 5,
-      "file": "content/matte-problemlosning.json"
-    },
-    {
-      "id": "engelska-glosor-v47",
-      "subject": "engelska",
-      "title": "Glosor: smak och mat",
-      "icon": "🍓",
-      "week": "Vecka 47",
-      "due": "måndag 16/11",
-      "summary": "10 glosor om mat och smak – lyssna, lär dig och testa stavningen.",
-      "parts": 3,
-      "file": "content/engelska-glosor-v47.json"
-    },
-    {
-      "id": "matte-brak-v47",
-      "subject": "matte",
-      "title": "Bråk",
-      "icon": "🚢",
-      "week": "Vecka 47",
-      "summary": "Del av antal, bråk på tallinjen och enklaste form.",
-      "file": "content/matte-brak-v47.json",
-      "parts": 3
-    }
-  ]
+ "version": 1,
+ "subjects": [
+  {
+   "id": "matte",
+   "name": "Matte",
+   "icon": "➗"
+  },
+  {
+   "id": "no",
+   "name": "NO",
+   "icon": "🔬"
+  },
+  {
+   "id": "so",
+   "name": "SO",
+   "icon": "🗺️"
+  },
+  {
+   "id": "svenska",
+   "name": "Svenska",
+   "icon": "📖"
+  },
+  {
+   "id": "engelska",
+   "name": "Engelska",
+   "icon": "💬"
+  }
+ ],
+ "assignments": [
+  {
+   "id": "matte-problemlosning",
+   "subject": "matte",
+   "title": "Problemlösning: bygg en modell",
+   "icon": "🧰",
+   "week": "Pågående",
+   "summary": "Bygg en modell först – sedan räknar du. Tallinje, tabell och stapelmodell.",
+   "parts": 5,
+   "file": "content/matte-problemlosning.json",
+   "kind": "missions"
+  },
+  {
+   "id": "engelska-glosor-v47",
+   "subject": "engelska",
+   "title": "Glosor: smak och mat",
+   "icon": "🍓",
+   "week": "Vecka 47",
+   "due": "måndag 16/11",
+   "summary": "10 glosor om mat och smak – lyssna, lär dig och testa stavningen.",
+   "parts": 3,
+   "file": "content/engelska-glosor-v47.json"
+  },
+  {
+   "id": "matte-brak-v47",
+   "subject": "matte",
+   "title": "Bråk",
+   "icon": "🚢",
+   "week": "Vecka 47",
+   "summary": "Del av antal, bråk på tallinjen och enklaste form.",
+   "file": "content/matte-brak-v47.json",
+   "parts": 3
+  }
+ ]
 }

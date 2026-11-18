@@ -313,7 +313,7 @@
        },
        "answer": "−40 + 55",
        "why": "Vi börjar på −40 och går 55 steg åt höger: −40 + 55.",
-       "hint": "Titta på modellen: söker du helheten, en del eller skillnaden?"
+       "hint": "Var börjar du, åt vilket håll går du, och går du förbi noll?"
       },
       {
        "kind": "calc",
@@ -351,8 +351,8 @@
        "min": -10,
        "max": 6,
        "labels": {
-        "up": "Uppåt",
-        "down": "Nedåt"
+        "up": "Upp",
+        "down": "Ner"
        },
        "target": 3,
        "targetLabel": "måsen",
@@ -361,8 +361,7 @@
         3
        ],
        "prompt": "Havsytan är 0. Fisken är på −8, måsen på 3. Hoppa från fisken till måsen.",
-       "why": "Från −8 till 0 är 8 meter. Från 0 till 3 är 3 meter.",
-       "startWrong": "Under havsytan blir minus."
+       "why": "Från −8 till 0 är 8 meter. Från 0 till 3 är 3 meter."
       },
       {
        "kind": "tool",
@@ -384,7 +383,7 @@
        },
        "answer": "8 + 3",
        "why": "8 meter upp till havsytan och 3 meter till: 8 + 3.",
-       "hint": "Titta på modellen: söker du helheten, en del eller skillnaden?"
+       "hint": "Var börjar du, åt vilket håll går du, och går du förbi noll?"
       },
       {
        "kind": "calc",
@@ -1030,7 +1029,7 @@
     {
      "type": "mission",
      "sentences": [
-      "En film har tre delar.",
+      "En film är uppdelad i tre delar.",
       "Första delen är 25 minuter, andra 40 minuter och tredje 15 minuter.",
       "Hur lång är hela filmen?"
      ],

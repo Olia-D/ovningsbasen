@@ -51,7 +51,7 @@
     return n + ' delat med ' + d;
   }
   function speechText(s) {
-    return String(s || '').replace(/\*\*/g, '').replace(/→/g, ', sedan ').replace(/(\d\s*)=/g, '$1 blir ').replace(/=\s*(?=\d)/g, ' blir ').replace(/=/g, ', ').replace(/_{2,}/g, ', … ,').replace(/(\d{1,2})\/(\d{1,2})/g, function (m, n, d) { return fracWords(n, d); });
+    return String(s || '').replace(/\*\*/g, '').replace(/−\s?(?=\d)/g, function (m, o, str) { return /\d\s*$/.test(str.slice(0, o)) ? ' minus ' : 'minus '; }).replace(/→/g, ', sedan ').replace(/(\d\s*)=/g, '$1 blir ').replace(/=\s*(?=\d)/g, ' blir ').replace(/=/g, ', ').replace(/_{2,}/g, ', … ,').replace(/(\d{1,2})\/(\d{1,2})/g, function (m, n, d) { return fracWords(n, d); });
   }
 
   // ---------- read aloud (Swedish) ----------
@@ -421,7 +421,7 @@
     box.addEventListener('click', function (e) {
       var b = e.target.closest('.toolbtn'); if (!b || finished) return;
       if (b.getAttribute('data-t') === st.answer) { fb.innerHTML = '<div class="fb ok pop"><span class="head">Bra val! 🧰</span>' + fmt(st.why || '') + '</div>'; finish(false); }
-      else { b.classList.add('miss'); fb.innerHTML = '<div class="fb near pop">' + fmt((st.wrong && st.wrong[b.getAttribute('data-t')]) || 'Hmm, prova ett annat verktyg. ' + (st.hint || '')) + '</div>'; }
+      else { b.classList.add('miss'); fb.innerHTML = '<div class="fb near pop">' + fmt((st.wrong && st.wrong[b.getAttribute('data-t')]) || (st.options ? (st.label === 'Välj uträkning' ? 'Hmm, prova en annan uträkning. ' : 'Hmm, prova en annan modell. ') : 'Hmm, prova ett annat verktyg. ') + (st.hint || '')) + '</div>'; }
     });
     return { show: function () { fb.innerHTML = '<div class="fb ok pop"><span class="head">Så här:</span>' + fmt(st.why || '') + '</div>'; finish(true); } };
   };
@@ -435,7 +435,7 @@
       if (pos != null) {
         if (mode === 'target') marks.push({ at: st.target, color: '#2a9d8f', label: st.targetLabel || 'mål' });
         marks.push({ at: jumps.length ? jumps[0].from : pos, color: '#1d6fa3', label: jumps.length ? '' : 'start' });
-        if (jumps.length) marks.push({ at: pos, color: '#e85d04', label: 'nu: ' + fmtNum(pos) });
+        if (jumps.length) marks.push({ at: pos, color: '#e85d04', label: (mode === 'target' && pos === st.target) ? '' : 'nu: ' + fmtNum(pos) });
       }
       box.querySelector('.nlwrap').innerHTML = intLineSVG({ min: st.min, max: st.max, tick: st.tick, labelEvery: st.labelEvery, marks: marks, jumps: jumps });
       box.querySelector('.undo').disabled = finished || !jumps.length;
@@ -457,6 +457,7 @@
       if (t.classList.contains('setstart')) {
         var v = normNum(box.querySelector('.nls').value);
         if (v === '' || isNaN(+v)) { fb.innerHTML = '<div class="fb near pop">Skriv ett tal, till exempel 3 eller −4. Tryck ± för minus.</div>'; return; }
+        if (+v !== st.start && st.start < 0 && +v === -st.start) { fb.innerHTML = '<div class="fb near pop">Rätt tal – men är det plus eller minus? Tryck ± för minus.</div>'; return; }
         if (+v !== st.start) { fb.innerHTML = '<div class="fb near pop">' + fmt(st.startWrong || 'Läs första meningen igen – där står var du börjar.') + '</div>'; return; }
         pos = st.start; fb.innerHTML = '<div class="fb ok pop"><span class="head">Bra start!</span>Nu gör du hoppet.</div>';
         box.querySelector('.nl-start').hidden = true; box.querySelector('.nl-ctrl').hidden = false; draw(); return;
@@ -531,7 +532,7 @@
       }
       if (d) {
         var missing = slots.filter(function (k) { return vals[k] == null; });
-        if (missing.length) { fb.innerHTML = '<div class="fb near pop">Fyll alla rutor först. Tips: det du inte vet blir **?**</div>'; return; }
+        if (missing.length) { fb.innerHTML = '<div class="fb near pop">' + fmt('Fyll alla rutor först. Tips: det du inte vet blir **?**') + '</div>'; return; }
         var wrong = slots.filter(function (k) { return String(vals[k]) !== String(st.slots[k]); });
         if (!wrong.length) { fb.innerHTML = '<div class="fb ok pop"><span class="head">Modellen stämmer! 📊</span>' + fmt(st.why || '') + '</div>'; finish(false); }
         else {
@@ -613,18 +614,24 @@
     box.querySelector('.story').addEventListener('click', function (e) { var b = e.target.closest('.sent'); if (b && ctx.onSent) ctx.onSent(+b.getAttribute('data-s')); });
     Array.prototype.forEach.call(box.querySelectorAll('.clue-ck'), function (c) { c.addEventListener('change', function () { c.closest('li').classList.toggle('used', c.checked); }); });
     var stepsOl = box.querySelector('.msteps');
-    stepsOl.innerHTML = q.steps.map(function (s, i) { return '<li data-i="' + i + '">' + esc(s.label || STEPNAME[s.kind] || 'Steg') + '</li>'; }).join('');
-    var current = null, showBtn = box.querySelector('.showme');
+    // In "choose the tool yourself" missions the step names would give the tool away, so later steps stay hidden until the tool is chosen.
+    var hideAhead = q.steps[0] && q.steps[0].kind === 'tool' && !q.steps[0].options;
+    function stepName(s, i) { return (hideAhead && i > 0 && idx < 1) ? 'Steg ' + (i + 1) : (s.label || STEPNAME[s.kind] || 'Steg'); }
+    var current = null, showBtn = box.querySelector('.showme'), stepFin = true, completed = false;
+    function guard() { box.classList.add('guard'); setTimeout(function () { box.classList.remove('guard'); }, 450); }
     function next() {
       idx++;
-      Array.prototype.forEach.call(stepsOl.children, function (li, i) { li.className = i < idx ? 'done' : i === idx ? 'now' : ''; });
+      guard();
+      stepsOl.innerHTML = q.steps.map(function (s, i) { return '<li data-i="' + i + '" class="' + (i < idx ? 'done' : i === idx ? 'now' : '') + '">' + esc(stepName(s, i)) + '</li>'; }).join('');
       if (idx >= q.steps.length) return complete();
       box.querySelector('.mprog').textContent = 'Steg ' + (idx + 1) + ' av ' + q.steps.length;
       var st = q.steps[idx], div = document.createElement('div');
       div.className = 'mstep pop'; ctx.stepBox.appendChild(div);
       if (idx > 0) { try { div.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { } }
       ctx.stepBox = div; ctx.onSent = null;
+      stepFin = false;
       var stepDone = function (helped) {
+        if (stepFin) return; stepFin = true;
         if (helped && st.kind !== 'tap') helpedAny = true;
         var b = document.createElement('div'); b.className = 'row end';
         b.innerHTML = '<button type="button" class="btn small nextstep">' + (idx + 1 < q.steps.length ? 'Nästa steg →' : 'Klart! →') + '</button>';
@@ -634,16 +641,17 @@
       };
       current = STEP[st.kind](st, ctx, stepDone);
       if (showBtn) showBtn.hidden = false;
-      if (demo) { setTimeout(function () { current.show(); }, 30); }
+      if (demo) { setTimeout(function () { if (!stepFin) current.show(); }, 30); }
     }
     function complete() {
+      if (completed) return; completed = true;
       if (showBtn) showBtn.hidden = true;
       box.querySelector('.mprog').textContent = '';
       var ms = Date.now() - t0;
       box.querySelector('.mdone').innerHTML = '<div class="fb ok pop"><span class="head">' + (demo ? 'Så löser man den! 💡' : helpedAny ? 'Uppdraget klart! 🎖️' : 'Uppdraget klart – helt själv! 🏅') + '</span>' + fmt(q.explain || '') + '</div>';
       onDone(!helpedAny, box.querySelector('.mdone'), ms);
     }
-    if (showBtn) showBtn.addEventListener('click', function () { if (current) current.show(); });
+    if (showBtn) showBtn.addEventListener('click', function () { if (current && !stepFin && !completed) current.show(); });
     next();
   }
 
@@ -687,7 +695,7 @@
       var list = m.assignments.filter(function (a) { return a.subject === subj.id; });
       var body = list.length ? list.map(function (a) {
         var st = assignmentStatus(a);
-        var prog = st.total ? '<p class="note" style="margin:6px 0 0">' + (st.done >= st.total ? '✅ Alla tester gjorda' : '🎯 ' + st.done + ' av ' + st.total + ' tester gjorda') + '</p>' : '';
+        var prog = st.total ? '<p class="note" style="margin:6px 0 0">' + (st.done >= st.total ? (a.kind === 'missions' ? '✅ Alla delar klara' : '✅ Alla tester gjorda') : '🎯 ' + st.done + ' av ' + st.total + (a.kind === 'missions' ? ' delar klara' : ' tester gjorda')) + '</p>' : '';
         return '<a class="card tile" href="#/a/' + a.id + '"><div class="mission"><div class="ico">' + (a.icon || subj.icon) + '</div><div><h3>' + esc(a.title) + '</h3>' +
           '<span class="pill">' + esc(a.week || '') + '</span> ' + (a.due ? '<span class="note">Läxa till ' + esc(a.due) + '</span>' : '') +
           '<p class="muted" style="margin:6px 0 0">' + esc(a.summary || '') + '</p>' + prog + '</div></div></a>';
@@ -732,7 +740,7 @@
         (c.try ? '<div class="try"><h4>' + (c.try.demo ? 'Titta så här! 👀' : 'Prova själv!') + '</h4><div class="trybox"></div></div>' : '') + '</div>' +
         '<div class="row between">' +
         (idx > 0 ? '<a class="btn secondary" href="#/a/' + a.id + '/t/' + t.id + '/learn/' + (idx - 1) + '">← Bakåt</a>' : '<span></span>') +
-        (last ? '<a class="btn next" href="#/a/' + a.id + '/t/' + t.id + '/test">Klar! Till testet →</a>' : '<a class="btn" href="#/a/' + a.id + '/t/' + t.id + '/learn/' + (idx + 1) + '">Nästa →</a>') +
+        (last ? '<a class="btn next" href="#/a/' + a.id + '/t/' + t.id + '/test">' + (a.kind === 'missions' ? 'Klar! Till uppdragen →' : 'Klar! Till testet →') + '</a>' : '<a class="btn" href="#/a/' + a.id + '/t/' + t.id + '/learn/' + (idx + 1) + '">Nästa →</a>') +
         '</div>';
       setView(html);
       if (c.try) {
@@ -741,7 +749,7 @@
           renderQuestion(c.try, tb, function (ok, fbw) {
             if (ok) return;
             var r = document.createElement('div'); r.className = 'row end';
-            r.innerHTML = '<button class="btn secondary small again" type="button">Försök igen</button>';
+            r.innerHTML = '<button class="btn secondary small again" type="button">' + (c.try.demo ? 'Titta igen' : 'Försök igen') + '</button>';
             fbw.parentNode.appendChild(r);
             r.querySelector('button').addEventListener('click', runTry);
           }, { autofocus: false });
