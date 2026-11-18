@@ -771,7 +771,7 @@
       var saved = onlyIdx ? null : readSession(aid, tid);
       var idxs = onlyIdx || all.map(function (_, i) { return i; });
       if (!onlyIdx && !saved && a.kind !== 'missions' && rec(a.id + '/' + tid).best != null && idxs.length > 3) idxs = idxs.slice(0, 2).concat(shuffle(idxs.slice(2)));
-      session = { t: t, a: a, tid: tid, title: tid === 'mixed' ? 'Blandat test' : t.title, all: all, idxs: idxs, pos: 0, right: 0, missed: [], retry: !!onlyIdx };
+      session = { t: t, a: a, tid: tid, title: tid === 'mixed' ? (a.mixedTitle || 'Blandat test') : t.title, all: all, idxs: idxs, pos: 0, right: 0, missed: [], retry: !!onlyIdx };
       if (saved && saved.idxs.every(function (i) { return i < all.length; })) { session.idxs = saved.idxs; session.pos = saved.pos; session.right = saved.right; session.missed = saved.missed; session.retry = saved.retry; }
       renderQuizStep();
     }).catch(showError);
