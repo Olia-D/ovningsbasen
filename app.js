@@ -337,14 +337,15 @@
 
   function barHTML(model, vals, labels, editable) {
     // vals: slot -> display string; editable: wrap slots as buttons
-    function slot(k, grow, cls) {
+    var partNames = labels.parts && labels.parts.indexOf('|') >= 0 ? labels.parts.split('|').map(function (x) { return x.trim(); }) : null;
+    function slot(k, grow, cls, name) {
       var v = vals[k], txt = v == null || v === '' ? '' : (v === '?' ? '?' : v);
-      return '<' + (editable ? 'button type="button"' : 'div') + ' class="bm-box ' + (cls || '') + (txt === '?' ? ' q' : '') + (txt === '' ? ' empty' : '') + '" data-slot="' + k + '" style="flex-grow:' + grow + '">' + (txt === '' ? (editable ? '▢' : '') : esc(txt)) + '</' + (editable ? 'button' : 'div') + '>';
+      return '<' + (editable ? 'button type="button"' : 'div') + ' class="bm-box ' + (cls || '') + (txt === '?' ? ' q' : '') + (txt === '' ? ' empty' : '') + (name ? ' named' : '') + '" data-slot="' + k + '" style="flex-grow:' + grow + '"><span class="bv">' + (txt === '' ? (editable ? '▢' : '') : esc(txt)) + '</span>' + (name ? '<span class="bn">' + esc(name) + '</span>' : '') + '</' + (editable ? 'button' : 'div') + '>';
     }
     var h = '';
     if (model.type === 'partwhole') {
       h += '<div class="bm-row"><span class="bm-lab">' + esc(labels.whole || 'Helhet') + '</span><div class="bm-bar">' + slot('whole', 1, 'whole') + '</div></div>';
-      h += '<div class="bm-row"><span class="bm-lab">' + esc(labels.parts || 'Delar') + '</span><div class="bm-bar">' + model.sizes.map(function (sz, i) { return slot('p' + i, sz, 'part p' + (i % 3)); }).join('') + '</div></div>';
+      h += '<div class="bm-row"><span class="bm-lab">' + esc(partNames ? 'Delar' : (labels.parts || 'Delar')) + '</span><div class="bm-bar">' + model.sizes.map(function (sz, i) { return slot('p' + i, sz, 'part p' + (i % 3), partNames && partNames[i]); }).join('') + '</div></div>';
     } else if (model.type === 'compare') {
       var big = model.sizes[0], small = model.sizes[1];
       h += '<div class="bm-row"><span class="bm-lab">' + esc(labels.big || 'Störst') + '</span><div class="bm-bar">' + slot('big', big, 'part p0') + '</div></div>';
@@ -405,15 +406,16 @@
     box.addEventListener('click', function (e) {
       var b = e.target.closest('.wbtn'); if (!b || finished) return;
       if (st.answer.indexOf(clean(b.textContent)) >= 0) { fb.innerHTML = '<div class="fb ok pop"><span class="head">Precis! 🎯</span>' + fmt(st.why || '') + '</div>'; finish(false); }
-      else { b.classList.add('miss'); fb.innerHTML = '<div class="fb near pop">' + fmt(st.wrong || 'Inte det ordet. Leta efter ordet som säger åt vilket håll det går.') + '</div>'; }
+      else { b.classList.add('miss'); fb.innerHTML = '<div class="fb near pop">' + fmt(st.wrong || 'Inte det ordet. Leta efter ordet som berättar vad som händer eller vad vi jämför.') + '</div>'; }
     });
     return { show: function () { fb.innerHTML = '<div class="fb ok pop"><span class="head">Så här:</span>' + fmt(st.why || '') + '</div>'; finish(true); } };
   };
   var TOOLS = { numberline: ['📏', 'Tallinje'], table: ['📋', 'Tabell'], bar: ['📊', 'Stapelmodell'] };
+  function shuffleKeys(k, mix) { return mix ? shuffle(k) : k; }
   STEP.tool = function (st, ctx, done) {
-    var box = ctx.stepBox;
-    box.innerHTML = '<p class="sprompt">' + fmt(st.prompt || 'Vilket verktyg passar för den här uppgiften?') + '</p><div class="tools">' +
-      Object.keys(TOOLS).map(function (k) { return '<button type="button" class="toolbtn" data-t="' + k + '"><span class="ti">' + TOOLS[k][0] + '</span>' + TOOLS[k][1] + '</button>'; }).join('') + '</div><div class="sfb" aria-live="polite"></div>';
+    var box = ctx.stepBox, opts = st.options || TOOLS;
+    box.innerHTML = '<p class="sprompt">' + fmt(st.prompt || 'Vilket verktyg passar för den här uppgiften?') + '</p><div class="tools' + (st.options ? ' alt' : '') + '">' +
+      shuffleKeys(Object.keys(opts), !!st.options).map(function (k) { return '<button type="button" class="toolbtn" data-t="' + esc(k) + '">' + (opts[k][0] ? '<span class="ti">' + opts[k][0] + '</span>' : '') + esc(opts[k][1]) + '</button>'; }).join('') + '</div><div class="sfb" aria-live="polite"></div>';
     var fb = box.querySelector('.sfb'), finished = false;
     function finish(helped) { finished = true; Array.prototype.forEach.call(box.querySelectorAll('.toolbtn'), function (b) { b.disabled = true; if (b.getAttribute('data-t') === st.answer) b.classList.add('hit'); }); done(helped); }
     box.addEventListener('click', function (e) {
@@ -442,7 +444,7 @@
     var startHtml = st.askStart ? '<div class="nl-start"><label>Var börjar du på tallinjen? ' + numInput('nls') + '</label> <button type="button" class="btn small setstart">Sätt start</button></div>' : '';
     box.innerHTML = '<p class="sprompt">' + fmt(st.prompt || 'Gör hoppet på tallinjen.') + '</p>' + startHtml +
       '<div class="nlwrap"></div><p class="note jlog" aria-live="polite"></p>' +
-      '<div class="nl-ctrl"' + (st.askStart ? ' hidden' : '') + '><div class="dirs"><button type="button" class="dirbtn" data-d="1">⬆ ' + esc(up) + '</button><button type="button" class="dirbtn" data-d="-1">⬇ ' + esc(down) + '</button></div>' +
+      '<div class="nl-ctrl"' + (st.askStart ? ' hidden' : '') + '><div class="dirs"><button type="button" class="dirbtn" data-d="-1">⬅ ' + esc(down) + '</button><button type="button" class="dirbtn" data-d="1">' + esc(up) + ' ➡</button></div>' +
       '<label class="jsize">Hur många steg? <input class="txt small jn" inputmode="numeric" pattern="[0-9]*" autocomplete="off"></label>' +
       '<div class="row"><button type="button" class="btn small jump">Hoppa!</button><button type="button" class="btn ghost undo">↶ Ångra</button><button type="button" class="btn small secondary nldone">Klar</button></div></div>' +
       '<div class="sfb" aria-live="polite"></div>';
@@ -466,7 +468,9 @@
         if (!(n > 0)) { fb.innerHTML = '<div class="fb near pop">Skriv hur många steg du ska hoppa.</div>'; return; }
         var to = pos + dir * n;
         if (to < st.min || to > st.max) { fb.innerHTML = '<div class="fb near pop">Det hoppet går utanför tallinjen. Kolla talet en gång till.</div>'; return; }
-        jumps.push({ from: pos, to: to }); pos = to; fb.innerHTML = ''; box.querySelector('.jn').value = ''; draw(); return;
+        jumps.push({ from: pos, to: to }); pos = to; fb.innerHTML = ''; box.querySelector('.jn').value = ''; draw();
+        if (pos === end) { fb.innerHTML = '<div class="fb ok pop"><span class="head">Snyggt hoppat! 🚀</span>' + fmt(st.why || '') + '</div>'; finish(false); }
+        return;
       }
       if (t.classList.contains('undo')) { var j = jumps.pop(); if (j) pos = j.from; fb.innerHTML = ''; draw(); return; }
       if (t.classList.contains('nldone')) {
@@ -522,7 +526,7 @@
       if (c) { sel = c.getAttribute('data-c'); Array.prototype.forEach.call(box.querySelectorAll('.chip'), function (x) { x.classList.toggle('sel', x === c); }); return; }
       if (s) {
         var k = s.getAttribute('data-slot');
-        if (sel == null) { delete vals[k]; } else vals[k] = sel;
+        if (sel == null) { delete vals[k]; } else { vals[k] = sel; sel = null; Array.prototype.forEach.call(box.querySelectorAll('.chip'), function (x) { x.classList.remove('sel'); }); }
         render(); return;
       }
       if (d) {
@@ -621,7 +625,7 @@
       if (idx > 0) { try { div.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { } }
       ctx.stepBox = div; ctx.onSent = null;
       var stepDone = function (helped) {
-        if (helped) helpedAny = true;
+        if (helped && st.kind !== 'tap') helpedAny = true;
         var b = document.createElement('div'); b.className = 'row end';
         b.innerHTML = '<button type="button" class="btn small nextstep">' + (idx + 1 < q.steps.length ? 'Nästa steg →' : 'Klart! →') + '</button>';
         div.appendChild(b);
@@ -725,7 +729,7 @@
         '<div class="card pop"><div class="row between" style="flex-wrap:nowrap"><h2 style="margin:0;flex:1">' + fmt(c.title) + '</h2>' + speakBtn(c.title + '. ' + c.text + (c.visual && c.visual.caption ? '. ' + c.visual.caption : '')) + '</div>' +
         '<p class="lead">' + fmt(c.text) + '</p>' + visual(c.visual) +
         (c.example ? '<div class="ex"><div class="row between" style="flex-wrap:nowrap"><span lang="en" class="exen">' + fmt(c.example.en) + '</span>' + speakBtn(c.example.en.replace(/\*\*/g, ''), 'en') + '</div><div class="note">' + fmt(c.example.sv) + '</div></div>' : '') +
-        (c.try ? '<div class="try"><h4>Prova själv!</h4><div class="trybox"></div></div>' : '') + '</div>' +
+        (c.try ? '<div class="try"><h4>' + (c.try.demo ? 'Titta så här! 👀' : 'Prova själv!') + '</h4><div class="trybox"></div></div>' : '') + '</div>' +
         '<div class="row between">' +
         (idx > 0 ? '<a class="btn secondary" href="#/a/' + a.id + '/t/' + t.id + '/learn/' + (idx - 1) + '">← Bakåt</a>' : '<span></span>') +
         (last ? '<a class="btn next" href="#/a/' + a.id + '/t/' + t.id + '/test">Klar! Till testet →</a>' : '<a class="btn" href="#/a/' + a.id + '/t/' + t.id + '/learn/' + (idx + 1) + '">Nästa →</a>') +

@@ -7,7 +7,7 @@
  "icon": "🧰",
  "intro": "Hej, kadett! Proffs räknar inte direkt. De **bygger en modell** först – sedan är uträkningen lätt.\nTa en del i taget, gärna en per dag.\nKör du fast? Tryck på 💡 **Visa mig** – det är helt okej.",
  "mixedTitle": "Välj verktyg själv",
- "mixedIntro": "Nu väljer du själv: tallinje, tabell eller stapelmodell. Gör det en annan dag än delarna.",
+ "mixedIntro": "Nu väljer du själv: tallinje, tabell eller stapelmodell. Efter varje uppdrag: rita samma modell snabbt i häftet. Gör det en annan dag än delarna.",
  "topics": [
   {
    "id": "tallinje",
@@ -96,9 +96,10 @@
          "down": "Kallare"
         },
         "jumps": [
-         -5
+         -3,
+         -2
         ],
-        "why": "Från 3 hoppar vi 5 steg åt vänster. Vi går förbi noll och landar på −2."
+        "why": "Från 3 hoppar vi 3 steg till noll. Sedan 2 steg till. Vi landar på −2."
        },
        {
         "kind": "calc",
@@ -112,13 +113,17 @@
       ],
       "explain": "Först förstå frågan, sedan bygga modellen, sist räkna."
      }
+    },
+    {
+     "title": "På provet: rita själv ✏️",
+     "text": "Rita en linje. Sätt ut **0**, var du börjar och dina hopp – först till noll, sedan resten.\nRäkna sedan. Det tar 10 sekunder och gör uppgiften mycket lättare."
     }
    ],
    "test": [
     {
      "type": "mission",
      "sentences": [
-      "Det är 2 grader.",
+      "Det är 2 grader varmt.",
       "Det blir 3 grader kallare.",
       "Hur många grader blir det?"
      ],
@@ -139,9 +144,10 @@
         "down": "Kallare"
        },
        "jumps": [
-        -3
+        -2,
+        -1
        ],
-       "why": "Från 2 hoppar vi 3 steg åt vänster och landar på −1."
+       "why": "Från 2 hoppar vi 2 steg till noll, sedan 1 steg till. Vi landar på −1."
       },
       {
        "kind": "calc",
@@ -185,7 +191,8 @@
         "down": "Kallare"
        },
        "jumps": [
-        6
+        4,
+        2
        ],
        "why": "Från −4 till noll är 4 steg, sedan 2 steg till. Vi landar på 2."
       },
@@ -208,7 +215,7 @@
     {
      "type": "mission",
      "sentences": [
-      "I Kiruna är det −6 grader på morgonen.",
+      "Klockan 7 är det −6 grader i Kiruna.",
       "Mitt på dagen stiger temperaturen med 4 grader.",
       "Vilken temperatur är det mitt på dagen?"
      ],
@@ -234,7 +241,8 @@
         4
        ],
        "askStart": true,
-       "why": "Start på −6, sedan 4 steg åt höger. Vi landar på −2."
+       "why": "Start på −6, sedan 4 steg åt höger. Vi landar på −2.",
+       "startWrong": "7 är klockslaget – vilken temperatur är det?"
       },
       {
        "kind": "calc",
@@ -249,13 +257,13 @@
        }
       }
      ],
-     "explain": "Du hittade själv var du skulle börja."
+     "explain": "Var du börjar står i första meningen."
     },
     {
      "type": "mission",
      "sentences": [
       "En frysbox i ett labb håller −40 grader.",
-      "Den värms upp 55 grader.",
+      "Den värms upp med 55 grader.",
       "Vilken temperatur får den?"
      ],
      "steps": [
@@ -275,10 +283,34 @@
         "down": "Kallare"
        },
        "jumps": [
-        55
+        40,
+        15
        ],
        "prompt": "Gör hoppet på tallinjen. Tips: hoppa först till noll, sedan resten.",
-       "why": "Från −40 till noll är 40 steg. Kvar av 55 är 15. Vi landar på 15."
+       "why": "Från −40 till noll är 40 steg. Kvar av 55 är 15. Vi landar på 15.",
+       "tick": 5
+      },
+      {
+       "kind": "tool",
+       "label": "Välj uträkning",
+       "prompt": "Vilken uträkning passar modellen?",
+       "options": {
+        "−40 + 55": [
+         "",
+         "−40 + 55"
+        ],
+        "40 + 55": [
+         "",
+         "40 + 55"
+        ],
+        "55 − 40 − 40": [
+         "",
+         "55 − 40 − 40"
+        ]
+       },
+       "answer": "−40 + 55",
+       "why": "Vi börjar på −40 och går 55 steg åt höger: −40 + 55.",
+       "hint": "Titta på modellen: söker du helheten, en del eller skillnaden?"
       },
       {
        "kind": "calc",
@@ -329,6 +361,28 @@
        "why": "Från −8 till 0 är 8 steg. Från 0 till 3 är 3 steg."
       },
       {
+       "kind": "tool",
+       "label": "Välj uträkning",
+       "prompt": "Vilken uträkning passar modellen?",
+       "options": {
+        "8 + 3": [
+         "",
+         "8 + 3"
+        ],
+        "8 − 3": [
+         "",
+         "8 − 3"
+        ],
+        "−8 − 3": [
+         "",
+         "−8 − 3"
+        ]
+       },
+       "answer": "8 + 3",
+       "why": "8 steg till noll och 3 steg till: 8 + 3.",
+       "hint": "Titta på modellen: söker du helheten, en del eller skillnaden?"
+      },
+      {
        "kind": "calc",
        "answer": [
         "11"
@@ -352,7 +406,7 @@
    "learn": [
     {
      "title": "Gör en tabell",
-     "text": "Ledtrådspussel blir lätta med en **tabell**.\nNamnen åt ena hållet, det du letar efter åt andra.\nLäs en ledtråd i taget och bocka av den när du har använt den.",
+     "text": "Ledtrådspussel blir lätta med en **tabell**.\nNamnen åt ena hållet, det du letar efter åt det andra.\nLäs en ledtråd i taget och bocka av den när du har använt den.",
      "visual": {
       "type": "table",
       "rows": [
@@ -377,7 +431,7 @@
     },
     {
      "title": "Börja med det säkra",
-     "text": "Leta efter ledtråden som säger något **säkert**, till exempel *den kallaste staden* eller *Noah seglar till Luleå*.\nFyll i den först. Sedan blir resten lättare.\nOrden **inte** och **varken … eller** betyder att något är fel – det hjälper också!"
+     "text": "Leta efter ledtråden som säger något **säkert**, till exempel *den kallaste staden* eller *Noah seglar till Luleå*.\nFyll i den först. Sedan blir resten lättare.\nOrden **inte** och **varken … eller** berättar vad som *inte* stämmer – det hjälper också!"
     },
     {
      "title": "Så gör proffsen",
@@ -386,7 +440,7 @@
       "type": "mission",
       "demo": true,
       "sentences": [
-       "Två piloter, Ali och Bea, landar i Luleå (−7 °C) och Göteborg (4 °C)."
+       "Två piloter, Ali och Bea, landar i var sin stad: Luleå (−7 °C) och Göteborg (4 °C)."
       ],
       "clues": [
        "Ali landar i den kallaste staden.",
@@ -421,13 +475,17 @@
       ],
       "explain": "Ett säkert svar först, sedan resten."
      }
+    },
+    {
+     "title": "På provet: rita själv ✏️",
+     "text": "Rita en tabell: namnen nedåt, det du letar efter åt sidan.\nSkriv in en ledtråd i taget och stryk den när du har använt den."
     }
    ],
    "test": [
     {
      "type": "mission",
      "sentences": [
-      "Två lokförare, Omar och Sara, kör tåg till Umeå (−9 °C) och Malmö (5 °C)."
+      "Två lokförare, Omar och Sara, kör var sitt tåg: ett till Umeå (−9 °C) och ett till Malmö (5 °C)."
      ],
      "clues": [
       "Sara kör till den varmaste staden."
@@ -464,7 +522,7 @@
     {
      "type": "mission",
      "sentences": [
-      "Tre kaptener seglar till Visby, Kalmar och Luleå."
+      "Tre kaptener, Elin, Noah och Adam, seglar till Visby, Kalmar och Luleå."
      ],
      "clues": [
       "Noah seglar till Luleå.",
@@ -507,7 +565,7 @@
     {
      "type": "mission",
      "sentences": [
-      "Tre piloter flyger var sitt plan: ett rött, ett blått och ett gult."
+      "Tre piloter, Mira, Leo och Ali, flyger var sitt plan: ett rött, ett blått och ett gult."
      ],
      "clues": [
       "Leo flyger det röda planet.",
@@ -556,12 +614,46 @@
      "clues": [
       "Det är kallast i Kiruna.",
       "Det är 3 grader varmare i Umeå än i Kiruna.",
-      "Nils bor i huvudstaden.",
+      "Nils bor i Stockholm.",
       "Ida bor inte i Kiruna."
      ],
      "steps": [
       {
        "kind": "table",
+       "label": "Städernas grader",
+       "prompt": "Först städerna: vilken temperatur har varje stad? (ledtråd 1 och 2)",
+       "rows": [
+        "Kiruna",
+        "Umeå",
+        "Stockholm"
+       ],
+       "cols": [
+        {
+         "name": "Temperatur",
+         "options": [
+          "−15 °C",
+          "−12 °C",
+          "−1 °C"
+         ]
+        }
+       ],
+       "answer": [
+        [
+         "−15 °C"
+        ],
+        [
+         "−12 °C"
+        ],
+        [
+         "−1 °C"
+        ]
+       ],
+       "why": "Kallast i Kiruna: −15. Umeå är 3 grader varmare: −12. Stockholm får −1."
+      },
+      {
+       "kind": "table",
+       "label": "Vem bor var",
+       "prompt": "Nu barnen: vem bor i vilken stad? (ledtråd 3 och 4)",
        "rows": [
         "Nils",
         "Ida",
@@ -575,34 +667,23 @@
           "Umeå",
           "Stockholm"
          ]
-        },
-        {
-         "name": "Temperatur",
-         "options": [
-          "−15 °C",
-          "−12 °C",
-          "−1 °C"
-         ]
         }
        ],
        "answer": [
         [
-         "Stockholm",
-         "−1 °C"
+         "Stockholm"
         ],
         [
-         "Umeå",
-         "−12 °C"
+         "Umeå"
         ],
         [
-         "Kiruna",
-         "−15 °C"
+         "Kiruna"
         ]
        ],
-       "why": "Kiruna är kallast: −15. Umeå är 3 grader varmare: −12. Stockholm (huvudstaden) får −1. Nils: Stockholm. Ida: inte Kiruna – alltså Umeå. Tom: Kiruna."
+       "why": "Nils: Stockholm. Ida: inte Kiruna – alltså Umeå. Tom: Kiruna."
       }
      ],
-     "explain": "**Huvudstaden** i Sverige är Stockholm."
+     "explain": "Två tabeller: först städerna, sedan barnen."
     },
     {
      "type": "mission",
@@ -611,7 +692,8 @@
       "Temperaturerna där är 2 °C, −1 °C, −12 °C och −18 °C."
      ],
      "clues": [
-      "Det är kallast i Kiruna och varmast i Malmö.",
+      "Det är kallast i Kiruna.",
+      "Det är varmast i Malmö.",
       "I Karlstad är det 11 grader kallare än i Stockholm.",
       "Leo bor i den kallaste staden.",
       "Lasse bor i Stockholm.",
@@ -620,22 +702,15 @@
      "steps": [
       {
        "kind": "table",
+       "label": "Städernas grader",
+       "prompt": "Först städerna: vilken temperatur har varje stad? (ledtråd 1–3)",
        "rows": [
-        "Leo",
-        "Kari",
-        "Lasse",
-        "Alex"
+        "Kiruna",
+        "Karlstad",
+        "Stockholm",
+        "Malmö"
        ],
        "cols": [
-        {
-         "name": "Stad",
-         "options": [
-          "Kiruna",
-          "Karlstad",
-          "Stockholm",
-          "Malmö"
-         ]
-        },
         {
          "name": "Temperatur",
          "options": [
@@ -648,24 +723,56 @@
        ],
        "answer": [
         [
-         "Kiruna",
          "−18 °C"
         ],
         [
-         "Karlstad",
          "−12 °C"
         ],
         [
-         "Stockholm",
          "−1 °C"
         ],
         [
-         "Malmö",
          "2 °C"
         ]
        ],
-       "why": "Kiruna −18 och Malmö 2. Stockholm −1 och Karlstad −12 (11 grader kallare). Leo: Kiruna. Lasse: Stockholm. Alex: varmare än Lasse – Malmö. Kari: Karlstad.",
-       "prompt": "Fyll i tabellen. Börja med temperaturerna för städerna, sedan namnen. Bocka av ledtrådarna."
+       "why": "Kiruna −18 och Malmö 2. Kvar: −1 och −12. Karlstad är 11 grader kallare än Stockholm: Stockholm −1, Karlstad −12."
+      },
+      {
+       "kind": "table",
+       "label": "Vem bor var",
+       "prompt": "Nu barnen: vem bor i vilken stad? (ledtråd 4–6)",
+       "rows": [
+        "Leo",
+        "Klara",
+        "Lasse",
+        "Alex"
+       ],
+       "cols": [
+        {
+         "name": "Stad",
+         "options": [
+          "Kiruna",
+          "Karlstad",
+          "Stockholm",
+          "Malmö"
+         ]
+        }
+       ],
+       "answer": [
+        [
+         "Kiruna"
+        ],
+        [
+         "Karlstad"
+        ],
+        [
+         "Stockholm"
+        ],
+        [
+         "Malmö"
+        ]
+       ],
+       "why": "Leo: Kiruna. Lasse: Stockholm (−1). Alex bor varmare än −1 – alltså Malmö. Klara: Karlstad."
       }
      ],
      "explain": "Svårt pussel – du tog det en ledtråd i taget!"
@@ -771,6 +878,10 @@
       ],
       "explain": "Vi sökte en del – då blev det minus."
      }
+    },
+    {
+     "title": "På provet: rita själv ✏️",
+     "text": "Rita en lång stapel för helheten och dela den i delar under.\nSkriv talen du vet och **?** där svaret ska stå. Sedan räknar du."
     }
    ],
    "test": [
@@ -778,7 +889,7 @@
      "type": "mission",
      "sentences": [
       "På en flygplats står 14 plan.",
-      "9 plan till landar.",
+      "Sedan landar 9 plan till.",
       "Hur många plan står där nu?"
      ],
      "steps": [
@@ -836,7 +947,9 @@
        "answer": [
         "kvar"
        ],
-       "why": "**Kvar** betyder det som finns kvar när några har tagits bort."
+       "why": "**Kvar** betyder det som finns kvar när några har tagits bort.",
+       "prompt": "Tryck på ordet som visar vad frågan söker.",
+       "wrong": "Inte det ordet. Vilket ord berättar om det som inte har lastats av?"
       },
       {
        "kind": "bar",
@@ -876,7 +989,7 @@
      "type": "mission",
      "sentences": [
       "Steve bygger ett torn av 45 block.",
-      "Han har redan lagt 27 block.",
+      "Han har redan lagt 27 block på 10 minuter.",
       "Hur många block till behöver han?"
      ],
      "steps": [
@@ -904,7 +1017,32 @@
         "whole": "Hela tornet",
         "parts": "Lagda | Behövs"
        },
-       "why": "Hela tornet (45) är helheten. 27 är redan lagda. Det som behövs är den andra delen."
+       "why": "Hela tornet (45) är helheten. 27 är redan lagda. Det som behövs är den andra delen.",
+       "extra": [
+        "10"
+       ]
+      },
+      {
+       "kind": "tool",
+       "label": "Välj uträkning",
+       "prompt": "Vilken uträkning passar modellen?",
+       "options": {
+        "45 − 27": [
+         "",
+         "45 − 27"
+        ],
+        "45 + 27": [
+         "",
+         "45 + 27"
+        ],
+        "27 − 10": [
+         "",
+         "27 − 10"
+        ]
+       },
+       "answer": "45 − 27",
+       "why": "Vi söker en del: helheten minus delen vi vet.",
+       "hint": "Titta på modellen: söker du helheten, en del eller skillnaden?"
       },
       {
        "kind": "calc",
@@ -917,7 +1055,7 @@
        }
       }
      ],
-     "explain": "Ordet **till** betyder: hur många fler behövs."
+     "explain": "Hela tornet är helheten. Det som behövs är en del."
     },
     {
      "type": "mission",
@@ -964,7 +1102,7 @@
      "sentences": [
       "I Uppsala stiger 15 nya passagerare på tåget.",
       "Nu finns det 52 passagerare på tåget.",
-      "Hur många passagerare fanns det på tåget innan Uppsala?"
+      "Hur många passagerare fanns det på tåget innan det kom till Uppsala?"
      ],
      "steps": [
       {
@@ -989,9 +1127,31 @@
        },
        "labels": {
         "whole": "Alla nu",
-        "parts": "Innan | Nya"
+        "parts": "Fanns innan | Nya"
        },
        "why": "52 är alla passagerare nu – helheten. 15 är de nya. De som fanns innan är den andra delen."
+      },
+      {
+       "kind": "tool",
+       "label": "Välj uträkning",
+       "prompt": "Vilken uträkning passar modellen?",
+       "options": {
+        "52 − 15": [
+         "",
+         "52 − 15"
+        ],
+        "52 + 15": [
+         "",
+         "52 + 15"
+        ],
+        "15 − 52": [
+         "",
+         "15 − 52"
+        ]
+       },
+       "answer": "52 − 15",
+       "why": "Vi söker en del: helheten minus delen vi vet.",
+       "hint": "Titta på modellen: söker du helheten, en del eller skillnaden?"
       },
       {
        "kind": "calc",
@@ -1070,7 +1230,9 @@
         "answer": [
          "fler"
         ],
-        "why": "**Fler** betyder att vi jämför – vi söker skillnaden."
+        "why": "**Fler** betyder att vi jämför två tåg.",
+        "prompt": "Tryck på ordet som visar att vi jämför.",
+        "wrong": "Inte det ordet. Leta efter ett jämförelseord, till exempel *fler*, *djupare* eller *kortare*."
        },
        {
         "kind": "bar",
@@ -1090,7 +1252,8 @@
          "big": "Tåg A",
          "small": "Tåg B"
         },
-        "why": "Den långa stapeln är tåg A. Skillnaden är biten som A har extra."
+        "why": "Den långa stapeln är tåg A. Skillnaden är biten som A har extra.",
+        "wrong": "Läs igen: vem har mest? Det är den långa stapeln. Skillnaden står i den streckade rutan."
        },
        {
         "kind": "calc",
@@ -1103,13 +1266,17 @@
       ],
       "explain": "Jämföra = hitta skillnaden."
      }
+    },
+    {
+     "title": "På provet: rita själv ✏️",
+     "text": "Jämföra: rita två staplar under varandra och markera skillnaden.\nLika grupper: rita lika stora rutor och skriv hur många det är i en ruta."
     }
    ],
    "test": [
     {
      "type": "mission",
      "sentences": [
-      "Ubåten Haj dyker 35 meter.",
+      "Ubåten Haj dyker 35 meter med 12 personer ombord.",
       "Ubåten Val dyker 52 meter.",
       "Hur mycket djupare dyker Val?"
      ],
@@ -1120,7 +1287,9 @@
        "answer": [
         "djupare"
        ],
-       "why": "**Djupare** är ett jämförelseord – vi söker skillnaden."
+       "why": "**Djupare** är ett jämförelseord – vi söker skillnaden.",
+       "prompt": "Tryck på ordet som visar att vi jämför.",
+       "wrong": "Inte det ordet. Leta efter ett jämförelseord, till exempel *fler*, *djupare* eller *kortare*."
       },
       {
        "kind": "bar",
@@ -1140,7 +1309,11 @@
         "big": "Val",
         "small": "Haj"
        },
-       "why": "Val dyker längst – den långa stapeln. Skillnaden är ?"
+       "why": "Val dyker djupast – den långa stapeln. Skillnaden är ?",
+       "wrong": "Läs igen: vem har mest? Det är den långa stapeln. Skillnaden står i den streckade rutan.",
+       "extra": [
+        "12"
+       ]
       },
       {
        "kind": "calc",
@@ -1154,7 +1327,7 @@
        }
       }
      ],
-     "explain": "Jämförelseord betyder: hitta skillnaden."
+     "explain": "Jämförelseord betyder: rita två staplar. Frågan säger vilken bit som saknas."
     },
     {
      "type": "mission",
@@ -1188,7 +1361,30 @@
         "big": "Blå",
         "small": "Röd"
        },
-       "why": "Blå har **mer** – Blå är den långa stapeln. Den är Röds 25 plus 15 extra."
+       "why": "Blå har **mer** – Blå är den långa stapeln. Den är Röds 25 plus 15 extra.",
+       "wrong": "Läs igen: vem har mest? Det är den långa stapeln. Skillnaden står i den streckade rutan."
+      },
+      {
+       "kind": "tool",
+       "label": "Välj uträkning",
+       "prompt": "Vilken uträkning passar modellen?",
+       "options": {
+        "25 + 15": [
+         "",
+         "25 + 15"
+        ],
+        "25 − 15": [
+         "",
+         "25 − 15"
+        ],
+        "15 − 25": [
+         "",
+         "15 − 25"
+        ]
+       },
+       "answer": "25 + 15",
+       "why": "Blå är den långa stapeln: Röds 25 plus 15 extra.",
+       "hint": "Titta på modellen: söker du helheten, en del eller skillnaden?"
       },
       {
        "kind": "calc",
@@ -1218,6 +1414,28 @@
        ]
       },
       {
+       "kind": "tool",
+       "label": "Välj modell",
+       "prompt": "Vilken sorts stapelmodell passar?",
+       "options": {
+        "partwhole": [
+         "🧩",
+         "Delar och helhet"
+        ],
+        "compare": [
+         "⚖️",
+         "Jämföra"
+        ],
+        "groups": [
+         "🟦",
+         "Lika grupper"
+        ]
+       },
+       "answer": "groups",
+       "why": "Lika många i varje grupp – då passar **lika grupper**.",
+       "hint": "Finns det delar och en helhet, en jämförelse, eller lika många i varje grupp?"
+      },
+      {
        "kind": "bar",
        "model": {
         "type": "groups",
@@ -1231,7 +1449,11 @@
         "whole": "Alla plan",
         "parts": "6 rader"
        },
-       "why": "6 lika stora grupper med 4 i varje. Totalt: ?"
+       "why": "6 lika stora grupper med 4 i varje. Totalt: ?",
+       "wrong": "Läs igen: hur många är det totalt, och hur många är det i varje grupp?",
+       "extra": [
+        "6"
+       ]
       },
       {
        "kind": "calc",
@@ -1244,12 +1466,12 @@
        }
       }
      ],
-     "explain": "Lika grupper och totalt söks = gånger."
+     "explain": "Lika stora grupper och du söker totalt = gånger (×)."
     },
     {
      "type": "mission",
      "sentences": [
-      "32 passagerare ska dela lika på 4 vagnar.",
+      "32 passagerare ska delas lika på 4 vagnar.",
       "Hur många passagerare blir det i varje vagn?"
      ],
      "steps": [
@@ -1257,10 +1479,34 @@
        "kind": "word",
        "sentence": 0,
        "answer": [
-        "dela",
+        "delas",
         "lika"
        ],
-       "why": "**Dela lika** betyder lika stora grupper."
+       "why": "**Delas lika** betyder lika stora grupper.",
+       "prompt": "Tryck på orden som visar att något delas i lika stora grupper.",
+       "wrong": "Inte det ordet. Vilka ord säger att alla ska få lika många?"
+      },
+      {
+       "kind": "tool",
+       "label": "Välj modell",
+       "prompt": "Vilken sorts stapelmodell passar?",
+       "options": {
+        "partwhole": [
+         "🧩",
+         "Delar och helhet"
+        ],
+        "compare": [
+         "⚖️",
+         "Jämföra"
+        ],
+        "groups": [
+         "🟦",
+         "Lika grupper"
+        ]
+       },
+       "answer": "groups",
+       "why": "Lika många i varje grupp – då passar **lika grupper**.",
+       "hint": "Finns det delar och en helhet, en jämförelse, eller lika många i varje grupp?"
       },
       {
        "kind": "bar",
@@ -1276,7 +1522,33 @@
         "whole": "Alla",
         "parts": "4 vagnar"
        },
-       "why": "32 är totalt. 4 lika stora delar. Hur många i varje: ?"
+       "why": "32 är totalt. 4 lika stora delar. Hur många i varje: ?",
+       "wrong": "Läs igen: hur många är det totalt, och hur många är det i varje grupp?",
+       "extra": [
+        "4"
+       ]
+      },
+      {
+       "kind": "tool",
+       "label": "Välj uträkning",
+       "prompt": "Vilken uträkning passar modellen?",
+       "options": {
+        "32 ÷ 4": [
+         "",
+         "32 ÷ 4"
+        ],
+        "32 × 4": [
+         "",
+         "32 × 4"
+        ],
+        "32 − 4": [
+         "",
+         "32 − 4"
+        ]
+       },
+       "answer": "32 ÷ 4",
+       "why": "32 delas i 4 lika stora grupper: 32 ÷ 4.",
+       "hint": "Titta på modellen: söker du helheten, en del eller skillnaden?"
       },
       {
        "kind": "calc",
@@ -1290,14 +1562,14 @@
        }
       }
      ],
-     "explain": "Lika grupper och en grupp söks = dela."
+     "explain": "Lika stora grupper och du söker en grupp = dela (÷)."
     },
     {
      "type": "mission",
      "sentences": [
-      "Ett snabbtåg kör 200 km på en dag.",
-      "Ett godståg kör 80 km kortare.",
-      "Hur långt kör godståget?"
+      "Ett snabbtåg kör 200 km på en timme.",
+      "Ett godståg kör 80 km kortare än snabbtåget på en timme.",
+      "Hur långt kör godståget på en timme?"
      ],
      "steps": [
       {
@@ -1306,7 +1578,31 @@
        "answer": [
         "kortare"
        ],
-       "why": "**Kortare** är ett jämförelseord – godståget kör mindre."
+       "why": "**Kortare** är ett jämförelseord – godståget kör mindre.",
+       "prompt": "Tryck på ordet som visar att vi jämför.",
+       "wrong": "Inte det ordet. Leta efter ett jämförelseord, till exempel *fler*, *djupare* eller *kortare*."
+      },
+      {
+       "kind": "tool",
+       "label": "Välj modell",
+       "prompt": "Vilken sorts stapelmodell passar?",
+       "options": {
+        "partwhole": [
+         "🧩",
+         "Delar och helhet"
+        ],
+        "compare": [
+         "⚖️",
+         "Jämföra"
+        ],
+        "groups": [
+         "🟦",
+         "Lika grupper"
+        ]
+       },
+       "answer": "compare",
+       "why": "Två saker jämförs – då passar **jämföra**: två staplar.",
+       "hint": "Finns det delar och en helhet, en jämförelse, eller lika många i varje grupp?"
       },
       {
        "kind": "bar",
@@ -1326,7 +1622,8 @@
         "big": "Snabbtåg",
         "small": "Godståg"
        },
-       "why": "Snabbtåget är den långa stapeln. Godståget är 80 km kortare."
+       "why": "Snabbtåget är den långa stapeln. Godståget är 80 km kortare.",
+       "wrong": "Läs igen: vem har mest? Det är den långa stapeln. Skillnaden står i den streckade rutan."
       },
       {
        "kind": "calc",
@@ -1357,8 +1654,8 @@
     {
      "kind": "tool",
      "answer": "numberline",
-     "why": "Temperaturer som blir varmare eller kallare – då passar en tallinje.",
-     "hint": "Tänk: handlar det om temperatur, om antal, eller om vem som gör vad?"
+     "why": "Något ändras uppåt eller nedåt, kanske förbi noll – då passar tallinjen.",
+     "hint": "Tänk: ändras något uppåt eller nedåt? Finns det delar och en helhet, en jämförelse eller lika grupper? Eller är det ett pussel om vem som gör vad?"
     },
     {
      "kind": "numberline",
@@ -1370,7 +1667,8 @@
       "down": "Kallare"
      },
      "jumps": [
-      7
+      3,
+      4
      ],
      "why": "Från −3 till noll är 3 steg, sedan 4 till. Vi landar på 4."
     },
@@ -1392,16 +1690,38 @@
   {
    "type": "mission",
    "sentences": [
-    "En färja har 50 platser för bilar.",
-    "38 platser är bokade.",
-    "Hur många platser är lediga?"
+    "En färja har 50 platser för bilar och 300 platser för passagerare.",
+    "38 bilplatser är bokade.",
+    "Hur många bilplatser är lediga?"
    ],
    "steps": [
     {
      "kind": "tool",
      "answer": "bar",
-     "why": "Antal som läggs ihop, tas bort, jämförs eller delas – då passar en stapelmodell.",
-     "hint": "Tänk: handlar det om temperatur, om antal, eller om vem som gör vad?"
+     "why": "Det finns delar och en helhet, en jämförelse eller lika grupper – då passar en stapelmodell.",
+     "hint": "Tänk: ändras något uppåt eller nedåt? Finns det delar och en helhet, en jämförelse eller lika grupper? Eller är det ett pussel om vem som gör vad?"
+    },
+    {
+     "kind": "tool",
+     "label": "Välj modell",
+     "prompt": "Vilken sorts stapelmodell passar?",
+     "options": {
+      "partwhole": [
+       "🧩",
+       "Delar och helhet"
+      ],
+      "compare": [
+       "⚖️",
+       "Jämföra"
+      ],
+      "groups": [
+       "🟦",
+       "Lika grupper"
+      ]
+     },
+     "answer": "partwhole",
+     "why": "Det finns en helhet och delar – då passar **delar och helhet**.",
+     "hint": "Finns det delar och en helhet, en jämförelse, eller lika många i varje grupp?"
     },
     {
      "kind": "bar",
@@ -1418,10 +1738,13 @@
       "p1": "?"
      },
      "labels": {
-      "whole": "Alla platser",
+      "whole": "Alla bilplatser",
       "parts": "Bokade | Lediga"
      },
-     "why": "50 är helheten. 38 är bokade. Lediga är den andra delen."
+     "why": "50 är helheten. 38 är bokade. Lediga är den andra delen.",
+     "extra": [
+      "300"
+     ]
     },
     {
      "kind": "calc",
@@ -1449,8 +1772,8 @@
     {
      "kind": "tool",
      "answer": "table",
-     "why": "Flera personer och ledtrådar – då passar en tabell.",
-     "hint": "Tänk: handlar det om temperatur, om antal, eller om vem som gör vad?"
+     "why": "Ett pussel om vem som gör vad – då passar en tabell.",
+     "hint": "Tänk: ändras något uppåt eller nedåt? Finns det delar och en helhet, en jämförelse eller lika grupper? Eller är det ett pussel om vem som gör vad?"
     },
     {
      "kind": "table",
@@ -1488,15 +1811,38 @@
   {
    "type": "mission",
    "sentences": [
-    "5 flygplan har 9 passagerare var.",
+    "Det finns 5 flygplan.",
+    "I varje plan sitter 9 passagerare.",
     "Hur många passagerare är det totalt?"
    ],
    "steps": [
     {
      "kind": "tool",
      "answer": "bar",
-     "why": "Antal som läggs ihop, tas bort, jämförs eller delas – då passar en stapelmodell.",
-     "hint": "Tänk: handlar det om temperatur, om antal, eller om vem som gör vad?"
+     "why": "Det finns delar och en helhet, en jämförelse eller lika grupper – då passar en stapelmodell.",
+     "hint": "Tänk: ändras något uppåt eller nedåt? Finns det delar och en helhet, en jämförelse eller lika grupper? Eller är det ett pussel om vem som gör vad?"
+    },
+    {
+     "kind": "tool",
+     "label": "Välj modell",
+     "prompt": "Vilken sorts stapelmodell passar?",
+     "options": {
+      "partwhole": [
+       "🧩",
+       "Delar och helhet"
+      ],
+      "compare": [
+       "⚖️",
+       "Jämföra"
+      ],
+      "groups": [
+       "🟦",
+       "Lika grupper"
+      ]
+     },
+     "answer": "groups",
+     "why": "Lika många i varje grupp – då passar **lika grupper**.",
+     "hint": "Finns det delar och en helhet, en jämförelse, eller lika många i varje grupp?"
     },
     {
      "kind": "bar",
@@ -1512,7 +1858,11 @@
       "whole": "Alla",
       "parts": "5 plan"
      },
-     "why": "5 lika stora grupper med 9 i varje. Totalt: ?"
+     "why": "5 lika stora grupper med 9 i varje. Totalt: ?",
+     "wrong": "Läs igen: hur många är det totalt, och hur många är det i varje grupp?",
+     "extra": [
+      "5"
+     ]
     },
     {
      "kind": "calc",
@@ -1538,8 +1888,30 @@
     {
      "kind": "tool",
      "answer": "bar",
-     "why": "Antal som läggs ihop, tas bort, jämförs eller delas – då passar en stapelmodell.",
-     "hint": "Tänk: handlar det om temperatur, om antal, eller om vem som gör vad?"
+     "why": "Det finns delar och en helhet, en jämförelse eller lika grupper – då passar en stapelmodell.",
+     "hint": "Tänk: ändras något uppåt eller nedåt? Finns det delar och en helhet, en jämförelse eller lika grupper? Eller är det ett pussel om vem som gör vad?"
+    },
+    {
+     "kind": "tool",
+     "label": "Välj modell",
+     "prompt": "Vilken sorts stapelmodell passar?",
+     "options": {
+      "partwhole": [
+       "🧩",
+       "Delar och helhet"
+      ],
+      "compare": [
+       "⚖️",
+       "Jämföra"
+      ],
+      "groups": [
+       "🟦",
+       "Lika grupper"
+      ]
+     },
+     "answer": "compare",
+     "why": "Två saker jämförs – då passar **jämföra**: två staplar.",
+     "hint": "Finns det delar och en helhet, en jämförelse, eller lika många i varje grupp?"
     },
     {
      "kind": "bar",
@@ -1557,9 +1929,10 @@
      },
      "labels": {
       "big": "Jetplan",
-      "small": "Propellerplan"
+      "small": "Propeller"
      },
-     "why": "Två staplar att jämföra. Skillnaden är ?"
+     "why": "Två staplar att jämföra. Skillnaden är ?",
+     "wrong": "Läs igen: vem har mest? Det är den långa stapeln. Skillnaden står i den streckade rutan."
     },
     {
      "kind": "calc",

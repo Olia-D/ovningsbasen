@@ -31,7 +31,7 @@ def solve_step(page, st, box):
             s.locator(f'.dirbtn[data-d="{1 if j > 0 else -1}"]').click()
             s.locator(".jn").fill(str(abs(j)))
             s.locator(".jump").click()
-        s.locator(".nldone").click()
+        if s.locator(".nldone").is_enabled(): s.locator(".nldone").click()
     elif k == "bar":
         s = box.locator(".mstep").last
         for slot, val in st["slots"].items():

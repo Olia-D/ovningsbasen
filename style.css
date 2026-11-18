@@ -185,3 +185,7 @@ button.bm-box{cursor:pointer}
 .showme{font-weight:700}
 .bm-box.mirror{min-width:22px;font-size:16px;padding:0 2px}
 @media (max-width:420px){.bm-lab{width:62px;flex-basis:62px;font-size:12px}.bm-box{min-width:34px;font-size:18px}.tools{gap:6px}.toolbtn{font-size:14px}}
+.bm-lab{overflow-wrap:anywhere;hyphens:auto}
+.bm-box.named{flex-direction:column;line-height:1.1;padding:4px 3px}
+.bm-box .bn{font-size:11px;font-weight:600;color:var(--muted);overflow-wrap:anywhere;text-align:center}
+.tools.alt{grid-template-columns:1fr}.tools.alt .toolbtn{font-size:19px;flex-direction:row;justify-content:center;gap:10px}
