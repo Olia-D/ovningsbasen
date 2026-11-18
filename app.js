@@ -166,6 +166,10 @@
   function visual(v) {
     if (!v) return '';
     if (v.type === 'word') return '<div class="vis">' + word(v) + '</div>';
+    if (v.type === 'intLine' || v.type === 'barModel' || v.type === 'table') {
+      var inner = v.type === 'intLine' ? intLineSVG(v) : v.type === 'barModel' ? barStatic(v) : tableHTML(v, v.answer);
+      return '<div class="vis">' + inner + (v.caption ? '<div class="note">' + fmt(v.caption) + '</div>' : '') + '</div>';
+    }
     var f = { bar: bar, compareBars: compareBars, numberLine: numberLine, compareLines: compareLines, groups: groups }[v.type];
     var svg = f ? f(v) : (v.type === 'emoji' ? '<div style="font-size:48px">' + esc(v.text) + '</div>' : '');
     return '<div class="vis">' + svg + (v.caption ? '<div class="note">' + fmt(v.caption) + '</div>' : '') + '</div>';
@@ -220,6 +224,7 @@
   // ---------- question rendering (shared by learn "try" and tests) ----------
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function renderQuestion(q, box, onDone, opts) {
+    if (q.type === 'mission') return renderMission(q, box, onDone, opts);
     opts = opts || {};
     var order = (q.type === 'single' || q.type === 'multi') ? (q.keepOrder ? q.options.map(function (_, i) { return i; }) : shuffle(q.options.map(function (_, i) { return i; }))) : null;
     var name = 'q' + Math.random().toString(36).slice(2, 8);
@@ -299,6 +304,345 @@
   }
   function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
 
+  // ---------- missions: model first, then maths ----------
+  // A mission shows the story (sentences or clue cards) and walks through steps.
+  // Each step renderer gets (step, ctx, done) and returns { show: fn } for "Visa mig".
+  function normNum(s) { return String(s == null ? '' : s).replace(/[−–—]/g, '-').replace(/\s+/g, '').replace(/^\+/, ''); }
+  function intLineSVG(o) {
+    // o: {min,max,start,marks:[{at,label}],jumps:[{from,to}], pos, tick, label}
+    var x0 = 22, x1 = 298, len = x1 - x0, y = 70, span = o.max - o.min, s = '';
+    var X = function (v) { return x0 + len * (v - o.min) / span; };
+    var tick = o.tick || (span <= 24 ? 1 : span <= 60 ? 5 : span <= 120 ? 10 : 50);
+    var lab = o.labelEvery || (span <= 12 ? 1 : span <= 24 ? 2 : span <= 60 ? 10 : span <= 120 ? 20 : 100);
+    s += '<line x1="' + x0 + '" y1="' + y + '" x2="' + x1 + '" y2="' + y + '" stroke="' + C.line + '" stroke-width="3"/>';
+    for (var v = Math.ceil(o.min / tick) * tick; v <= o.max; v += tick) {
+      var big = v % lab === 0, zero = v === 0;
+      s += '<line x1="' + X(v) + '" y1="' + (y - (big ? 9 : 5)) + '" x2="' + X(v) + '" y2="' + (y + (big ? 9 : 5)) + '" stroke="' + (zero ? '#e85d04' : C.line) + '" stroke-width="' + (zero ? 3 : 1.5) + '"/>';
+      if (big) s += '<text x="' + X(v) + '" y="' + (y + 28) + '" font-size="13" text-anchor="middle" font-family="Lexend,sans-serif" font-weight="' + (zero ? 700 : 600) + '" fill="' + (zero ? '#b54700' : C.line) + '">' + (v < 0 ? '−' + (-v) : v) + '</text>';
+    }
+    (o.jumps || []).forEach(function (j, i) {
+      var a = X(j.from), b = X(j.to), mid = (a + b) / 2, h = 18 + Math.min(26, Math.abs(b - a) / 5), up = j.to > j.from;
+      s += '<path d="M' + a + ' ' + (y - 6) + ' Q ' + mid + ' ' + (y - 6 - h * 2) + ' ' + b + ' ' + (y - 6) + '" fill="none" stroke="' + (up ? '#e85d04' : '#1d6fa3') + '" stroke-width="2.5"/>';
+      s += '<path d="M' + b + ' ' + (y - 6) + ' l' + (up ? '-7 -6' : '7 -6') + ' m' + (up ? '7 6' : '-7 6') + ' l' + (up ? '-2 -9' : '2 -9') + '" stroke="' + (up ? '#e85d04' : '#1d6fa3') + '" stroke-width="2.5" fill="none"/>';
+      var d = j.to - j.from;
+      s += '<text x="' + mid + '" y="' + (y - 10 - h) + '" font-size="13" text-anchor="middle" font-family="Lexend,sans-serif" font-weight="700" fill="' + (up ? '#b54700' : '#155a85') + '">' + (d > 0 ? '+' + d : '−' + (-d)) + '</text>';
+    });
+    (o.marks || []).forEach(function (m) {
+      s += '<circle cx="' + X(m.at) + '" cy="' + y + '" r="7" fill="' + (m.color || '#1d6fa3') + '" stroke="#fff" stroke-width="2"/>';
+      if (m.label) s += '<text x="' + X(m.at) + '" y="' + (y + 46) + '" font-size="12" text-anchor="middle" font-family="Lexend,sans-serif" fill="' + C.line + '">' + esc(m.label) + '</text>';
+    });
+    return '<svg class="intline" viewBox="0 0 320 ' + (o.marks && o.marks.some(function (m) { return m.label; }) ? 124 : 108) + '" role="img" aria-label="' + esc(o.label || ('Tallinje från ' + o.min + ' till ' + o.max)) + '">' + s + '</svg>';
+  }
+  function fmtNum(v) { v = +v; return v < 0 ? '−' + (-v) : String(v); }
+
+  function barHTML(model, vals, labels, editable) {
+    // vals: slot -> display string; editable: wrap slots as buttons
+    function slot(k, grow, cls) {
+      var v = vals[k], txt = v == null || v === '' ? '' : (v === '?' ? '?' : v);
+      return '<' + (editable ? 'button type="button"' : 'div') + ' class="bm-box ' + (cls || '') + (txt === '?' ? ' q' : '') + (txt === '' ? ' empty' : '') + '" data-slot="' + k + '" style="flex-grow:' + grow + '">' + (txt === '' ? (editable ? '▢' : '') : esc(txt)) + '</' + (editable ? 'button' : 'div') + '>';
+    }
+    var h = '';
+    if (model.type === 'partwhole') {
+      h += '<div class="bm-row"><span class="bm-lab">' + esc(labels.whole || 'Helhet') + '</span><div class="bm-bar">' + slot('whole', 1, 'whole') + '</div></div>';
+      h += '<div class="bm-row"><span class="bm-lab">' + esc(labels.parts || 'Delar') + '</span><div class="bm-bar">' + model.sizes.map(function (sz, i) { return slot('p' + i, sz, 'part p' + (i % 3)); }).join('') + '</div></div>';
+    } else if (model.type === 'compare') {
+      var big = model.sizes[0], small = model.sizes[1];
+      h += '<div class="bm-row"><span class="bm-lab">' + esc(labels.big || 'Störst') + '</span><div class="bm-bar">' + slot('big', big, 'part p0') + '</div></div>';
+      h += '<div class="bm-row"><span class="bm-lab">' + esc(labels.small || 'Minst') + '</span><div class="bm-bar">' + slot('small', small, 'part p1') + slot('diff', big - small, 'diff') + '</div></div>';
+      h += '<div class="bm-note">streckad ruta = skillnaden</div>';
+    } else if (model.type === 'groups') {
+      h += '<div class="bm-row"><span class="bm-lab">' + esc(labels.whole || 'Totalt') + '</span><div class="bm-bar">' + slot('whole', 1, 'whole') + '</div></div>';
+      var boxes = '';
+      for (var i = 0; i < model.n; i++) boxes += i === 0 ? slot('per', 1, 'part p0') : '<div class="bm-box part p0 mirror" style="flex-grow:1">' + esc(vals.per == null || vals.per === '' ? '' : vals.per) + '</div>';
+      h += '<div class="bm-row"><span class="bm-lab">' + esc(labels.parts || (model.n + ' lika delar')) + '</span><div class="bm-bar">' + boxes + '</div></div>';
+    }
+    return '<div class="barmodel">' + h + '</div>';
+  }
+  function barStatic(o) { return barHTML({ type: o.model, sizes: o.sizes, n: o.n }, o.values || {}, o.labels || {}, false); }
+
+  function tableHTML(t, answer) {
+    var h = '<table class="ptable"><thead><tr><th></th>' + t.cols.map(function (c) { return '<th>' + esc(c.name) + '</th>'; }).join('') + '</tr></thead><tbody>';
+    t.rows.forEach(function (r, i) {
+      h += '<tr><th>' + esc(r) + '</th>' + t.cols.map(function (c, j) {
+        var v = answer && answer[i] ? answer[i][j] : '';
+        return '<td>' + esc(v || '') + '</td>';
+      }).join('') + '</tr>';
+    });
+    return h + '</tbody></table>';
+  }
+
+  var STEP = {};
+  STEP.tap = function (st, ctx, done) {
+    var box = ctx.stepBox, sents = ctx.panel.querySelectorAll('.sent');
+    box.innerHTML = '<p class="sprompt">' + fmt(st.prompt || 'Tryck på meningen som är frågan.') + '</p><div class="sfb" aria-live="polite"></div>';
+    var fb = box.querySelector('.sfb'), finished = false;
+    Array.prototype.forEach.call(sents, function (b) { b.disabled = false; b.classList.add('tappable'); });
+    function finish(helped) {
+      finished = true;
+      Array.prototype.forEach.call(sents, function (b) { b.disabled = true; b.classList.remove('tappable'); });
+      st.answer.forEach(function (i) { sents[i].classList.add('isq'); });
+      done(helped);
+    }
+    ctx.onSent = function (i) {
+      if (finished) return;
+      if (st.answer.indexOf(i) >= 0) { fb.innerHTML = '<div class="fb ok pop"><span class="head">Rätt! ⭐</span>' + fmt(st.why || 'Frågan berättar vad du ska ta reda på.') + '</div>'; finish(false); }
+      else fb.innerHTML = '<div class="fb near pop">' + fmt(st.wrong || 'Det där är en ledtråd. Frågan är meningen som frågar något – ofta slutar den med **?**') + '</div>';
+    };
+    return { show: function () { fb.innerHTML = '<div class="fb ok pop"><span class="head">Så här:</span>' + fmt(st.why || 'Frågan är den markerade meningen.') + '</div>'; finish(true); } };
+  };
+  STEP.word = function (st, ctx, done) {
+    var box = ctx.stepBox, sent = ctx.sentences[st.sentence];
+    var words = sent.split(/(\s+)/);
+    box.innerHTML = '<p class="sprompt">' + fmt(st.prompt || 'Tryck på ordet som visar vad som händer.') + '</p><p class="wordrow">' +
+      words.map(function (w, i) { return /\s/.test(w) ? ' ' : '<button type="button" class="wbtn" data-w="' + i + '">' + esc(w) + '</button>'; }).join('') + '</p><div class="sfb" aria-live="polite"></div>';
+    var fb = box.querySelector('.sfb'), finished = false;
+    var clean = function (w) { return w.toLowerCase().replace(/[.,!?:;]/g, ''); };
+    function finish(helped) {
+      finished = true;
+      Array.prototype.forEach.call(box.querySelectorAll('.wbtn'), function (b) { b.disabled = true; if (st.answer.indexOf(clean(b.textContent)) >= 0) b.classList.add('hit'); });
+      done(helped);
+    }
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest('.wbtn'); if (!b || finished) return;
+      if (st.answer.indexOf(clean(b.textContent)) >= 0) { fb.innerHTML = '<div class="fb ok pop"><span class="head">Precis! 🎯</span>' + fmt(st.why || '') + '</div>'; finish(false); }
+      else { b.classList.add('miss'); fb.innerHTML = '<div class="fb near pop">' + fmt(st.wrong || 'Inte det ordet. Leta efter ordet som säger åt vilket håll det går.') + '</div>'; }
+    });
+    return { show: function () { fb.innerHTML = '<div class="fb ok pop"><span class="head">Så här:</span>' + fmt(st.why || '') + '</div>'; finish(true); } };
+  };
+  var TOOLS = { numberline: ['📏', 'Tallinje'], table: ['📋', 'Tabell'], bar: ['📊', 'Stapelmodell'] };
+  STEP.tool = function (st, ctx, done) {
+    var box = ctx.stepBox;
+    box.innerHTML = '<p class="sprompt">' + fmt(st.prompt || 'Vilket verktyg passar för den här uppgiften?') + '</p><div class="tools">' +
+      Object.keys(TOOLS).map(function (k) { return '<button type="button" class="toolbtn" data-t="' + k + '"><span class="ti">' + TOOLS[k][0] + '</span>' + TOOLS[k][1] + '</button>'; }).join('') + '</div><div class="sfb" aria-live="polite"></div>';
+    var fb = box.querySelector('.sfb'), finished = false;
+    function finish(helped) { finished = true; Array.prototype.forEach.call(box.querySelectorAll('.toolbtn'), function (b) { b.disabled = true; if (b.getAttribute('data-t') === st.answer) b.classList.add('hit'); }); done(helped); }
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest('.toolbtn'); if (!b || finished) return;
+      if (b.getAttribute('data-t') === st.answer) { fb.innerHTML = '<div class="fb ok pop"><span class="head">Bra val! 🧰</span>' + fmt(st.why || '') + '</div>'; finish(false); }
+      else { b.classList.add('miss'); fb.innerHTML = '<div class="fb near pop">' + fmt((st.wrong && st.wrong[b.getAttribute('data-t')]) || 'Hmm, prova ett annat verktyg. ' + (st.hint || '')) + '</div>'; }
+    });
+    return { show: function () { fb.innerHTML = '<div class="fb ok pop"><span class="head">Så här:</span>' + fmt(st.why || '') + '</div>'; finish(true); } };
+  };
+  STEP.numberline = function (st, ctx, done) {
+    var box = ctx.stepBox, pos = null, jumps = [], finished = false, dir = st.firstDir || null;
+    var up = (st.labels && st.labels.up) || 'Uppåt (+)', down = (st.labels && st.labels.down) || 'Nedåt (−)';
+    var mode = st.target != null ? 'target' : 'jumps';
+    var end = mode === 'target' ? st.target : st.start + (st.jumps || []).reduce(function (a, b) { return a + b; }, 0);
+    function draw() {
+      var marks = [];
+      if (pos != null) {
+        if (mode === 'target') marks.push({ at: st.target, color: '#2a9d8f', label: st.targetLabel || 'mål' });
+        marks.push({ at: jumps.length ? jumps[0].from : pos, color: '#1d6fa3', label: jumps.length ? '' : 'start' });
+        if (jumps.length) marks.push({ at: pos, color: '#e85d04', label: 'nu: ' + fmtNum(pos) });
+      }
+      box.querySelector('.nlwrap').innerHTML = intLineSVG({ min: st.min, max: st.max, tick: st.tick, labelEvery: st.labelEvery, marks: marks, jumps: jumps });
+      box.querySelector('.undo').disabled = finished || !jumps.length;
+      box.querySelector('.jlog').textContent = jumps.length ? 'Dina hopp: ' + jumps.map(function (j) { var d = j.to - j.from; return d > 0 ? '+' + d : '−' + (-d); }).join('  ') : '';
+    }
+    var startHtml = st.askStart ? '<div class="nl-start"><label>Var börjar du på tallinjen? ' + numInput('nls') + '</label> <button type="button" class="btn small setstart">Sätt start</button></div>' : '';
+    box.innerHTML = '<p class="sprompt">' + fmt(st.prompt || 'Gör hoppet på tallinjen.') + '</p>' + startHtml +
+      '<div class="nlwrap"></div><p class="note jlog" aria-live="polite"></p>' +
+      '<div class="nl-ctrl"' + (st.askStart ? ' hidden' : '') + '><div class="dirs"><button type="button" class="dirbtn" data-d="1">⬆ ' + esc(up) + '</button><button type="button" class="dirbtn" data-d="-1">⬇ ' + esc(down) + '</button></div>' +
+      '<label class="jsize">Hur många steg? <input class="txt small jn" inputmode="numeric" pattern="[0-9]*" autocomplete="off"></label>' +
+      '<div class="row"><button type="button" class="btn small jump">Hoppa!</button><button type="button" class="btn ghost undo">↶ Ångra</button><button type="button" class="btn small secondary nldone">Klar</button></div></div>' +
+      '<div class="sfb" aria-live="polite"></div>';
+    var fb = box.querySelector('.sfb');
+    if (!st.askStart) pos = st.start;
+    function setDir(d) { dir = d; Array.prototype.forEach.call(box.querySelectorAll('.dirbtn'), function (b) { b.classList.toggle('sel', +b.getAttribute('data-d') === d); }); }
+    box.addEventListener('click', function (e) {
+      if (finished) return;
+      var t = e.target.closest('button'); if (!t) return;
+      if (t.classList.contains('setstart')) {
+        var v = normNum(box.querySelector('.nls').value);
+        if (v === '' || isNaN(+v)) { fb.innerHTML = '<div class="fb near pop">Skriv ett tal, till exempel 3 eller −4. Tryck ± för minus.</div>'; return; }
+        if (+v !== st.start) { fb.innerHTML = '<div class="fb near pop">' + fmt(st.startWrong || 'Läs första meningen igen – där står var du börjar.') + '</div>'; return; }
+        pos = st.start; fb.innerHTML = '<div class="fb ok pop"><span class="head">Bra start!</span>Nu gör du hoppet.</div>';
+        box.querySelector('.nl-start').hidden = true; box.querySelector('.nl-ctrl').hidden = false; draw(); return;
+      }
+      if (t.classList.contains('dirbtn')) { setDir(+t.getAttribute('data-d')); return; }
+      if (t.classList.contains('jump')) {
+        var n = parseInt(box.querySelector('.jn').value, 10);
+        if (!dir) { fb.innerHTML = '<div class="fb near pop">Välj först: ' + esc(up) + ' eller ' + esc(down) + '?</div>'; return; }
+        if (!(n > 0)) { fb.innerHTML = '<div class="fb near pop">Skriv hur många steg du ska hoppa.</div>'; return; }
+        var to = pos + dir * n;
+        if (to < st.min || to > st.max) { fb.innerHTML = '<div class="fb near pop">Det hoppet går utanför tallinjen. Kolla talet en gång till.</div>'; return; }
+        jumps.push({ from: pos, to: to }); pos = to; fb.innerHTML = ''; box.querySelector('.jn').value = ''; draw(); return;
+      }
+      if (t.classList.contains('undo')) { var j = jumps.pop(); if (j) pos = j.from; fb.innerHTML = ''; draw(); return; }
+      if (t.classList.contains('nldone')) {
+        if (!jumps.length) { fb.innerHTML = '<div class="fb near pop">Gör minst ett hopp först.</div>'; return; }
+        if (pos === end) {
+          fb.innerHTML = '<div class="fb ok pop"><span class="head">Snyggt hoppat! 🚀</span>' + fmt(st.why || '') + '</div>'; finish(false);
+        } else fb.innerHTML = '<div class="fb near pop">Du hamnade på ' + fmtNum(pos) + '. ' + fmt(st.wrong || (mode === 'target' ? 'Hoppa tills du står på målet.' : 'Läs igen: åt vilket håll, och hur många steg?')) + ' Tryck ↶ Ångra och prova igen.</div>';
+      }
+    });
+    function finish(helped) {
+      finished = true;
+      Array.prototype.forEach.call(box.querySelectorAll('button,input'), function (b) { b.disabled = true; });
+      ctx.result.nl = { start: st.start, end: pos, total: pos - st.start };
+      done(helped);
+    }
+    draw();
+    return {
+      show: function () {
+        pos = st.start; jumps = [];
+        var steps = mode === 'target' ? (st.showJumps || [st.target - st.start]) : st.jumps;
+        steps.forEach(function (d) { jumps.push({ from: pos, to: pos + d }); pos += d; });
+        if (st.askStart) { box.querySelector('.nl-start').hidden = true; box.querySelector('.nl-ctrl').hidden = false; }
+        draw(); fb.innerHTML = '<div class="fb ok pop"><span class="head">Så här:</span>' + fmt(st.why || '') + '</div>'; finish(true);
+      }
+    };
+  };
+  function numInput(cls) {
+    return '<span class="numwrap"><button type="button" class="pm" data-for="' + cls + '" aria-label="Byt plus eller minus">±</button><input class="txt small ' + cls + '" inputmode="numeric" pattern="[0-9]*" autocomplete="off"></span>';
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.pm'); if (!b || b.disabled) return;
+    var inp = b.parentNode.querySelector('input'); var v = inp.value.trim();
+    inp.value = /^[-−]/.test(v) ? v.replace(/^[-−]/, '') : '−' + v; inp.focus();
+  });
+  STEP.bar = function (st, ctx, done) {
+    var box = ctx.stepBox, vals = {}, sel = null, finished = false, slots = Object.keys(st.slots);
+    var chips = st.chips || (function () {
+      var c = []; slots.forEach(function (k) { if (c.indexOf(st.slots[k]) < 0) c.push(st.slots[k]); });
+      (st.extra || []).forEach(function (x) { if (c.indexOf(String(x)) < 0) c.push(String(x)); });
+      if (c.indexOf('?') < 0) c.push('?');
+      return c.sort(function (a, b) { return a === '?' ? 1 : b === '?' ? -1 : (+a) - (+b); });
+    })();
+    function render() {
+      box.querySelector('.bmwrap').innerHTML = barHTML(st.model, vals, st.labels || {}, !finished);
+    }
+    box.innerHTML = '<p class="sprompt">' + fmt(st.prompt || 'Bygg modellen: tryck på ett tal, sedan på rätt ruta. Det du ska ta reda på blir **?**') + '</p>' +
+      '<div class="chips">' + chips.map(function (c) { return '<button type="button" class="chip" data-c="' + esc(c) + '">' + esc(c) + '</button>'; }).join('') + '</div>' +
+      '<div class="bmwrap"></div><div class="row end"><button type="button" class="btn small secondary bmdone">Klar</button></div><div class="sfb" aria-live="polite"></div>';
+    var fb = box.querySelector('.sfb');
+    box.addEventListener('click', function (e) {
+      if (finished) return;
+      var c = e.target.closest('.chip'), s = e.target.closest('[data-slot]'), d = e.target.closest('.bmdone');
+      if (c) { sel = c.getAttribute('data-c'); Array.prototype.forEach.call(box.querySelectorAll('.chip'), function (x) { x.classList.toggle('sel', x === c); }); return; }
+      if (s) {
+        var k = s.getAttribute('data-slot');
+        if (sel == null) { delete vals[k]; } else vals[k] = sel;
+        render(); return;
+      }
+      if (d) {
+        var missing = slots.filter(function (k) { return vals[k] == null; });
+        if (missing.length) { fb.innerHTML = '<div class="fb near pop">Fyll alla rutor först. Tips: det du inte vet blir **?**</div>'; return; }
+        var wrong = slots.filter(function (k) { return String(vals[k]) !== String(st.slots[k]); });
+        if (!wrong.length) { fb.innerHTML = '<div class="fb ok pop"><span class="head">Modellen stämmer! 📊</span>' + fmt(st.why || '') + '</div>'; finish(false); }
+        else {
+          Array.prototype.forEach.call(box.querySelectorAll('[data-slot]'), function (x) { x.classList.toggle('bad', wrong.indexOf(x.getAttribute('data-slot')) >= 0); });
+          fb.innerHTML = '<div class="fb near pop">' + (wrong.length === 1 ? 'En ruta' : wrong.length + ' rutor') + ' stämmer inte än (markerade). ' + fmt(st.wrong || 'Läs berättelsen igen: vad är helheten, och vad är delarna?') + '</div>';
+        }
+      }
+    });
+    function finish(helped) { finished = true; render(); Array.prototype.forEach.call(box.querySelectorAll('button'), function (b) { b.disabled = true; }); done(helped); }
+    render();
+    return { show: function () { slots.forEach(function (k) { vals[k] = st.slots[k]; }); fb.innerHTML = '<div class="fb ok pop"><span class="head">Så här:</span>' + fmt(st.why || '') + '</div>'; finish(true); } };
+  };
+  STEP.table = function (st, ctx, done) {
+    var box = ctx.stepBox, finished = false;
+    var h = '<p class="sprompt">' + fmt(st.prompt || 'Fyll i tabellen med hjälp av ledtrådarna. Bocka av ledtrådarna du har använt.') + '</p><div class="tscroll"><table class="ptable edit"><thead><tr><th></th>' +
+      st.cols.map(function (c) { return '<th>' + esc(c.name) + '</th>'; }).join('') + '</tr></thead><tbody>';
+    st.rows.forEach(function (r, i) {
+      h += '<tr><th>' + esc(r) + '</th>' + st.cols.map(function (c, j) {
+        return '<td><select data-r="' + i + '" data-c="' + j + '" aria-label="' + esc(r + ' ' + c.name) + '"><option value="">–</option>' + c.options.map(function (o) { return '<option>' + esc(o) + '</option>'; }).join('') + '</select></td>';
+      }).join('') + '</tr>';
+    });
+    h += '</tbody></table></div><div class="row end"><button type="button" class="btn small secondary tdone">Klar</button></div><div class="sfb" aria-live="polite"></div>';
+    box.innerHTML = h;
+    var fb = box.querySelector('.sfb');
+    box.querySelector('.tdone').addEventListener('click', function () {
+      if (finished) return;
+      var sels = box.querySelectorAll('select'), empty = 0, wrong = 0;
+      Array.prototype.forEach.call(sels, function (s) {
+        var want = st.answer[+s.getAttribute('data-r')][+s.getAttribute('data-c')];
+        s.classList.remove('bad');
+        if (!s.value) empty++; else if (s.value !== want) { wrong++; s.classList.add('bad'); }
+      });
+      if (empty) { fb.innerHTML = '<div class="fb near pop">Fyll i alla rutor först (' + empty + ' kvar). Börja med ledtråden som säger något säkert.</div>'; return; }
+      if (wrong) { fb.innerHTML = '<div class="fb near pop">' + (wrong === 1 ? 'En ruta' : wrong + ' rutor') + ' stämmer inte än (markerade). Läs ledtrådarna igen, en i taget.</div>'; return; }
+      fb.innerHTML = '<div class="fb ok pop"><span class="head">Pusslet är löst! 🧩</span>' + fmt(st.why || '') + '</div>'; finish(false);
+    });
+    function finish(helped) { finished = true; Array.prototype.forEach.call(box.querySelectorAll('select,button'), function (b) { b.disabled = true; }); done(helped); }
+    return { show: function () {
+      Array.prototype.forEach.call(box.querySelectorAll('select'), function (s) { s.value = st.answer[+s.getAttribute('data-r')][+s.getAttribute('data-c')]; s.classList.remove('bad'); });
+      fb.innerHTML = '<div class="fb ok pop"><span class="head">Så här:</span>' + fmt(st.why || '') + '</div>'; finish(true);
+    } };
+  };
+  STEP.calc = function (st, ctx, done) {
+    var box = ctx.stepBox, finished = false, tries = 0;
+    box.innerHTML = '<p class="sprompt">' + fmt(st.prompt || 'Nu räknar du. Titta på din modell.') + '</p>' +
+      (st.expr ? '<p class="expr">' + fmt(st.expr) + '</p>' : '') +
+      '<label class="calcrow">Svar: ' + (st.allowNeg ? numInput('cn') : '<input class="txt small cn" inputmode="numeric" pattern="[0-9]*" autocomplete="off">') + (st.unit ? ' <span class="unit">' + esc(st.unit) + '</span>' : '') + '</label>' +
+      '<div class="row end"><button type="button" class="btn small ccheck">Kolla svaret</button></div><div class="sfb" aria-live="polite"></div>';
+    var fb = box.querySelector('.sfb'), inp = box.querySelector('.cn');
+    function check() {
+      if (finished) return;
+      var v = normNum(inp.value).replace(/[a-zåäö°]+$/i, '');
+      if (v === '' || isNaN(+v)) { fb.innerHTML = '<div class="fb near pop">Skriv svaret med siffror' + (st.allowNeg ? ' (tryck ± för minus)' : '') + '.</div>'; return; }
+      if (st.answer.map(normNum).indexOf(String(+v)) >= 0) { fb.innerHTML = '<div class="fb ok pop"><span class="head">' + pick(['Rätt! 🎉', 'Snyggt! ⭐', 'Precis! 🚀']) + '</span>' + fmt(st.why || '') + '</div>'; finish(false); }
+      else {
+        tries++;
+        var custom = st.wrongFeedback && st.wrongFeedback[String(+v)];
+        fb.innerHTML = '<div class="fb near pop">' + fmt(custom || (tries === 1 ? 'Inte riktigt. Titta på modellen igen – vad visar den?' : 'Fortfarande inte. Tryck på **Visa mig** om du vill se hur man gör.')) + '</div>';
+      }
+    }
+    box.querySelector('.ccheck').addEventListener('click', check);
+    inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); check(); } });
+    function finish(helped) { finished = true; Array.prototype.forEach.call(box.querySelectorAll('button,input'), function (b) { b.disabled = true; }); done(helped); }
+    return { show: function () { inp.value = fmtNum(st.answer[0]); fb.innerHTML = '<div class="fb ok pop"><span class="head">Så här:</span>' + fmt(st.why || '') + '</div>'; finish(true); } };
+  };
+
+  var STEPNAME = { tap: 'Hitta frågan', word: 'Hitta nyckelordet', tool: 'Välj verktyg', numberline: 'Bygg på tallinjen', bar: 'Bygg modellen', table: 'Fyll i tabellen', calc: 'Räkna' };
+  function renderMission(q, box, onDone, opts) {
+    opts = opts || {};
+    var demo = !!q.demo, t0 = Date.now(), helpedAny = false, idx = -1;
+    var sentences = q.sentences || [];
+    var panel = '<div class="story">' + (q.title ? '<div class="mtitle">' + fmt(q.title) + '</div>' : '') +
+      (sentences.length ? '<p class="sents">' + sentences.map(function (s, i) { return '<button type="button" class="sent" data-s="' + i + '" disabled>' + fmt(s) + '</button>'; }).join(' ') + '</p>' : '') +
+      (q.clues ? '<ul class="clues">' + q.clues.map(function (c, i) { return '<li><label><input type="checkbox" class="clue-ck"> <span>' + fmt(c) + '</span></label></li>'; }).join('') + '</ul>' : '') +
+      (q.visual ? visual(q.visual) : '') +
+      '<div class="row end">' + speakBtn((q.title ? q.title + '. ' : '') + sentences.join(' ') + (q.clues ? ' Ledtrådar: ' + q.clues.join(' ') : '')) + '</div></div>';
+    box.innerHTML = panel + '<ol class="msteps" aria-label="Steg"></ol><div class="stepbox"></div><div class="mfoot row between"><span class="note mprog"></span>' + (demo ? '' : '<button type="button" class="btn ghost showme">💡 Visa mig</button>') + '</div><div class="mdone"></div>';
+    var ctx = { panel: box.querySelector('.story'), stepBox: box.querySelector('.stepbox'), sentences: sentences, result: {}, onSent: null };
+    box.querySelector('.story').addEventListener('click', function (e) { var b = e.target.closest('.sent'); if (b && ctx.onSent) ctx.onSent(+b.getAttribute('data-s')); });
+    Array.prototype.forEach.call(box.querySelectorAll('.clue-ck'), function (c) { c.addEventListener('change', function () { c.closest('li').classList.toggle('used', c.checked); }); });
+    var stepsOl = box.querySelector('.msteps');
+    stepsOl.innerHTML = q.steps.map(function (s, i) { return '<li data-i="' + i + '">' + esc(s.label || STEPNAME[s.kind] || 'Steg') + '</li>'; }).join('');
+    var current = null, showBtn = box.querySelector('.showme');
+    function next() {
+      idx++;
+      Array.prototype.forEach.call(stepsOl.children, function (li, i) { li.className = i < idx ? 'done' : i === idx ? 'now' : ''; });
+      if (idx >= q.steps.length) return complete();
+      box.querySelector('.mprog').textContent = 'Steg ' + (idx + 1) + ' av ' + q.steps.length;
+      var st = q.steps[idx], div = document.createElement('div');
+      div.className = 'mstep pop'; ctx.stepBox.appendChild(div);
+      if (idx > 0) { try { div.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { } }
+      ctx.stepBox = div; ctx.onSent = null;
+      var stepDone = function (helped) {
+        if (helped) helpedAny = true;
+        var b = document.createElement('div'); b.className = 'row end';
+        b.innerHTML = '<button type="button" class="btn small nextstep">' + (idx + 1 < q.steps.length ? 'Nästa steg →' : 'Klart! →') + '</button>';
+        div.appendChild(b);
+        var used = false; b.querySelector('button').addEventListener('click', function () { if (used) return; used = true; ctx.stepBox = box.querySelector('.stepbox'); next(); });
+        if (showBtn) showBtn.hidden = true;
+      };
+      current = STEP[st.kind](st, ctx, stepDone);
+      if (showBtn) showBtn.hidden = false;
+      if (demo) { setTimeout(function () { current.show(); }, 30); }
+    }
+    function complete() {
+      if (showBtn) showBtn.hidden = true;
+      box.querySelector('.mprog').textContent = '';
+      var ms = Date.now() - t0;
+      box.querySelector('.mdone').innerHTML = '<div class="fb ok pop"><span class="head">' + (demo ? 'Så löser man den! 💡' : helpedAny ? 'Uppdraget klart! 🎖️' : 'Uppdraget klart – helt själv! 🏅') + '</span>' + fmt(q.explain || '') + '</div>';
+      onDone(!helpedAny, box.querySelector('.mdone'), ms);
+    }
+    if (showBtn) showBtn.addEventListener('click', function () { if (current) current.show(); });
+    next();
+  }
+
   // ---------- data loading ----------
   function getJSON(url) { return fetch(url, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(url); return r.json(); }); }
   function loadManifest() { return manifest ? Promise.resolve(manifest) : getJSON('content/manifest.json').then(function (m) { manifest = m; return m; }); }
@@ -358,12 +702,12 @@
         var r = rec(a.id + '/' + t.id), sTest = starsFor(r.best, t.test.length);
         html += '<div class="card"><h2 style="margin-top:0">Del ' + (i + 1) + ': ' + esc(t.title) + '</h2><ul class="steps">' +
           '<li class="step"><span class="lbl">📘 Lär dig ' + (r.learned ? '<span class="note">✓ klar</span>' : '') + '</span><a class="btn small' + (r.learned ? ' secondary' : '') + '" href="#/a/' + a.id + '/t/' + t.id + '/learn/0">' + (r.learned ? 'Igen' : 'Starta') + '</a></li>' +
-          '<li class="step"><span class="lbl">🎯 Testa dig <span class="note">(' + t.test.length + ' frågor)</span><br>' + starHTML(sTest) + bestLine(r.best, t.test.length) + '</span><a class="btn small' + (r.best != null ? ' secondary' : '') + '" href="#/a/' + a.id + '/t/' + t.id + '/test">' + (r.best != null ? 'Igen' : 'Starta') + '</a></li>' +
+          '<li class="step"><span class="lbl">' + (a.kind === 'missions' ? '🎖️ Uppdrag <span class="note">(' + t.test.length + ' st)</span><br>' + (r.best != null ? '<span class="note">✓ klara · helt själv: ' + r.best + ' av ' + t.test.length + '</span>' : '<span class="note">inte gjort än</span>') : '🎯 Testa dig <span class="note">(' + t.test.length + ' frågor)</span><br>' + starHTML(sTest) + bestLine(r.best, t.test.length)) + '</span><a class="btn small' + (r.best != null ? ' secondary' : '') + '" href="#/a/' + a.id + '/t/' + t.id + '/test">' + (r.best != null ? 'Igen' : 'Starta') + '</a></li>' +
           '</ul></div>';
       });
       if (a.mixed && a.mixed.length) {
         var rm = rec(a.id + '/mixed');
-        html += '<div class="card"><h2 style="margin-top:0">🏆 Blandat test</h2><p class="muted">Frågor från alla delar. Gör det en annan dag än delarna – då minns hjärnan bättre.</p><div class="row between"><span>' + starHTML(starsFor(rm.best, a.mixed.length)) + bestLine(rm.best, a.mixed.length) + '</span><a class="btn small' + (rm.best != null ? ' secondary' : '') + '" href="#/a/' + a.id + '/mixed">' + (rm.best != null ? 'Igen' : 'Starta') + '</a></div></div>';
+        html += '<div class="card"><h2 style="margin-top:0">' + (a.kind === 'missions' ? '🧰 ' + esc(a.mixedTitle || 'Välj verktyg själv') : '🏆 Blandat test') + '</h2><p class="muted">' + esc(a.mixedIntro || 'Frågor från alla delar. Gör det en annan dag än delarna – då minns hjärnan bättre.') + '</p><div class="row between"><span>' + (a.kind === 'missions' ? (rm.best != null ? '<span class="note">✓ klara · helt själv: ' + rm.best + ' av ' + a.mixed.length + '</span>' : '<span class="note">inte gjort än</span>') : starHTML(starsFor(rm.best, a.mixed.length)) + bestLine(rm.best, a.mixed.length)) + '</span><a class="btn small' + (rm.best != null ? ' secondary' : '') + '" href="#/a/' + a.id + '/mixed">' + (rm.best != null ? 'Igen' : 'Starta') + '</a></div></div>';
       }
       setView(html);
     }).catch(showError);
@@ -422,7 +766,7 @@
       if (!all) throw new Error('Hittar inte testet');
       var saved = onlyIdx ? null : readSession(aid, tid);
       var idxs = onlyIdx || all.map(function (_, i) { return i; });
-      if (!onlyIdx && !saved && rec(a.id + '/' + tid).best != null && idxs.length > 3) idxs = idxs.slice(0, 2).concat(shuffle(idxs.slice(2)));
+      if (!onlyIdx && !saved && a.kind !== 'missions' && rec(a.id + '/' + tid).best != null && idxs.length > 3) idxs = idxs.slice(0, 2).concat(shuffle(idxs.slice(2)));
       session = { t: t, a: a, tid: tid, title: tid === 'mixed' ? 'Blandat test' : t.title, all: all, idxs: idxs, pos: 0, right: 0, missed: [], retry: !!onlyIdx };
       if (saved && saved.idxs.every(function (i) { return i < all.length; })) { session.idxs = saved.idxs; session.pos = saved.pos; session.right = saved.right; session.missed = saved.missed; session.retry = saved.retry; }
       renderQuizStep();
@@ -436,15 +780,16 @@
     var base = s.all[s.idxs[s.pos]], q = (s.retry && base.twin) ? base.twin : base;
     var html = '<div class="row between"><a class="crumb cancel" href="#/a/' + s.a.id + '">← Avbryt</a><span class="note">' + (s.retry ? 'Öva igen · ' : '') + esc(s.title) + '</span></div>' +
       '<div class="progress" aria-hidden="true"><i style="width:' + Math.round(100 * s.pos / n) + '%"></i></div>' +
-      '<p class="note" style="margin:0 0 4px">Fråga ' + (s.pos + 1) + ' av ' + n + '</p>' +
+      '<p class="note" style="margin:0 0 4px">' + (s.a.kind === 'missions' ? 'Uppdrag ' : 'Fråga ') + (s.pos + 1) + ' av ' + n + '</p>' +
       '<div class="card qbox pop"></div>';
     setView(html);
     app.querySelector('.qbox').setAttribute('data-idx', s.idxs[s.pos]);
-    renderQuestion(q, app.querySelector('.qbox'), function (ok, fbw) {
+    renderQuestion(q, app.querySelector('.qbox'), function (ok, fbw, ms) {
       if (ok) s.right++; else s.missed.push(s.idxs[s.pos]);
+      if (ms) { var tr = rec(s.a.id + '/' + s.tid + '#' + s.idxs[s.pos]); tr.times = (tr.times || []).concat([Math.round(ms / 1000)]).slice(-20); tr.self = (tr.self || []).concat([ok ? 1 : 0]).slice(-20); saveProgress(); }
       s.pos++; saveSession(); // answer is locked in even if the page reloads now
       var b = document.createElement('div'); b.className = 'row end';
-      b.innerHTML = '<button class="btn nextq" type="button">' + (s.pos < n ? 'Nästa fråga →' : 'Se resultatet →') + '</button>';
+      b.innerHTML = '<button class="btn nextq" type="button">' + (s.pos < n ? (s.a.kind === 'missions' ? 'Nästa uppdrag →' : 'Nästa fråga →') : 'Se resultatet →') + '</button>';
       fbw.parentNode.appendChild(b);
       var nb = b.querySelector('button'), used = false;
       nb.addEventListener('click', function () { if (used) return; used = true; renderQuizStep(); });
@@ -457,7 +802,8 @@
     var s = session, n = s.idxs.length, key = s.a.id + '/' + s.tid, r = rec(key);
     clearSession();
     try { history.replaceState(null, '', '#/a/' + s.a.id); } catch (e) { }
-    var gained = s.right * (s.retry ? 5 : 10);
+    var isM = s.a.kind === 'missions';
+    var gained = isM ? n * (s.retry ? 5 : 10) : s.right * (s.retry ? 5 : 10);
     progress.xp = (progress.xp || 0) + gained;
     var before = rankOf(progress.xp - gained)[1], after = rankOf(progress.xp)[1];
     var stars = null, ratio = s.right / n;
@@ -480,6 +826,15 @@
       (nextTip ? '<p class="note" style="text-align:center">' + nextTip + '</p>' : '') +
       '<div class="stack">' + (ratio < 0.5 ? learnBtn + retryBtn : retryBtn + learnBtn) +
       '<a class="btn secondary wide" href="#/a/' + s.a.id + '">Till uppdraget</a></div>';
+    if (isM) {
+      var mm = s.missed.length;
+      html = '<div class="card result pop"><div class="big">🎖️</div><p class="score">' + n + ' uppdrag klara!</p>' +
+        '<p class="lead">' + (s.right === n ? 'Alla helt själv – riktigt starkt! 🏅' : s.right > 0 ? s.right + ' av dem helt själv. Bra jobbat!' : 'Du tog hjälp av Visa mig – det är så man lär sig. Bra jobbat!') + '</p>' +
+        '<p><span class="badge">+' + gained + ' poäng</span></p>' + (before !== after ? '<p class="lead">🎖️ Ny grad: <b>' + after + '</b>!</p>' : '') + '</div>' +
+        (!s.retry ? '<p class="note" style="text-align:center">🎖️ Dags för paus! Fortsätt gärna en annan dag.</p>' : '') +
+        '<div class="stack">' + (mm ? '<button class="btn wide retry" type="button">' + (mm === 1 ? 'Gör om uppdraget där du tog hjälp' : 'Gör om de ' + mm + ' där du tog hjälp') + '</button>' : '') +
+        '<a class="btn secondary wide" href="#/a/' + s.a.id + '">Till uppdraget</a></div>';
+    }
     setView(html);
     var rb = app.querySelector('.retry');
     if (rb) rb.addEventListener('click', function () { startQuiz(s.a.id, s.tid, s.missed.slice()); });

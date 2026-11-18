@@ -29,6 +29,16 @@
   ],
   "assignments": [
     {
+      "id": "matte-problemlosning",
+      "subject": "matte",
+      "title": "Problemlösning: bygg en modell",
+      "icon": "🧰",
+      "week": "Pågående",
+      "summary": "Bygg en modell först – sedan räknar du. Tallinje, tabell och stapelmodell.",
+      "parts": 5,
+      "file": "content/matte-problemlosning.json"
+    },
+    {
       "id": "engelska-glosor-v47",
       "subject": "engelska",
       "title": "Glosor: smak och mat",

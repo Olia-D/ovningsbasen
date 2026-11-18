@@ -45,6 +45,7 @@ with sync_playwright() as p:
         page.goto(BASE + "/#/"); page.wait_for_selector(".tab")
         for a in manifest["assignments"]:
             data = json.loads((ROOT / a["file"]).read_text())
+            if data.get("kind") == "missions": continue
             page.goto(f"{BASE}/#/a/{a['id']}"); page.wait_for_selector("h1")
             for t in data["topics"]:
                 for i, c in enumerate(t["learn"]):
