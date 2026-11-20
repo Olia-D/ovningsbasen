@@ -111,6 +111,8 @@ details.hint summary{min-height:44px;display:flex;align-items:center;cursor:poin
 .tabs{flex-wrap:wrap;overflow:visible}
 .nw{white-space:nowrap}
 .vis svg{max-width:520px}
+.set{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;font-size:36px;line-height:1.15;max-width:360px;margin:0 auto 8px}
+.set .gone{opacity:.35;filter:grayscale(1)}
 /* words (glosor) */
 .word{display:inline-flex;flex-direction:column;align-items:center;gap:4px;background:var(--sky);border-radius:18px;padding:14px 26px}
 .word .emo{font-size:52px;line-height:1.1}

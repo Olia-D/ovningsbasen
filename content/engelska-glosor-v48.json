@@ -1,0 +1,1056 @@
+{
+ "id": "engelska-glosor-v48",
+ "subject": "engelska",
+ "subjectName": "Engelska",
+ "title": "Glosor: kök och trädgård",
+ "icon": "🦆",
+ "intro": "Hej, kadett! Veckans glosor handlar om **mat, kök och trädgård**.\nLär dig 5 ord i taget och tryck på 🔊 för att höra hur orden låter.\nGlosorna ska du kunna på måndag!",
+ "answerLang": "en",
+ "topics": [
+  {
+   "id": "ord-1-5",
+   "title": "Ord 1–5",
+   "learn": [
+    {
+     "title": "[[Strange]] = konstig",
+     "text": "Något som är konstigt är inte som vanligt. På engelska: **[[strange]]**.\nTips: [[strange]] slutar med ett **e**.",
+     "visual": {
+      "type": "word",
+      "emoji": "🛸",
+      "en": "strange",
+      "sv": "konstig"
+     },
+     "example": {
+      "en": "I saw a **strange** light in the sky.",
+      "sv": "Jag såg ett konstigt ljus på himlen."
+     },
+     "try": {
+      "type": "single",
+      "q": "Vad betyder **[[strange]]**?",
+      "options": [
+       "konstig",
+       "stark",
+       "glad"
+      ],
+      "answer": 0,
+      "explain": "[[strange]] = konstig",
+      "wrongFeedback": {
+       "1": "Stark heter [[strong]] på engelska. [[strange]] = konstig."
+      }
+     }
+    },
+    {
+     "title": "[[Snack]] = mellanmål",
+     "text": "Ett mellanmål är lite mat mellan måltiderna. På engelska: **[[snack]]**.\nTips: [[snack]] slutar med **ck**.",
+     "visual": {
+      "type": "word",
+      "emoji": "🍎",
+      "en": "snack",
+      "sv": "mellanmål"
+     },
+     "example": {
+      "en": "After school I eat a **snack**.",
+      "sv": "Efter skolan äter jag ett mellanmål."
+     },
+     "try": {
+      "type": "single",
+      "q": "Vilket ord passar? [[After football I eat a ___.]] 🍎",
+      "options": [
+       "[[snack]]",
+       "[[worm]]",
+       "[[strange]]"
+      ],
+      "answer": 0,
+      "explain": "[[After football I eat a snack]] = Efter fotbollen äter jag ett mellanmål."
+     }
+    },
+    {
+     "title": "[[Meat]] = kött",
+     "text": "Köttbullar görs av kött. På engelska: **[[meat]]**.\nObs! [[meat]] (kött) stavas med **ea**. [[meet]] med **ee** betyder träffa.",
+     "visual": {
+      "type": "word",
+      "emoji": "🥩",
+      "en": "meat",
+      "sv": "kött"
+     },
+     "example": {
+      "en": "Meatballs are made of **meat**.",
+      "sv": "Köttbullar görs av kött."
+     },
+     "try": {
+      "type": "single",
+      "q": "Vad betyder **[[meat]]**?",
+      "options": [
+       "kött",
+       "träffa",
+       "mjölk"
+      ],
+      "answer": 0,
+      "explain": "[[meat]] = kött. Obs! [[meet]] med ee betyder träffa.",
+      "wrongFeedback": {
+       "1": "Lurigt! Träffa heter [[meet]] med **ee**. [[meat]] med **ea** = kött."
+      }
+     }
+    },
+    {
+     "title": "[[Roast]] = steka i ugn",
+     "text": "När man steker mat i ugnen säger man **[[roast]]** på engelska.\nTips: [[roast]] stavas med **oa**.",
+     "visual": {
+      "type": "word",
+      "emoji": "🍗",
+      "en": "roast",
+      "sv": "steka i ugn"
+     },
+     "example": {
+      "en": "We **roast** potatoes.",
+      "sv": "Vi steker potatis i ugnen."
+     },
+     "try": {
+      "type": "text",
+      "strict": true,
+      "q": "Minns du? Skriv på engelska: **konstig**",
+      "answer": [
+       "strange"
+      ],
+      "explain": "konstig = [[strange]] (kort 1)",
+      "wrongFeedback": {
+       "strang": "Nästan! Glöm inte **e** på slutet: [[strange]].",
+       "strane": "Nästan! Det stavas med **g**: [[s-t-r-a-n-g-e]].",
+       "stange": "Nästan! Glöm inte **r**: [[s-t-r-a-n-g-e]].",
+       "strenge": "Nästan! Det stavas med **a**: [[strange]].",
+       "weird": "[[weird]] betyder också konstig – bra! Men veckans glosa är **[[strange]]**.",
+       "stranger": "[[stranger]] betyder främling. Konstig = **[[strange]]**.",
+       "strainge": "Nästan! Det stavas utan i: [[strange]]."
+      }
+     }
+    },
+    {
+     "title": "[[Worm]] = mask",
+     "text": "En mask bor i jorden. På engelska: **[[worm]]**.\nObs! [[worm]] stavas med **o**. [[warm]] med **a** betyder varm.",
+     "visual": {
+      "type": "word",
+      "emoji": "🪱",
+      "en": "worm",
+      "sv": "mask"
+     },
+     "example": {
+      "en": "The bird eats a **worm**.",
+      "sv": "Fågeln äter en mask."
+     },
+     "try": {
+      "type": "single",
+      "q": "Vad betyder **[[worm]]**?",
+      "options": [
+       "mask",
+       "varm",
+       "orm"
+      ],
+      "answer": 0,
+      "explain": "[[worm]] = mask",
+      "wrongFeedback": {
+       "1": "Varm heter [[warm]] – med a. [[worm]] med o = mask.",
+       "2": "Orm heter [[snake]]. [[worm]] = mask."
+      }
+     }
+    }
+   ],
+   "test": [
+    {
+     "type": "single",
+     "q": "Vad betyder **[[strange]]**?",
+     "options": [
+      "konstig",
+      "stark",
+      "sträng",
+      "snäll"
+     ],
+     "answer": 0,
+     "explain": "[[strange]] = konstig",
+     "wrongFeedback": {
+      "1": "Stark heter [[strong]]. [[strange]] = konstig.",
+      "2": "Det låter likt, men [[strange]] betyder konstig."
+     }
+    },
+    {
+     "type": "text",
+     "strict": true,
+     "q": "Skriv på engelska: **mellanmål**",
+     "answer": [
+      "snack"
+     ],
+     "explain": "mellanmål = [[snack]]",
+     "wrongFeedback": {
+      "snak": "Nästan! Det stavas med **ck** på slutet: [[snack]].",
+      "snek": "Nästan! Det stavas [[s-n-a-c-k]].",
+      "snake": "[[~snake~]] betyder orm! 🐍 Mellanmål = **[[snack]]**.",
+      "snacks": "Nästan! Glosan är **[[snack]]** – utan s.",
+      "snac": "Nästan! Det stavas med **ck** på slutet: [[snack]].",
+      "snäck": "Nästan! Det stavas med **a**: [[snack]]."
+     },
+     "twin": {
+      "type": "text",
+      "strict": true,
+      "q": "Fyll i: [[After school I eat a ___.]] (mellanmål)",
+      "answer": [
+       "snack"
+      ],
+      "explain": "mellanmål = [[snack]]",
+      "wrongFeedback": {
+       "snak": "Nästan! Det stavas med **ck** på slutet: [[snack]].",
+       "snek": "Nästan! Det stavas [[s-n-a-c-k]].",
+       "snake": "[[~snake~]] betyder orm! 🐍 Mellanmål = **[[snack]]**.",
+       "snacks": "Nästan! Glosan är **[[snack]]** – utan s.",
+       "snac": "Nästan! Det stavas med **ck** på slutet: [[snack]].",
+       "snäck": "Nästan! Det stavas med **a**: [[snack]]."
+      }
+     }
+    },
+    {
+     "type": "single",
+     "q": "Vilket ord passar? [[Meatballs are made of ___.]]",
+     "options": [
+      "[[meat]]",
+      "[[worm]]",
+      "[[snack]]",
+      "[[strange]]"
+     ],
+     "answer": 0,
+     "explain": "[[Meatballs are made of meat]] = Köttbullar görs av kött."
+    },
+    {
+     "type": "text",
+     "strict": true,
+     "q": "Skriv på engelska: **kött**",
+     "answer": [
+      "meat"
+     ],
+     "explain": "kött = [[meat]] – med **ea**.",
+     "wrongFeedback": {
+      "meet": "[[~meet~]] med ee betyder träffa. [[meat]] (kött) stavas med **ea**.",
+      "mete": "Nästan! [[meat]] (kött) stavas med **ea**: [[m-e-a-t]].",
+      "meath": "Nästan! Det stavas utan h: [[meat]].",
+      "beef": "[[beef]] är nötkött. Veckans glosa för kött är **[[meat]]**.",
+      "mit": "Nästan! Det låter som i, men stavas med **ea**: [[meat]]."
+     },
+     "twin": {
+      "type": "text",
+      "strict": true,
+      "q": "Fyll i: [[A lion eats ___.]] (kött) 🦁",
+      "answer": [
+       "meat"
+      ],
+      "explain": "kött = [[meat]]",
+      "wrongFeedback": {
+       "meet": "[[~meet~]] med ee betyder träffa. [[meat]] (kött) stavas med **ea**.",
+       "mete": "Nästan! [[meat]] (kött) stavas med **ea**: [[m-e-a-t]].",
+       "meath": "Nästan! Det stavas utan h: [[meat]].",
+       "beef": "[[beef]] är nötkött. Veckans glosa för kött är **[[meat]]**.",
+       "mit": "Nästan! Det låter som i, men stavas med **ea**: [[meat]]."
+      }
+     }
+    },
+    {
+     "type": "single",
+     "q": "Vad betyder **[[roast]]**?",
+     "options": [
+      "steka i ugn",
+      "koka",
+      "frysa",
+      "skära"
+     ],
+     "answer": 0,
+     "explain": "[[roast]] = steka i ugn"
+    },
+    {
+     "type": "text",
+     "strict": true,
+     "q": "Skriv på engelska: **mask** (djuret 🪱)",
+     "answer": [
+      "worm"
+     ],
+     "explain": "mask = [[worm]] – med **o**.",
+     "wrongFeedback": {
+      "warm": "[[~warm~]] med a betyder varm! Djuret [[worm]] stavas med **o**.",
+      "vorm": "Nästan! Det börjar med **w**: [[worm]].",
+      "werm": "Nästan! Det stavas med **o**: [[worm]].",
+      "worme": "Nästan! Det stavas utan e på slutet: [[worm]].",
+      "mask": "[[mask]] på engelska är en mask för ansiktet 🎭. Djuret heter **[[worm]]**.",
+      "worms": "Nästan! Glosan är **[[worm]]** – utan s.",
+      "wörm": "Nästan! Det stavas med **o**: [[worm]]."
+     },
+     "twin": {
+      "type": "text",
+      "strict": true,
+      "q": "Fyll i: [[The bird eats a ___.]] (mask)",
+      "answer": [
+       "worm"
+      ],
+      "explain": "mask = [[worm]]",
+      "wrongFeedback": {
+       "warm": "[[~warm~]] med a betyder varm! Djuret [[worm]] stavas med **o**.",
+       "vorm": "Nästan! Det börjar med **w**: [[worm]].",
+       "werm": "Nästan! Det stavas med **o**: [[worm]].",
+       "worme": "Nästan! Det stavas utan e på slutet: [[worm]].",
+       "mask": "[[mask]] på engelska är en mask för ansiktet 🎭. Djuret heter **[[worm]]**.",
+       "worms": "Nästan! Glosan är **[[worm]]** – utan s.",
+       "wörm": "Nästan! Det stavas med **o**: [[worm]]."
+      }
+     }
+    },
+    {
+     "type": "multi",
+     "q": "Vilka två ord handlar om mat?",
+     "options": [
+      "[[meat]]",
+      "[[snack]]",
+      "[[strange]]",
+      "[[different]]"
+     ],
+     "answer": [
+      0,
+      1
+     ],
+     "explain": "[[meat]] (kött) och [[snack]] (mellanmål) handlar om mat. [[strange]] = konstig, [[different]] = olika."
+    },
+    {
+     "type": "text",
+     "strict": true,
+     "q": "Skriv på engelska: **konstig**",
+     "answer": [
+      "strange"
+     ],
+     "explain": "konstig = [[strange]]",
+     "wrongFeedback": {
+      "strang": "Nästan! Glöm inte **e** på slutet: [[strange]].",
+      "strane": "Nästan! Det stavas med **g**: [[s-t-r-a-n-g-e]].",
+      "stange": "Nästan! Glöm inte **r**: [[s-t-r-a-n-g-e]].",
+      "strenge": "Nästan! Det stavas med **a**: [[strange]].",
+      "weird": "[[weird]] betyder också konstig – bra! Men veckans glosa är **[[strange]]**.",
+      "stranger": "[[stranger]] betyder främling. Konstig = **[[strange]]**.",
+      "strainge": "Nästan! Det stavas utan i: [[strange]]."
+     },
+     "twin": {
+      "type": "text",
+      "strict": true,
+      "q": "Fyll i: [[I saw a ___ light in the sky.]] (konstigt) 🛸",
+      "answer": [
+       "strange"
+      ],
+      "explain": "konstig = [[strange]]",
+      "wrongFeedback": {
+       "strang": "Nästan! Glöm inte **e** på slutet: [[strange]].",
+       "strane": "Nästan! Det stavas med **g**: [[s-t-r-a-n-g-e]].",
+       "stange": "Nästan! Glöm inte **r**: [[s-t-r-a-n-g-e]].",
+       "strenge": "Nästan! Det stavas med **a**: [[strange]].",
+       "weird": "[[weird]] betyder också konstig – bra! Men veckans glosa är **[[strange]]**.",
+       "stranger": "[[stranger]] betyder främling. Konstig = **[[strange]]**.",
+       "strainge": "Nästan! Det stavas utan i: [[strange]]."
+      }
+     }
+    },
+    {
+     "type": "single",
+     "q": "Vad heter **mask** (djuret 🪱) på engelska?",
+     "options": [
+      "[[worm]]",
+      "[[warm]]",
+      "[[mask]]",
+      "[[snack]]"
+     ],
+     "answer": 0,
+     "explain": "mask (djuret) = [[worm]]",
+     "wrongFeedback": {
+      "1": "[[warm]] med a betyder varm.",
+      "2": "[[mask]] på engelska är en mask för ansiktet 🎭."
+     }
+    },
+    {
+     "type": "text",
+     "strict": true,
+     "q": "Skriv på engelska: **steka i ugn**",
+     "answer": [
+      "roast"
+     ],
+     "explain": "steka i ugn = [[roast]] – med **oa**.",
+     "wrongFeedback": {
+      "rost": "Nästan! Det stavas med **oa**: [[roast]].",
+      "roste": "Nästan! Det stavas med **oa**: [[r-o-a-s-t]].",
+      "rosst": "Nästan! Det stavas med **oa**: [[r-o-a-s-t]].",
+      "roust": "Nästan! Det stavas med **oa**: [[roast]].",
+      "fry": "[[fry]] betyder steka i stekpanna. Steka i ugn = **[[roast]]**.",
+      "bake": "[[bake]] betyder baka. Steka i ugn = **[[roast]]**."
+     },
+     "twin": {
+      "type": "text",
+      "strict": true,
+      "q": "Fyll i: [[We ___ a chicken in the oven.]] (steker i ugn)",
+      "answer": [
+       "roast"
+      ],
+      "explain": "steka i ugn = [[roast]]",
+      "wrongFeedback": {
+       "rost": "Nästan! Det stavas med **oa**: [[roast]].",
+       "roste": "Nästan! Det stavas med **oa**: [[r-o-a-s-t]].",
+       "rosst": "Nästan! Det stavas med **oa**: [[r-o-a-s-t]].",
+       "roust": "Nästan! Det stavas med **oa**: [[roast]].",
+       "fry": "[[fry]] betyder steka i stekpanna. Steka i ugn = **[[roast]]**.",
+       "bake": "[[bake]] betyder baka. Steka i ugn = **[[roast]]**."
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "ord-6-10",
+   "title": "Ord 6–10",
+   "learn": [
+    {
+     "title": "[[Oven]] = ugn",
+     "text": "I ugnen kan man baka bröd och göra pizza. På engelska: **[[oven]]**.\nTips: [[oven]] stavas med **v**.",
+     "visual": {
+      "type": "word",
+      "emoji": "🍕🔥",
+      "en": "oven",
+      "sv": "ugn"
+     },
+     "example": {
+      "en": "The pizza is in the **oven**.",
+      "sv": "Pizzan är i ugnen."
+     },
+     "try": {
+      "type": "single",
+      "q": "Vilket ord passar? [[The pizza is in the ___.]]",
+      "options": [
+       "[[oven]]",
+       "[[duck]]",
+       "[[worm]]"
+      ],
+      "answer": 0,
+      "explain": "[[The pizza is in the oven]] = Pizzan är i ugnen."
+     }
+    },
+    {
+     "title": "[[Duck]] = anka",
+     "text": "En anka kan simma, gå och flyga. På engelska: **[[duck]]**.\nTips: [[duck]] stavas med **u** och slutar med **ck**.",
+     "visual": {
+      "type": "word",
+      "emoji": "🦆",
+      "en": "duck",
+      "sv": "anka"
+     },
+     "example": {
+      "en": "A **duck** can swim and fly.",
+      "sv": "En anka kan simma och flyga."
+     },
+     "try": {
+      "type": "single",
+      "q": "Vad betyder **[[duck]]**?",
+      "options": [
+       "anka",
+       "gås",
+       "båt"
+      ],
+      "answer": 0,
+      "explain": "[[duck]] = anka",
+      "wrongFeedback": {
+       "1": "Gås heter [[goose]]. [[duck]] = anka.",
+       "2": "Båt heter [[boat]]. [[duck]] = anka."
+      }
+     }
+    },
+    {
+     "title": "[[Prepared]] = tillagad",
+     "text": "**Tillagad** betyder att maten är lagad och klar att äta. På engelska: **[[prepared]]**.\nTips: [[prepare]] + **d** = [[prepared]].",
+     "visual": {
+      "type": "word",
+      "emoji": "🍲",
+      "en": "prepared",
+      "sv": "tillagad"
+     },
+     "example": {
+      "en": "The food is **prepared** in the kitchen.",
+      "sv": "Maten blir tillagad i köket."
+     },
+     "try": {
+      "type": "single",
+      "q": "Vad betyder **[[prepared]]**?",
+      "options": [
+       "tillagad",
+       "fryst",
+       "rå"
+      ],
+      "answer": 0,
+      "explain": "[[prepared]] = tillagad",
+      "wrongFeedback": {
+       "2": "Rå heter [[raw]]. [[prepared]] = tillagad."
+      }
+     }
+    },
+    {
+     "title": "[[Garden]] = trädgård",
+     "text": "I en trädgård växer blommor och grönsaker. På engelska: **[[garden]]**.\nObs! Gardin är ett svenskt ord för tyget vid fönstret. Trädgård = [[garden]].",
+     "visual": {
+      "type": "word",
+      "emoji": "🌻",
+      "en": "garden",
+      "sv": "trädgård"
+     },
+     "example": {
+      "en": "Worms live in the **garden**.",
+      "sv": "Maskar bor i trädgården."
+     },
+     "try": {
+      "type": "text",
+      "strict": true,
+      "q": "Minns du? Skriv på engelska: **ugn**",
+      "answer": [
+       "oven"
+      ],
+      "explain": "ugn = [[oven]] (kort 1)",
+      "wrongFeedback": {
+       "owen": "Nästan! Det stavas med **v**: [[oven]].",
+       "ovn": "Nästan! Glöm inte **e**: [[o-v-e-n]].",
+       "ovan": "Nästan! Det stavas med **e**: [[oven]].",
+       "ovne": "Nästan! Det stavas [[o-v-e-n]].",
+       "stove": "[[stove]] är spisen. Ugn = **[[oven]]**.",
+       "aven": "Nästan! Det låter som a, men stavas med **o**: [[oven]].",
+       "avven": "Nästan! Det stavas med **o** och ett v: [[oven]]."
+      }
+     }
+    },
+    {
+     "title": "[[A little bit]] = lite grann",
+     "text": "När du bara vill ha lite av något säger du **[[a little bit]]**.\nTips: [[little]] har två **t**.",
+     "visual": {
+      "type": "word",
+      "emoji": "🤏",
+      "en": "a little bit",
+      "sv": "lite grann"
+     },
+     "example": {
+      "en": "Can I have **a little bit** of milk?",
+      "sv": "Kan jag få lite grann mjölk?"
+     },
+     "try": {
+      "type": "single",
+      "q": "Vilket passar? [[Can I have ___ of milk?]] 🥛",
+      "options": [
+       "[[a little bit]]",
+       "[[a duck]]",
+       "[[a garden]]"
+      ],
+      "answer": 0,
+      "explain": "[[Can I have a little bit of milk?]] = Kan jag få lite grann mjölk?"
+     }
+    }
+   ],
+   "test": [
+    {
+     "type": "single",
+     "q": "Vad betyder **[[oven]]**?",
+     "options": [
+      "ugn",
+      "kylskåp",
+      "diskmaskin",
+      "kastrull"
+     ],
+     "answer": 0,
+     "explain": "[[oven]] = ugn"
+    },
+    {
+     "type": "text",
+     "strict": true,
+     "q": "Skriv på engelska: **anka**",
+     "answer": [
+      "duck"
+     ],
+     "explain": "anka = [[duck]] – med **u**.",
+     "wrongFeedback": {
+      "dock": "[[~dock~]] med o är en kaj där båtar lägger till ⚓. [[duck]] (anka) stavas med **u**.",
+      "duk": "Nästan! Det stavas med **ck**: [[duck]].",
+      "dack": "Nästan! Det stavas med **u**: [[duck]].",
+      "dukc": "Nästan! Det stavas [[d-u-c-k]].",
+      "dak": "Nästan! Det stavas med **u** och **ck**: [[duck]]."
+     },
+     "twin": {
+      "type": "text",
+      "strict": true,
+      "q": "Fyll i: [[A ___ swims in the lake.]] (anka) 🦆",
+      "answer": [
+       "duck"
+      ],
+      "explain": "anka = [[duck]]",
+      "wrongFeedback": {
+       "dock": "[[~dock~]] med o är en kaj där båtar lägger till ⚓. [[duck]] (anka) stavas med **u**.",
+       "duk": "Nästan! Det stavas med **ck**: [[duck]].",
+       "dack": "Nästan! Det stavas med **u**: [[duck]].",
+       "dukc": "Nästan! Det stavas [[d-u-c-k]].",
+       "dak": "Nästan! Det stavas med **u** och **ck**: [[duck]]."
+      }
+     }
+    },
+    {
+     "type": "single",
+     "q": "Vilket ord passar? [[The food is ___. Let's eat!]]",
+     "options": [
+      "[[prepared]]",
+      "[[garden]]",
+      "[[a little bit]]",
+      "[[oven]]"
+     ],
+     "answer": 0,
+     "explain": "[[The food is prepared. Let's eat!]] = Maten är tillagad. Nu äter vi!"
+    },
+    {
+     "type": "text",
+     "strict": true,
+     "q": "Skriv på engelska: **trädgård**",
+     "answer": [
+      "garden"
+     ],
+     "explain": "trädgård = [[garden]]",
+     "wrongFeedback": {
+      "gardin": "Gardin är ett svenskt ord (för fönstret). Trädgård = **[[garden]]**.",
+      "garten": "Nästan! På engelska har det **d**: [[garden]].",
+      "gardn": "Nästan! Glöm inte **e**: [[g-a-r-d-e-n]].",
+      "garde": "Nästan! Glöm inte **n** på slutet: [[garden]].",
+      "gardan": "Nästan! Det stavas med **e**: [[garden]].",
+      "yard": "[[yard]] används mest i USA. Veckans glosa är **[[garden]]**.",
+      "gaden": "Nästan! Glöm inte **r**: [[garden]]."
+     },
+     "twin": {
+      "type": "text",
+      "strict": true,
+      "q": "Fyll i: [[Worms live in the ___.]] (trädgården)",
+      "answer": [
+       "garden"
+      ],
+      "explain": "trädgård = [[garden]]",
+      "wrongFeedback": {
+       "gardin": "Gardin är ett svenskt ord (för fönstret). Trädgård = **[[garden]]**.",
+       "garten": "Nästan! På engelska har det **d**: [[garden]].",
+       "gardn": "Nästan! Glöm inte **e**: [[g-a-r-d-e-n]].",
+       "garde": "Nästan! Glöm inte **n** på slutet: [[garden]].",
+       "gardan": "Nästan! Det stavas med **e**: [[garden]].",
+       "yard": "[[yard]] används mest i USA. Veckans glosa är **[[garden]]**.",
+       "gaden": "Nästan! Glöm inte **r**: [[garden]]."
+      }
+     }
+    },
+    {
+     "type": "multi",
+     "q": "Vilka två ord är djur?",
+     "options": [
+      "[[duck]]",
+      "[[worm]]",
+      "[[oven]]",
+      "[[garden]]"
+     ],
+     "answer": [
+      0,
+      1
+     ],
+     "explain": "[[duck]] (anka) och [[worm]] (mask) är djur. [[oven]] = ugn, [[garden]] = trädgård."
+    },
+    {
+     "type": "text",
+     "strict": true,
+     "q": "Skriv på engelska: **ugn**",
+     "answer": [
+      "oven"
+     ],
+     "explain": "ugn = [[oven]]",
+     "wrongFeedback": {
+      "owen": "Nästan! Det stavas med **v**: [[oven]].",
+      "ovn": "Nästan! Glöm inte **e**: [[o-v-e-n]].",
+      "ovan": "Nästan! Det stavas med **e**: [[oven]].",
+      "ovne": "Nästan! Det stavas [[o-v-e-n]].",
+      "stove": "[[stove]] är spisen. Ugn = **[[oven]]**.",
+      "aven": "Nästan! Det låter som a, men stavas med **o**: [[oven]].",
+      "avven": "Nästan! Det stavas med **o** och ett v: [[oven]]."
+     },
+     "twin": {
+      "type": "text",
+      "strict": true,
+      "q": "Fyll i: [[We bake bread in the ___.]] (ugnen)",
+      "answer": [
+       "oven"
+      ],
+      "explain": "ugn = [[oven]]",
+      "wrongFeedback": {
+       "owen": "Nästan! Det stavas med **v**: [[oven]].",
+       "ovn": "Nästan! Glöm inte **e**: [[o-v-e-n]].",
+       "ovan": "Nästan! Det stavas med **e**: [[oven]].",
+       "ovne": "Nästan! Det stavas [[o-v-e-n]].",
+       "stove": "[[stove]] är spisen. Ugn = **[[oven]]**.",
+       "aven": "Nästan! Det låter som a, men stavas med **o**: [[oven]].",
+       "avven": "Nästan! Det stavas med **o** och ett v: [[oven]]."
+      }
+     }
+    },
+    {
+     "type": "single",
+     "q": "Vad heter **lite grann** på engelska?",
+     "options": [
+      "[[a little bit]]",
+      "[[a piece of]]",
+      "[[a lot of]]",
+      "[[a big bit]]"
+     ],
+     "answer": 0,
+     "explain": "lite grann = [[a little bit]]",
+     "wrongFeedback": {
+      "1": "[[a piece of]] betyder en bit – det var förra veckans glosa!",
+      "2": "[[a lot of]] betyder mycket – nästan motsatsen!",
+      "3": "Så säger man inte på engelska. Lite grann = [[a little bit]]."
+     }
+    },
+    {
+     "type": "text",
+     "strict": true,
+     "q": "Skriv på engelska: **tillagad**",
+     "answer": [
+      "prepared"
+     ],
+     "explain": "tillagad = [[prepared]]",
+     "wrongFeedback": {
+      "prepaired": "Nästan! Det stavas utan i: [[pre-pared]].",
+      "prepard": "Nästan! Det stavas med **e** före d: [[prepared]].",
+      "preparred": "Nästan! Det stavas med ett r: [[prepared]].",
+      "prepered": "Nästan! Det stavas med **a**: [[pre-pared]].",
+      "prepare": "Nästan! Glöm inte **d** på slutet: [[prepared]].",
+      "cooked": "[[cooked]] betyder också tillagad – bra! Men veckans glosa är **[[prepared]]**.",
+      "pripared": "Nästan! Det börjar med **pre**: [[prepared]].",
+      "ready": "[[ready]] betyder klar – bra engelska! Men veckans glosa för tillagad är **[[prepared]]**."
+     },
+     "twin": {
+      "type": "text",
+      "strict": true,
+      "q": "Fyll i: [[Dinner is ___. Come and eat!]] (tillagad)",
+      "answer": [
+       "prepared"
+      ],
+      "explain": "tillagad = [[prepared]]",
+      "wrongFeedback": {
+       "prepaired": "Nästan! Det stavas utan i: [[pre-pared]].",
+       "prepard": "Nästan! Det stavas med **e** före d: [[prepared]].",
+       "preparred": "Nästan! Det stavas med ett r: [[prepared]].",
+       "prepered": "Nästan! Det stavas med **a**: [[pre-pared]].",
+       "prepare": "Nästan! Glöm inte **d** på slutet: [[prepared]].",
+       "cooked": "[[cooked]] betyder också tillagad – bra! Men veckans glosa är **[[prepared]]**.",
+       "pripared": "Nästan! Det börjar med **pre**: [[prepared]].",
+       "ready": "[[ready]] betyder klar – bra engelska! Men veckans glosa för tillagad är **[[prepared]]**."
+      }
+     }
+    },
+    {
+     "type": "single",
+     "q": "Vad betyder **[[garden]]**?",
+     "options": [
+      "trädgård",
+      "gardin",
+      "garage",
+      "skog"
+     ],
+     "answer": 0,
+     "explain": "[[garden]] = trädgård",
+     "wrongFeedback": {
+      "1": "Lurigt! Det låter likt, men [[garden]] betyder trädgård."
+     }
+    },
+    {
+     "type": "text",
+     "strict": true,
+     "q": "Skriv på engelska: **lite grann**",
+     "answer": [
+      "a little bit"
+     ],
+     "explain": "lite grann = [[a little bit]]",
+     "wrongFeedback": {
+      "a littel bit": "Nästan! [[little]] slutar med **le**: [[l-i-t-t-l-e]].",
+      "a litle bit": "Nästan! [[little]] har två t: [[l-i-t-t-l-e]].",
+      "a lettle bit": "Nästan! [[little]] stavas med i: [[l-i-t-t-l-e]].",
+      "little bit": "Nästan! Glöm inte **a** i början: [[a little bit]].",
+      "a little": "Nästan! Glöm inte **bit** på slutet: [[a little bit]].",
+      "a littlebit": "Nästan! Skriv mellanslag före **bit**: [[a little bit]].",
+      "alittle bit": "Nästan! Skriv mellanslag efter **a**: [[a little bit]].",
+      "a bit": "Bra engelska! Men veckans glosa är **[[a little bit]]**.",
+      "a little bite": "Nästan! [[bite]] betyder bita. Det ska vara [[bit]] utan e: [[a little bit]].",
+      "a litel bit": "Nästan! [[little]] har två t och slutar med **le**: [[l-i-t-t-l-e]]."
+     },
+     "twin": {
+      "type": "text",
+      "strict": true,
+      "q": "Fyll i: [[Can I have ___ ___ ___ of milk?]] (lite grann)",
+      "answer": [
+       "a little bit"
+      ],
+      "explain": "lite grann = [[a little bit]]",
+      "wrongFeedback": {
+       "a littel bit": "Nästan! [[little]] slutar med **le**: [[l-i-t-t-l-e]].",
+       "a litle bit": "Nästan! [[little]] har två t: [[l-i-t-t-l-e]].",
+       "a lettle bit": "Nästan! [[little]] stavas med i: [[l-i-t-t-l-e]].",
+       "little bit": "Nästan! Glöm inte **a** i början: [[a little bit]].",
+       "a little": "Nästan! Glöm inte **bit** på slutet: [[a little bit]].",
+       "a littlebit": "Nästan! Skriv mellanslag före **bit**: [[a little bit]].",
+       "alittle bit": "Nästan! Skriv mellanslag efter **a**: [[a little bit]].",
+       "a bit": "Bra engelska! Men veckans glosa är **[[a little bit]]**.",
+       "a little bite": "Nästan! [[bite]] betyder bita. Det ska vara [[bit]] utan e: [[a little bit]].",
+       "a litel bit": "Nästan! [[little]] har två t och slutar med **le**: [[l-i-t-t-l-e]]."
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "mixed": [
+  {
+   "type": "single",
+   "q": "Vad betyder **[[snack]]**?",
+   "options": [
+    "mellanmål",
+    "orm",
+    "middag",
+    "kniv"
+   ],
+   "answer": 0,
+   "explain": "[[snack]] = mellanmål",
+   "wrongFeedback": {
+    "1": "Orm heter [[snake]]. [[snack]] = mellanmål."
+   }
+  },
+  {
+   "type": "text",
+   "strict": true,
+   "q": "Skriv på engelska: **trädgård**",
+   "answer": [
+    "garden"
+   ],
+   "explain": "trädgård = [[garden]]",
+   "wrongFeedback": {
+    "gardin": "Gardin är ett svenskt ord (för fönstret). Trädgård = **[[garden]]**.",
+    "garten": "Nästan! På engelska har det **d**: [[garden]].",
+    "gardn": "Nästan! Glöm inte **e**: [[g-a-r-d-e-n]].",
+    "garde": "Nästan! Glöm inte **n** på slutet: [[garden]].",
+    "gardan": "Nästan! Det stavas med **e**: [[garden]].",
+    "yard": "[[yard]] används mest i USA. Veckans glosa är **[[garden]]**.",
+    "gaden": "Nästan! Glöm inte **r**: [[garden]]."
+   },
+   "twin": {
+    "type": "text",
+    "strict": true,
+    "q": "Fyll i: [[Flowers grow in the ___.]] (trädgården) 🌻",
+    "answer": [
+     "garden"
+    ],
+    "explain": "trädgård = [[garden]]",
+    "wrongFeedback": {
+     "gardin": "Gardin är ett svenskt ord (för fönstret). Trädgård = **[[garden]]**.",
+     "garten": "Nästan! På engelska har det **d**: [[garden]].",
+     "gardn": "Nästan! Glöm inte **e**: [[g-a-r-d-e-n]].",
+     "garde": "Nästan! Glöm inte **n** på slutet: [[garden]].",
+     "gardan": "Nästan! Det stavas med **e**: [[garden]].",
+     "yard": "[[yard]] används mest i USA. Veckans glosa är **[[garden]]**.",
+     "gaden": "Nästan! Glöm inte **r**: [[garden]]."
+    }
+   }
+  },
+  {
+   "type": "single",
+   "q": "Vilket ord passar? [[We ___ the meat in the oven.]]",
+   "options": [
+    "[[roast]]",
+    "[[worm]]",
+    "[[strange]]",
+    "[[garden]]"
+   ],
+   "answer": 0,
+   "explain": "[[We roast the meat in the oven]] = Vi steker köttet i ugnen."
+  },
+  {
+   "type": "text",
+   "strict": true,
+   "q": "Skriv på engelska: **kött**",
+   "answer": [
+    "meat"
+   ],
+   "explain": "kött = [[meat]] – med **ea**.",
+   "wrongFeedback": {
+    "meet": "[[~meet~]] med ee betyder träffa. [[meat]] (kött) stavas med **ea**.",
+    "mete": "Nästan! [[meat]] (kött) stavas med **ea**: [[m-e-a-t]].",
+    "meath": "Nästan! Det stavas utan h: [[meat]].",
+    "beef": "[[beef]] är nötkött. Veckans glosa för kött är **[[meat]]**.",
+    "mit": "Nästan! Det låter som i, men stavas med **ea**: [[meat]]."
+   },
+   "twin": {
+    "type": "text",
+    "strict": true,
+    "q": "Fyll i: [[Hamburgers are made of ___.]] (kött) 🍔",
+    "answer": [
+     "meat"
+    ],
+    "explain": "kött = [[meat]]",
+    "wrongFeedback": {
+     "meet": "[[~meet~]] med ee betyder träffa. [[meat]] (kött) stavas med **ea**.",
+     "mete": "Nästan! [[meat]] (kött) stavas med **ea**: [[m-e-a-t]].",
+     "meath": "Nästan! Det stavas utan h: [[meat]].",
+     "beef": "[[beef]] är nötkött. Veckans glosa för kött är **[[meat]]**.",
+     "mit": "Nästan! Det låter som i, men stavas med **ea**: [[meat]]."
+    }
+   }
+  },
+  {
+   "type": "multi",
+   "q": "Vilka två meningar stämmer?",
+   "options": [
+    "[[A duck can swim.]]",
+    "[[Pizza is made in an oven.]]",
+    "[[A worm can fly.]]",
+    "[[Meat grows in the garden.]]"
+   ],
+   "answer": [
+    0,
+    1
+   ],
+   "explain": "En anka kan simma och pizza görs i en ugn – det stämmer. En mask kan inte flyga, och kött växer inte i trädgården."
+  },
+  {
+   "type": "text",
+   "strict": true,
+   "q": "Skriv på engelska: **konstig**",
+   "answer": [
+    "strange"
+   ],
+   "explain": "konstig = [[strange]]",
+   "wrongFeedback": {
+    "strang": "Nästan! Glöm inte **e** på slutet: [[strange]].",
+    "strane": "Nästan! Det stavas med **g**: [[s-t-r-a-n-g-e]].",
+    "stange": "Nästan! Glöm inte **r**: [[s-t-r-a-n-g-e]].",
+    "strenge": "Nästan! Det stavas med **a**: [[strange]].",
+    "weird": "[[weird]] betyder också konstig – bra! Men veckans glosa är **[[strange]]**.",
+    "stranger": "[[stranger]] betyder främling. Konstig = **[[strange]]**.",
+    "strainge": "Nästan! Det stavas utan i: [[strange]]."
+   },
+   "twin": {
+    "type": "text",
+    "strict": true,
+    "q": "Fyll i: [[That is a ___ sound!]] (konstigt)",
+    "answer": [
+     "strange"
+    ],
+    "explain": "konstig = [[strange]]",
+    "wrongFeedback": {
+     "strang": "Nästan! Glöm inte **e** på slutet: [[strange]].",
+     "strane": "Nästan! Det stavas med **g**: [[s-t-r-a-n-g-e]].",
+     "stange": "Nästan! Glöm inte **r**: [[s-t-r-a-n-g-e]].",
+     "strenge": "Nästan! Det stavas med **a**: [[strange]].",
+     "weird": "[[weird]] betyder också konstig – bra! Men veckans glosa är **[[strange]]**.",
+     "stranger": "[[stranger]] betyder främling. Konstig = **[[strange]]**.",
+     "strainge": "Nästan! Det stavas utan i: [[strange]]."
+    }
+   }
+  },
+  {
+   "type": "single",
+   "q": "Vad heter **tillagad** på engelska?",
+   "options": [
+    "[[prepared]]",
+    "[[oven]]",
+    "[[snack]]",
+    "[[worm]]"
+   ],
+   "answer": 0,
+   "explain": "tillagad = [[prepared]]"
+  },
+  {
+   "type": "text",
+   "strict": true,
+   "q": "Skriv på engelska: **mask** (djuret 🪱)",
+   "answer": [
+    "worm"
+   ],
+   "explain": "mask = [[worm]] – med **o**.",
+   "wrongFeedback": {
+    "warm": "[[~warm~]] med a betyder varm! Djuret [[worm]] stavas med **o**.",
+    "vorm": "Nästan! Det börjar med **w**: [[worm]].",
+    "werm": "Nästan! Det stavas med **o**: [[worm]].",
+    "worme": "Nästan! Det stavas utan e på slutet: [[worm]].",
+    "mask": "[[mask]] på engelska är en mask för ansiktet 🎭. Djuret heter **[[worm]]**.",
+    "worms": "Nästan! Glosan är **[[worm]]** – utan s.",
+    "wörm": "Nästan! Det stavas med **o**: [[worm]]."
+   },
+   "twin": {
+    "type": "text",
+    "strict": true,
+    "q": "Fyll i: [[A ___ lives in the ground.]] (mask)",
+    "answer": [
+     "worm"
+    ],
+    "explain": "mask = [[worm]]",
+    "wrongFeedback": {
+     "warm": "[[~warm~]] med a betyder varm! Djuret [[worm]] stavas med **o**.",
+     "vorm": "Nästan! Det börjar med **w**: [[worm]].",
+     "werm": "Nästan! Det stavas med **o**: [[worm]].",
+     "worme": "Nästan! Det stavas utan e på slutet: [[worm]].",
+     "mask": "[[mask]] på engelska är en mask för ansiktet 🎭. Djuret heter **[[worm]]**.",
+     "worms": "Nästan! Glosan är **[[worm]]** – utan s.",
+     "wörm": "Nästan! Det stavas med **o**: [[worm]]."
+    }
+   }
+  },
+  {
+   "type": "single",
+   "q": "Repetition från vecka 47: Vad betyder **[[flavour]]**?",
+   "options": [
+    "smak",
+    "land",
+    "bit",
+    "doft"
+   ],
+   "answer": 0,
+   "explain": "[[flavour]] = smak. Bra att du minns gamla glosor också!"
+  },
+  {
+   "type": "text",
+   "strict": true,
+   "q": "Skriv på engelska: **lite grann**",
+   "answer": [
+    "a little bit"
+   ],
+   "explain": "lite grann = [[a little bit]]",
+   "wrongFeedback": {
+    "a littel bit": "Nästan! [[little]] slutar med **le**: [[l-i-t-t-l-e]].",
+    "a litle bit": "Nästan! [[little]] har två t: [[l-i-t-t-l-e]].",
+    "a lettle bit": "Nästan! [[little]] stavas med i: [[l-i-t-t-l-e]].",
+    "little bit": "Nästan! Glöm inte **a** i början: [[a little bit]].",
+    "a little": "Nästan! Glöm inte **bit** på slutet: [[a little bit]].",
+    "a littlebit": "Nästan! Skriv mellanslag före **bit**: [[a little bit]].",
+    "alittle bit": "Nästan! Skriv mellanslag efter **a**: [[a little bit]].",
+    "a bit": "Bra engelska! Men veckans glosa är **[[a little bit]]**.",
+    "a little bite": "Nästan! [[bite]] betyder bita. Det ska vara [[bit]] utan e: [[a little bit]].",
+    "a litel bit": "Nästan! [[little]] har två t och slutar med **le**: [[l-i-t-t-l-e]]."
+   },
+   "twin": {
+    "type": "text",
+    "strict": true,
+    "q": "Fyll i: [[I am ___ ___ ___ tired.]] (lite grann)",
+    "answer": [
+     "a little bit"
+    ],
+    "explain": "lite grann = [[a little bit]]",
+    "wrongFeedback": {
+     "a littel bit": "Nästan! [[little]] slutar med **le**: [[l-i-t-t-l-e]].",
+     "a litle bit": "Nästan! [[little]] har två t: [[l-i-t-t-l-e]].",
+     "a lettle bit": "Nästan! [[little]] stavas med i: [[l-i-t-t-l-e]].",
+     "little bit": "Nästan! Glöm inte **a** i början: [[a little bit]].",
+     "a little": "Nästan! Glöm inte **bit** på slutet: [[a little bit]].",
+     "a littlebit": "Nästan! Skriv mellanslag före **bit**: [[a little bit]].",
+     "alittle bit": "Nästan! Skriv mellanslag efter **a**: [[a little bit]].",
+     "a bit": "Bra engelska! Men veckans glosa är **[[a little bit]]**.",
+     "a little bite": "Nästan! [[bite]] betyder bita. Det ska vara [[bit]] utan e: [[a little bit]].",
+     "a litel bit": "Nästan! [[little]] har två t och slutar med **le**: [[l-i-t-t-l-e]]."
+    }
+   }
+  }
+ ]
+}

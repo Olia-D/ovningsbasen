@@ -1,0 +1,1935 @@
+{
+ "id": "matte-brak-procent-v49",
+ "subject": "matte",
+ "subjectName": "Matte",
+ "title": "Prov: bråk och procent",
+ "icon": "🍕",
+ "intro": "Hej, kadett! Onsdag 2 december är det **matteprov om bråk och procent**.\nHär tränar du på det som kommer på provet – en del per dag.\nDag 1–4: Del 1–4. Dag 5: Blandat test.\nEtt steg i taget – du klarar det!",
+ "topics": [
+  {
+   "id": "andelar",
+   "title": "Andelar i figurer och grupper",
+   "learn": [
+    {
+     "title": "Andel = hur stor del",
+     "text": "**Andel** betyder hur stor del av det hela något är.\nUbåten har 8 lika stora rum. 3 rum är blå. Då är andelen blå **3/8**.",
+     "visual": {
+      "type": "bar",
+      "parts": 8,
+      "filled": 3,
+      "caption": "3 av 8 lika stora delar är blå = 3/8"
+     },
+     "try": {
+      "type": "single",
+      "q": "Hur stor andel av rummen är **vita**?",
+      "visual": {
+       "type": "bar",
+       "parts": 8,
+       "filled": 3
+      },
+      "options": [
+       "5/8",
+       "3/8",
+       "5/3"
+      ],
+      "answer": 0,
+      "explain": "8 − 3 = 5 rum är vita. Andelen vita är 5/8.",
+      "wrongFeedback": {
+       "1": "3/8 är den blå andelen. Räkna de vita rummen.",
+       "2": "Nämnaren ska vara alla rum: 8."
+      }
+     }
+    },
+    {
+     "title": "Pizza i bitar",
+     "text": "En pizza är skuren i 6 lika stora bitar. 4 bitar är blå.\nAndelen blå är 4/6.\nFörkorta: dela båda med 2. Då blir det **2/3** i enklaste form.",
+     "visual": {
+      "type": "pie",
+      "parts": 6,
+      "filled": 4,
+      "caption": "4 av 6 bitar är blå = 4/6 = 2/3"
+     },
+     "try": {
+      "type": "text",
+      "input": "fraction",
+      "q": "Pizzan har 8 bitar och 2 är blå. Hur stor andel är blå? Svara i enklaste form.",
+      "visual": {
+       "type": "pie",
+       "parts": 8,
+       "filled": 2
+      },
+      "answer": [
+       "1/4"
+      ],
+      "explain": "2/8 – dela båda med 2: 1/4.",
+      "wrongFeedback": {
+       "2/8": "Rätt andel! Men förkorta: dela båda med 2.",
+       "6/8": "6/8 är de vita bitarna. Räkna de blå.",
+       "2/6": "Nämnaren ska vara alla bitar: 8."
+      }
+     }
+    },
+    {
+     "title": "Andel av en grupp",
+     "text": "Här är 6 legobitar. 2 är svarta.\nAndelen svarta är 2/6. I enklaste form: **1/3**.\nKom ihåg: nämnaren är hur många det är **totalt**.",
+     "visual": {
+      "type": "set",
+      "items": [
+       "⬛",
+       "⬛",
+       "⬜",
+       "⬜",
+       "⬜",
+       "⬜"
+      ],
+      "label": "2 svarta och 4 vita legobitar",
+      "caption": "2 av 6 bitar är svarta = 2/6 = 1/3"
+     },
+     "try": {
+      "type": "text",
+      "input": "fraction",
+      "q": "Hur stor andel av kulorna är röda? Svara i enklaste form.",
+      "visual": {
+       "type": "set",
+       "items": [
+        "🔴",
+        "🔴",
+        "🔴",
+        "🔵",
+        "🔵",
+        "🔵",
+        "🔵",
+        "🔵",
+        "🔵"
+       ],
+       "label": "3 röda och 6 blå kulor"
+      },
+      "answer": [
+       "1/3"
+      ],
+      "explain": "3 av 9 kulor är röda: 3/9. Dela båda med 3: 1/3.",
+      "wrongFeedback": {
+       "3/9": "Rätt andel! Men förkorta: dela båda med 3.",
+       "3/6": "Nämnaren ska vara **alla** kulor: 9.",
+       "1/2": "Nämnaren ska vara **alla** kulor: 9. Det blir 3/9."
+      }
+     }
+    },
+    {
+     "title": "När antalet ändras",
+     "text": "Varje bild är en burk med frukt. 5 burkar: 2 med persika, 2 med ananas och 1 med päron. Andelen ananas är 2/5.\nNu äter någon upp burken med päron. Då finns det bara **4** burkar kvar. Andelen ananas blir 2/4 = **1/2**.\nNär antalet ändras, ändras **nämnaren**!",
+     "visual": {
+      "type": "set",
+      "items": [
+       "🍑",
+       "🍍",
+       "🍐",
+       "🍑",
+       "🍍"
+      ],
+      "gone": [
+       2
+      ],
+      "label": "Burkar: persika, ananas, päron (uppäten), persika, ananas",
+      "caption": "Den grå burken är uppäten. 4 burkar kvar."
+     },
+     "try": {
+      "type": "single",
+      "q": "Nu äter någon upp en burk med ananas också. Hur stor andel av burkarna är ananas nu?",
+      "visual": {
+       "type": "set",
+       "items": [
+        "🍑",
+        "🍍",
+        "🍐",
+        "🍑",
+        "🍍"
+       ],
+       "gone": [
+        2,
+        4
+       ],
+       "label": "Burkar kvar: persika, ananas, persika"
+      },
+      "options": [
+       "1/3",
+       "1/4",
+       "1/5",
+       "2/3"
+      ],
+      "answer": 0,
+      "explain": "3 burkar kvar: persika, ananas, persika. 1 av 3 är ananas: 1/3.",
+      "wrongFeedback": {
+       "1": "Det finns inte 4 burkar längre – räkna burkarna som är kvar.",
+       "2": "Det finns inte 5 burkar längre – räkna burkarna som är kvar.",
+       "3": "2/3 är persikorna. Räkna ananasburkarna."
+      }
+     }
+    },
+    {
+     "title": "Flera färger i en hel",
+     "text": "Rutan har 6 lika stora delar. 3 är blå, 2 är gula och 1 är vit.\nBlå: 3/6 = **1/2**\nGul: 2/6 = **1/3**\nVit: **1/6**",
+     "visual": {
+      "type": "bar",
+      "parts": 6,
+      "filled": 3,
+      "filled2": 2,
+      "caption": "Blå 1/2, gul 1/3, vit 1/6"
+     },
+     "try": {
+      "type": "single",
+      "q": "Hur stor andel är **målad** (blå och gul tillsammans)?",
+      "visual": {
+       "type": "bar",
+       "parts": 6,
+       "filled": 3,
+       "filled2": 2
+      },
+      "options": [
+       "5/6",
+       "1/6",
+       "2/6"
+      ],
+      "answer": 0,
+      "explain": "3 + 2 = 5 delar av 6 är målade: 5/6.",
+      "wrongFeedback": {
+       "1": "1/6 är den vita delen som inte är målad.",
+       "2": "2/6 är bara den gula delen. Lägg till de blå."
+      }
+     }
+    }
+   ],
+   "test": [
+    {
+     "type": "single",
+     "q": "Hur stor andel är blå?",
+     "visual": {
+      "type": "bar",
+      "parts": 5,
+      "filled": 2
+     },
+     "options": [
+      "2/5",
+      "3/5",
+      "2/3",
+      "5/2"
+     ],
+     "answer": 0,
+     "explain": "5 lika stora delar, 2 är blå: 2/5.",
+     "wrongFeedback": {
+      "1": "3/5 är den vita andelen.",
+      "2": "Nämnaren är alla delar: 5.",
+      "3": "Täljare och nämnare har bytt plats."
+     }
+    },
+    {
+     "type": "text",
+     "input": "fraction",
+     "q": "Hur stor andel av pizzan är blå?",
+     "visual": {
+      "type": "pie",
+      "parts": 4,
+      "filled": 3
+     },
+     "answer": [
+      "3/4"
+     ],
+     "explain": "4 bitar, 3 är blå: 3/4.",
+     "wrongFeedback": {
+      "1/4": "1/4 är den vita biten. Räkna de blå.",
+      "4/3": "Täljare och nämnare har bytt plats."
+     },
+     "twin": {
+      "type": "text",
+      "input": "fraction",
+      "q": "Hur stor andel av pizzan är blå?",
+      "visual": {
+       "type": "pie",
+       "parts": 8,
+       "filled": 5
+      },
+      "answer": [
+       "5/8"
+      ],
+      "explain": "8 bitar, 5 är blå: 5/8.",
+      "wrongFeedback": {
+       "3/8": "3/8 är de vita bitarna. Räkna de blå."
+      }
+     }
+    },
+    {
+     "type": "text",
+     "input": "fraction",
+     "q": "Hur stor andel av kulorna är röda? Svara i enklaste form.",
+     "visual": {
+      "type": "set",
+      "items": [
+       "🔴",
+       "🔴",
+       "🔵",
+       "🔵",
+       "🔵",
+       "🔵",
+       "🔵",
+       "🔵"
+      ],
+      "label": "2 röda och 6 blå kulor"
+     },
+     "answer": [
+      "1/4"
+     ],
+     "explain": "2 av 8 kulor är röda: 2/8. Dela båda med 2: 1/4.",
+     "wrongFeedback": {
+      "2/8": "Rätt andel! Men förkorta: dela båda med 2.",
+      "2/6": "Nämnaren ska vara **alla** kulor: 8.",
+      "1/3": "Nämnaren ska vara alla kulor: 8. Det blir 2/8 – förkorta det."
+     },
+     "twin": {
+      "type": "text",
+      "input": "fraction",
+      "q": "Hur stor andel av kulorna är röda? Svara i enklaste form.",
+      "visual": {
+       "type": "set",
+       "items": [
+        "🔴",
+        "🔴",
+        "🔴",
+        "🔵",
+        "🔵",
+        "🔵"
+       ],
+       "label": "3 röda och 3 blå kulor"
+      },
+      "answer": [
+       "1/2"
+      ],
+      "explain": "3 av 6 är röda: 3/6. Dela båda med 3: 1/2.",
+      "wrongFeedback": {
+       "3/6": "Rätt andel! Men förkorta: dela båda med 3."
+      }
+     }
+    },
+    {
+     "type": "single",
+     "q": "Hur stor andel av legobitarna är svarta?",
+     "visual": {
+      "type": "set",
+      "items": [
+       "⬛",
+       "⬜",
+       "⬜",
+       "⬛",
+       "⬜"
+      ],
+      "label": "2 svarta och 3 vita legobitar"
+     },
+     "options": [
+      "2/5",
+      "2/3",
+      "3/5",
+      "1/2"
+     ],
+     "answer": 0,
+     "explain": "5 bitar totalt, 2 är svarta: 2/5.",
+     "wrongFeedback": {
+      "1": "Nämnaren ska vara **alla** bitar: 5.",
+      "2": "3/5 är de vita bitarna."
+     }
+    },
+    {
+     "type": "single",
+     "q": "Vilket bråk pekar pilen på?",
+     "visual": {
+      "type": "numberLine",
+      "den": 8,
+      "arrow": 3,
+      "labels": "ends"
+     },
+     "options": [
+      "3/8",
+      "3/7",
+      "3/9",
+      "8/3"
+     ],
+     "answer": 0,
+     "explain": "8 lika delar mellan 0 och 1. Pilen står 3 steg från 0: 3/8.",
+     "wrongFeedback": {
+      "1": "Du räknade strecken i mitten. Räkna mellanrummen – de är 8.",
+      "2": "Du räknade alla streck. Räkna mellanrummen – de är 8.",
+      "3": "Täljare och nämnare har bytt plats."
+     }
+    },
+    {
+     "type": "multi",
+     "q": "Vilka två bråk är lika mycket som hälften?",
+     "options": [
+      "3/6",
+      "5/10",
+      "3/5",
+      "2/6"
+     ],
+     "answer": [
+      0,
+      1
+     ],
+     "explain": "3/6 och 5/10 kan båda förkortas till 1/2. Men 3/5 är mer än hälften och 2/6 = 1/3."
+    },
+    {
+     "type": "single",
+     "q": "Det finns 6 burkar: 2 med päron och 4 med äpple. Någon äter upp en burk med äpple. Hur stor andel av burkarna är päron nu?",
+     "visual": {
+      "type": "set",
+      "items": [
+       "🍐",
+       "🍐",
+       "🍎",
+       "🍎",
+       "🍎",
+       "🍎"
+      ],
+      "gone": [
+       5
+      ],
+      "label": "2 päronburkar, 4 äppelburkar, en äppelburk uppäten"
+     },
+     "options": [
+      "2/5",
+      "2/6",
+      "1/3",
+      "3/5"
+     ],
+     "answer": 0,
+     "explain": "Nu finns 5 burkar kvar. 2 av dem är päron: 2/5.",
+     "wrongFeedback": {
+      "1": "Det finns bara 5 burkar kvar nu. Nämnaren ändras!",
+      "2": "1/3 = 2/6 – men nu finns det bara 5 burkar kvar.",
+      "3": "3/5 är äppelburkarna."
+     }
+    },
+    {
+     "type": "text",
+     "input": "fraction",
+     "q": "Hur stor andel är **gul**? Svara i enklaste form.",
+     "visual": {
+      "type": "bar",
+      "parts": 6,
+      "filled": 2,
+      "filled2": 3
+     },
+     "answer": [
+      "1/2"
+     ],
+     "explain": "3 av 6 delar är gula: 3/6. Dela båda med 3: 1/2.",
+     "wrongFeedback": {
+      "3/6": "Rätt andel! Men förkorta: dela båda med 3.",
+      "1/3": "1/3 är den blå andelen (2/6). Räkna de gula.",
+      "1/6": "1/6 är den vita delen. Räkna de gula."
+     },
+     "twin": {
+      "type": "text",
+      "input": "fraction",
+      "q": "Hur stor andel är **blå**? Svara i enklaste form.",
+      "visual": {
+       "type": "bar",
+       "parts": 8,
+       "filled": 2,
+       "filled2": 5
+      },
+      "answer": [
+       "1/4"
+      ],
+      "explain": "2 av 8 delar är blå: 2/8. Dela båda med 2: 1/4.",
+      "wrongFeedback": {
+       "2/8": "Rätt andel! Men förkorta: dela båda med 2.",
+       "5/8": "5/8 är de gula delarna. Räkna de blå."
+      }
+     }
+    },
+    {
+     "type": "single",
+     "q": "Hälften av rutan är blå och en sjättedel är gul. Hur stor andel är målad?",
+     "visual": {
+      "type": "bar",
+      "parts": 6,
+      "filled": 3,
+      "filled2": 1
+     },
+     "options": [
+      "2/3",
+      "1/2",
+      "1/3",
+      "2/8"
+     ],
+     "answer": 0,
+     "explain": "Blå = 3 delar, gul = 1 del. 3 + 1 = 4 av 6 delar = 4/6 = 2/3.",
+     "wrongFeedback": {
+      "1": "1/2 är bara den blå delen. Lägg till den gula.",
+      "2": "1/3 är den vita delen (2 av 6).",
+      "3": "Man kan inte lägga ihop täljarna och nämnarna. Räkna delarna: 4 av 6."
+     }
+    },
+    {
+     "type": "text",
+     "input": "number",
+     "q": "En remsa har 9 lika stora rutor. En tredjedel av rutorna ska vara blå. Hur många rutor ska vara blå?",
+     "answer": [
+      "3"
+     ],
+     "explain": "En tredjedel av 9 = 9 delat med 3 = 3 rutor.",
+     "wrongFeedback": {
+      "27": "Du räknade gånger. Dela 9 med 3.",
+      "6": "6 rutor är två tredjedelar. Du ska bara ta en tredjedel."
+     },
+     "twin": {
+      "type": "text",
+      "input": "number",
+      "q": "En remsa har 8 lika stora rutor. En fjärdedel ska vara gul. Hur många rutor ska vara gula?",
+      "answer": [
+       "2"
+      ],
+      "explain": "En fjärdedel av 8 = 8 delat med 4 = 2 rutor."
+     }
+    }
+   ]
+  },
+  {
+   "id": "problem",
+   "title": "Kluriga bråkproblem",
+   "learn": [
+    {
+     "title": "Rita först – pizzabitar",
+     "text": "Två pizzor. Varje barn får **en fjärdedels** pizza. Hur många barn räcker det till?\n1. Rita pizzorna och dela varje pizza i 4 bitar.\n2. Räkna bitarna: 4 + 4 = **8**.\nDet räcker till **8 barn**.",
+     "visual": {
+      "type": "pie",
+      "parts": 4,
+      "filled": 8,
+      "count": 2,
+      "caption": "2 pizzor med 4 bitar var = 8 bitar"
+     },
+     "try": {
+      "type": "text",
+      "input": "number",
+      "q": "Tre pizzor. Varje barn får **en femtedels** pizza. Hur många barn räcker det till?",
+      "answer": [
+       "15"
+      ],
+      "hint": "Varje pizza blir 5 bitar.",
+      "explain": "Varje pizza blir 5 bitar. 5 + 5 + 5 = 15 bitar. Det räcker till 15 barn.",
+      "wrongFeedback": {
+       "8": "Du la ihop 3 + 5. Rita! Varje pizza blir 5 bitar: 5 + 5 + 5.",
+       "5": "5 bitar är bara en pizza. Det finns 3 pizzor."
+      }
+     }
+    },
+    {
+     "title": "Hälften och resten",
+     "text": "I en skål är **hälften** päron och resten apelsiner. Det finns 3 päron.\nTvå halvor är lika stora. Om ena halvan är 3, är andra halvan också 3.\nAlltså finns det **3 apelsiner** och **6 frukter** totalt.",
+     "visual": {
+      "type": "bar",
+      "parts": 2,
+      "filled": 1,
+      "caption": "Ena halvan = 3 päron, andra halvan = 3 apelsiner"
+     },
+     "try": {
+      "type": "text",
+      "input": "number",
+      "q": "Hälften av båtarna i hamnen är segelbåtar och resten är motorbåtar. Det finns 7 segelbåtar. Hur många båtar finns det totalt?",
+      "answer": [
+       "14"
+      ],
+      "explain": "Två halvor: 7 + 7 = 14 båtar.",
+      "wrongFeedback": {
+       "7": "7 är bara hälften av båtarna. Hur många är det hela?",
+       "3": "7 är redan hälften. Det hela är 7 + 7.",
+       "4": "7 är redan hälften. Det hela är 7 + 7."
+      }
+     }
+    },
+    {
+     "title": "Hitta det hela",
+     "text": "På ett fat är **en tredjedel** av frukterna apelsiner. Resten är bananer – det är **6 bananer**.\n1. Rita en remsa i 3 delar. 1 del är apelsiner, 2 delar är bananer.\n2. 2 delar = 6 bananer. Då är 1 del = **3**.\n3. Hela remsan: 3 + 3 + 3 = **9 frukter**.",
+     "visual": {
+      "type": "bar",
+      "parts": 3,
+      "filled": 1,
+      "filled2": 2,
+      "caption": "Blå = apelsiner (1 del). Gul = bananer (2 delar = 6)."
+     },
+     "try": {
+      "type": "text",
+      "input": "number",
+      "q": "En fjärdedel av tågets vagnar är godsvagnar. Resten är 6 personvagnar. Hur många vagnar har tåget?",
+      "visual": {
+       "type": "bar",
+       "parts": 4,
+       "filled": 1,
+       "filled2": 3
+      },
+      "answer": [
+       "8"
+      ],
+      "hint": "Rita en remsa i 4 delar. 3 delar är personvagnar.",
+      "explain": "Rita 4 delar. 3 delar = 6 personvagnar, så 1 del = 2. Hela tåget: 2 + 2 + 2 + 2 = 8 vagnar.",
+      "wrongFeedback": {
+       "24": "6 vagnar är 3 delar, inte 1 del. Dela 6 med 3 först.",
+       "2": "2 är bara godsvagnarna. Lägg till personvagnarna."
+      }
+     }
+    },
+    {
+     "title": "Hälften av det som är kvar",
+     "text": "En pizza har 6 bitar.\nFörst äter någon **en tredjedel** av pizzan – 2 bitar (blå).\nKvar: 4 bitar. Sedan äter någon **hälften av det som är kvar** – 2 bitar (gul).\nKvar: 2 bitar av 6 = 2/6 = **1/3** av pizzan.",
+     "visual": {
+      "type": "pie",
+      "parts": 6,
+      "filled": 2,
+      "filled2": 2,
+      "caption": "Blå = äts först, gul = äts sedan, vit = kvar"
+     },
+     "try": {
+      "type": "text",
+      "input": "fraction",
+      "q": "En pizza har 10 bitar. Först äter någon en femtedel av pizzan. Sedan äter någon hälften av det som är kvar. Hur stor del av hela pizzan är kvar? Svara i enklaste form.",
+      "visual": {
+       "type": "pie",
+       "parts": 10,
+       "filled": 0
+      },
+      "answer": [
+       "2/5"
+      ],
+      "hint": "En femtedel av 10 bitar = 2 bitar.",
+      "explain": "En femtedel av 10 bitar = 2 bitar. Kvar: 8. Hälften av 8 = 4 äts. Kvar: 4 bitar av 10 = 4/10 = 2/5.",
+      "wrongFeedback": {
+       "4/10": "Rätt andel! Men förkorta: dela båda med 2.",
+       "4/5": "4/5 är kvar efter första gången. Sedan äter någon hälften av det.",
+       "8/10": "8/10 är kvar efter första gången. Sedan äter någon hälften av det."
+      }
+     }
+    },
+    {
+     "title": "Lägg ihop andelar",
+     "text": "**Hälften** av rutan är blå och **en tredjedel** är gul. Hur stor andel är målad?\nDela rutan i **6** delar – då går både halvor och tredjedelar jämnt ut.\nHälften = 3 delar. En tredjedel = 2 delar.\n3 + 2 = **5 delar av 6** = 5/6.",
+     "visual": {
+      "type": "bar",
+      "parts": 6,
+      "filled": 3,
+      "filled2": 2,
+      "caption": "3 blå + 2 gula = 5 av 6 delar"
+     },
+     "try": {
+      "type": "single",
+      "q": "Hälften är blå och en fjärdedel är gul. Hur stor andel är målad?",
+      "visual": {
+       "type": "bar",
+       "parts": 4,
+       "filled": 2,
+       "filled2": 1
+      },
+      "options": [
+       "3/4",
+       "2/6",
+       "1/4"
+      ],
+      "answer": 0,
+      "explain": "Hälften = 2 delar, en fjärdedel = 1 del. 2 + 1 = 3 av 4: 3/4.",
+      "wrongFeedback": {
+       "1": "Man kan inte lägga ihop täljarna och nämnarna. Räkna delarna: 2 + 1 = 3 av 4.",
+       "2": "1/4 är den vita delen som inte är målad."
+      }
+     }
+    }
+   ],
+   "test": [
+    {
+     "type": "single",
+     "q": "En pizza har 4 bitar. Någon äter 1 bit (den blå). Hur stor andel av pizzan är kvar?",
+     "visual": {
+      "type": "pie",
+      "parts": 4,
+      "filled": 1
+     },
+     "options": [
+      "3/4",
+      "1/4",
+      "1/3",
+      "3/3"
+     ],
+     "answer": 0,
+     "explain": "4 bitar − 1 bit = 3 bitar kvar av 4: 3/4.",
+     "wrongFeedback": {
+      "1": "1/4 är biten som blev uppäten. Hur mycket är kvar?",
+      "2": "Nämnaren är alla bitar som pizzan delades i: 4.",
+      "3": "Nämnaren är alla bitar som pizzan delades i: 4."
+     }
+    },
+    {
+     "type": "single",
+     "q": "Fyra kompisar delar lika på en chokladkaka. Hur stor andel av kakan får var och en?",
+     "options": [
+      "1/4",
+      "4/1",
+      "1/3",
+      "4/4"
+     ],
+     "answer": 0,
+     "explain": "4 lika delar. Var och en får 1/4.",
+     "wrongFeedback": {
+      "1": "Täljare och nämnare har bytt plats.",
+      "3": "4/4 är hela kakan."
+     }
+    },
+    {
+     "type": "text",
+     "input": "number",
+     "q": "Två pizzor. Varje barn får en tredjedels pizza. Hur många barn räcker pizzorna till?",
+     "answer": [
+      "6"
+     ],
+     "hint": "Rita! Varje pizza blir 3 bitar.",
+     "explain": "Varje pizza blir 3 bitar. 3 + 3 = 6 bitar. Det räcker till 6 barn.",
+     "wrongFeedback": {
+      "5": "Du la ihop 2 + 3. Rita: varje pizza blir 3 bitar: 3 + 3."
+     },
+     "twin": {
+      "type": "text",
+      "input": "number",
+      "q": "Fyra pizzor. Varje barn får en halv pizza. Hur många barn räcker pizzorna till?",
+      "answer": [
+       "8"
+      ],
+      "explain": "Varje pizza blir 2 halvor. 2 + 2 + 2 + 2 = 8 barn.",
+      "wrongFeedback": {
+       "6": "Du la ihop 4 + 2. Varje pizza blir 2 halvor: 2 + 2 + 2 + 2."
+      },
+      "visual": {
+       "type": "pie",
+       "parts": 1,
+       "filled": 0,
+       "count": 4,
+       "label": "4 hela pizzor"
+      }
+     },
+     "visual": {
+      "type": "pie",
+      "parts": 1,
+      "filled": 0,
+      "count": 2,
+      "label": "2 hela pizzor"
+     }
+    },
+    {
+     "type": "text",
+     "input": "number",
+     "q": "Hälften av flygplanen är vita och resten är gröna. Det finns 5 vita plan. Hur många plan finns det totalt?",
+     "answer": [
+      "10"
+     ],
+     "explain": "Två halvor: 5 + 5 = 10 plan.",
+     "wrongFeedback": {
+      "5": "5 är bara hälften. Hur många är det hela?"
+     },
+     "twin": {
+      "type": "text",
+      "input": "number",
+      "q": "Hälften av bilarna är röda och resten är blå. Det finns 8 röda bilar. Hur många bilar finns det totalt?",
+      "answer": [
+       "16"
+      ],
+      "explain": "Två halvor: 8 + 8 = 16 bilar.",
+      "wrongFeedback": {
+       "8": "8 är bara hälften. Hur många är det hela?"
+      }
+     }
+    },
+    {
+     "type": "text",
+     "input": "number",
+     "q": "En tredjedel av båtarna i hamnen är segelbåtar. Resten är 8 motorbåtar. Hur många båtar finns det totalt?",
+     "answer": [
+      "12"
+     ],
+     "hint": "2 delar är 8 motorbåtar. Hur många är 1 del?",
+     "explain": "2 delar = 8 motorbåtar, så 1 del = 4. Totalt: 4 + 4 + 4 = 12 båtar.",
+     "wrongFeedback": {
+      "24": "8 båtar är 2 delar, inte 1 del. Dela 8 med 2 först.",
+      "4": "4 är bara segelbåtarna. Lägg till motorbåtarna.",
+      "16": "16 blir det om 8 vore hälften. Men 8 är 2 av 3 delar: 1 del = 4, hela = 4 + 4 + 4."
+     },
+     "twin": {
+      "type": "text",
+      "input": "number",
+      "q": "En tredjedel av tågets vagnar är godsvagnar. Resten är 10 personvagnar. Hur många vagnar har tåget?",
+      "visual": {
+       "type": "bar",
+       "parts": 3,
+       "filled": 0,
+       "caption": "Remsan har 3 delar: 1 del godsvagnar och 2 delar personvagnar (10 st)."
+      },
+      "answer": [
+       "15"
+      ],
+      "hint": "2 delar är 10 personvagnar. Hur många är 1 del?",
+      "explain": "2 delar = 10 personvagnar, så 1 del = 5. Totalt: 5 + 5 + 5 = 15 vagnar.",
+      "wrongFeedback": {
+       "30": "10 vagnar är 2 delar, inte 1 del. Dela 10 med 2 först.",
+       "5": "5 är bara godsvagnarna. Lägg till personvagnarna."
+      }
+     },
+     "visual": {
+      "type": "bar",
+      "parts": 3,
+      "filled": 0,
+      "caption": "Remsan har 3 delar: 1 del segelbåtar och 2 delar motorbåtar (8 st)."
+     }
+    },
+    {
+     "type": "text",
+     "input": "fraction",
+     "q": "En pizza har 8 bitar. Först äter någon en fjärdedel av pizzan. Sedan äter någon hälften av det som är kvar. Hur stor del av hela pizzan är kvar?",
+     "visual": {
+      "type": "pie",
+      "parts": 8,
+      "filled": 0
+     },
+     "answer": [
+      "3/8"
+     ],
+     "hint": "En fjärdedel av 8 bitar = 2 bitar. Hur många är kvar? Ta hälften av dem.",
+     "explain": "En fjärdedel av 8 = 2 bitar. Kvar: 6. Hälften av 6 = 3 äts. Kvar: 3 bitar av 8 = 3/8.",
+     "wrongFeedback": {
+      "6/8": "6/8 är kvar efter första gången. Sedan äter någon hälften av det.",
+      "3/4": "3/4 är kvar efter första gången. Sedan äter någon hälften av det.",
+      "1/4": "Du tog hälften av **hela** pizzan. Ta hälften av det som är **kvar** (6 bitar).",
+      "2/8": "Du tog hälften av **hela** pizzan. Ta hälften av det som är **kvar** (6 bitar)."
+     },
+     "twin": {
+      "type": "text",
+      "input": "fraction",
+      "q": "En pizza har 12 bitar. Först äter någon en tredjedel av pizzan. Sedan äter någon hälften av det som är kvar. Hur stor del av hela pizzan är kvar? Svara i enklaste form.",
+      "visual": {
+       "type": "pie",
+       "parts": 12,
+       "filled": 0
+      },
+      "answer": [
+       "1/3"
+      ],
+      "hint": "En tredjedel av 12 bitar = 4 bitar. Hur många är kvar? Ta hälften av dem.",
+      "explain": "En tredjedel av 12 = 4 bitar. Kvar: 8. Hälften av 8 = 4 äts. Kvar: 4 av 12 = 4/12 = 1/3.",
+      "wrongFeedback": {
+       "4/12": "Rätt andel! Men förkorta: dela båda med 4.",
+       "8/12": "8/12 är kvar efter första gången. Sedan äter någon hälften av det.",
+       "2/3": "2/3 är kvar efter första gången. Sedan äter någon hälften av det."
+      }
+     }
+    },
+    {
+     "type": "text",
+     "input": "number",
+     "q": "En platta har 12 rutor. En tredjedel är blå, en fjärdedel är gul och en sjättedel är grön. Resten är vita. Hur många rutor är vita?",
+     "visual": {
+      "type": "set",
+      "items": [
+       "⬜",
+       "⬜",
+       "⬜",
+       "⬜",
+       "⬜",
+       "⬜",
+       "⬜",
+       "⬜",
+       "⬜",
+       "⬜",
+       "⬜",
+       "⬜"
+      ],
+      "label": "12 rutor"
+     },
+     "answer": [
+      "3"
+     ],
+     "explain": "En tredjedel av 12 = 4 blå. En fjärdedel av 12 = 3 gula. En sjättedel av 12 = 2 gröna. 4 + 3 + 2 = 9. Vita: 12 − 9 = 3.",
+     "hint": "Räkna ut hur många rutor varje färg har först.",
+     "wrongFeedback": {
+      "9": "9 är alla färgade rutor. Hur många är vita?"
+     },
+     "twin": {
+      "type": "text",
+      "input": "number",
+      "q": "En platta har 12 rutor. Hälften är blå och en tredjedel är gul. Resten är vita. Hur många rutor är vita?",
+      "answer": [
+       "2"
+      ],
+      "hint": "Hälften av 12 = ? En tredjedel av 12 = ?",
+      "explain": "Hälften av 12 = 6 blå. En tredjedel av 12 = 4 gula. 6 + 4 = 10. Vita: 12 − 10 = 2.",
+      "wrongFeedback": {
+       "10": "10 är alla färgade rutor. Hur många är vita?"
+      }
+     }
+    },
+    {
+     "type": "single",
+     "q": "Hälften av rutan är blå och en femtedel är gul. Hur stor andel är målad?",
+     "visual": {
+      "type": "bar",
+      "parts": 10,
+      "filled": 5,
+      "filled2": 2
+     },
+     "options": [
+      "7/10",
+      "2/7",
+      "6/10",
+      "3/10"
+     ],
+     "answer": 0,
+     "explain": "Rutan har 10 delar. Hälften = 5 delar, en femtedel = 2 delar. 5 + 2 = 7 av 10: 7/10.",
+     "wrongFeedback": {
+      "1": "Man kan inte lägga ihop täljarna och nämnarna. Räkna delarna.",
+      "2": "Räkna de gula igen. En femtedel av 10 är 2.",
+      "3": "3/10 är den vita delen som inte är målad."
+     }
+    },
+    {
+     "type": "text",
+     "input": "number",
+     "q": "I en skål är hälften apelsiner, en fjärdedel äpplen och resten päron. Det finns 4 apelsiner. Hur många äpplen finns det?",
+     "answer": [
+      "2"
+     ],
+     "hint": "Om hälften är 4, hur många frukter finns det totalt?",
+     "explain": "Hälften är 4, så alla frukter är 8. En fjärdedel av 8 = 2 äpplen.",
+     "wrongFeedback": {
+      "8": "8 är alla frukter. Hur många är en fjärdedel av 8?",
+      "1": "En fjärdedel av alla frukter – inte av apelsinerna. Alla frukter är 8."
+     },
+     "twin": {
+      "type": "text",
+      "input": "number",
+      "q": "I en skål är hälften apelsiner, en fjärdedel äpplen och resten päron. Det finns 6 apelsiner. Hur många äpplen finns det?",
+      "visual": {
+       "type": "bar",
+       "parts": 4,
+       "filled": 2,
+       "filled2": 1,
+       "caption": "Blå = apelsiner (hälften). Gul = äpplen (en fjärdedel). Vit = päron."
+      },
+      "answer": [
+       "3"
+      ],
+      "hint": "Om hälften är 6, hur många frukter finns det totalt?",
+      "explain": "Hälften är 6, så alla frukter är 12. En fjärdedel av 12 = 3 äpplen.",
+      "wrongFeedback": {
+       "12": "12 är alla frukter. Hur många är en fjärdedel av 12?"
+      }
+     },
+     "visual": {
+      "type": "bar",
+      "parts": 4,
+      "filled": 2,
+      "filled2": 1,
+      "caption": "Blå = apelsiner (hälften). Gul = äpplen (en fjärdedel). Vit = päron."
+     }
+    },
+    {
+     "type": "text",
+     "input": "number",
+     "q": "Fyra kompisar delar lika på 2 chokladkakor. Varje kaka har 12 rutor. Hur många rutor får var och en?",
+     "answer": [
+      "6"
+     ],
+     "hint": "Hur många rutor finns det totalt?",
+     "explain": "2 kakor × 12 rutor = 24 rutor. 24 delat med 4 = 6 rutor var.",
+     "wrongFeedback": {
+      "3": "Det finns 2 kakor, inte 1. Räkna alla rutor först: 12 + 12.",
+      "24": "24 är alla rutor. Dela dem lika på 4 kompisar."
+     },
+     "twin": {
+      "type": "text",
+      "input": "number",
+      "q": "Tre kompisar delar lika på 2 chokladkakor. Varje kaka har 6 rutor. Hur många rutor får var och en?",
+      "answer": [
+       "4"
+      ],
+      "hint": "Hur många rutor finns det totalt?",
+      "explain": "2 kakor × 6 rutor = 12 rutor. 12 delat med 3 = 4 rutor var.",
+      "wrongFeedback": {
+       "2": "Det finns 2 kakor, inte 1. Räkna alla rutor först: 6 + 6."
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "jamfor",
+   "title": "Jämför bråk",
+   "learn": [
+    {
+     "title": "Samma nämnare",
+     "text": "När nämnarna är lika är alla bitar lika stora. Då är bråket med **flest bitar** störst – alltså störst täljare.\n4/5 är större än 2/5.",
+     "visual": {
+      "type": "compareBars",
+      "rows": [
+       {
+        "parts": 5,
+        "filled": 2
+       },
+       {
+        "parts": 5,
+        "filled": 4
+       }
+      ],
+      "caption": "Samma storlek på bitarna. 4 bitar är mer än 2."
+     },
+     "try": {
+      "type": "single",
+      "q": "Vilket bråk är störst?",
+      "options": [
+       "3/8",
+       "5/8"
+      ],
+      "answer": 1,
+      "keepOrder": true,
+      "explain": "Samma nämnare. 5 bitar är mer än 3 bitar: 5/8 är störst.",
+      "wrongFeedback": {
+       "0": "Samma nämnare – då vinner flest bitar. 5 bitar är mer än 3."
+      }
+     }
+    },
+    {
+     "title": "Samma täljare",
+     "text": "1/2 eller 1/3? Tänk på en pizza.\nDelar du den med **2** personer blir bitarna stora. Delar du med **3** personer blir bitarna mindre.\nStörre nämnare = **mindre** bitar. Alltså är 1/2 större än 1/3.",
+     "visual": {
+      "type": "compareBars",
+      "rows": [
+       {
+        "parts": 2,
+        "filled": 1
+       },
+       {
+        "parts": 3,
+        "filled": 1
+       }
+      ],
+      "caption": "1/2 är större än 1/3"
+     },
+     "try": {
+      "type": "single",
+      "q": "Vilket bråk är störst: 1/4 eller 1/6?",
+      "options": [
+       "1/4",
+       "1/6"
+      ],
+      "answer": 0,
+      "keepOrder": true,
+      "explain": "Fjärdedelar är större bitar än sjättedelar. 1/4 är störst.",
+      "wrongFeedback": {
+       "1": "6 är större än 4 – men då är bitarna mindre! 1/6 är en mindre bit."
+      }
+     }
+    },
+    {
+     "title": "Bråkplanket",
+     "text": "Ett **bråkplank** visar bråk under varandra. Alla rader är lika långa – varje rad är **en hel**.\nSe hur bitarna blir mindre när nämnaren blir större.\n1/2 är störst, sedan 1/3 och 1/4. Minst är 1/6.",
+     "visual": {
+      "type": "compareBars",
+      "rows": [
+       {
+        "parts": 2,
+        "filled": 1
+       },
+       {
+        "parts": 3,
+        "filled": 1
+       },
+       {
+        "parts": 4,
+        "filled": 1
+       },
+       {
+        "parts": 6,
+        "filled": 1
+       }
+      ],
+      "caption": "Större nämnare = mindre bit"
+     },
+     "try": {
+      "type": "single",
+      "q": "Vilket bråk är minst?",
+      "options": [
+       "1/3",
+       "1/4",
+       "1/6"
+      ],
+      "answer": 2,
+      "keepOrder": true,
+      "explain": "1/6 har störst nämnare, alltså de **minsta** bitarna. Titta på bråkplanket!",
+      "wrongFeedback": {
+       "0": "1/3 är den största biten av de tre.",
+       "1": "Titta på bråkplanket: sjättedelar är ännu mindre än fjärdedelar."
+      }
+     }
+    },
+    {
+     "title": "Jämför med en halv",
+     "text": "Ett smart knep: jämför med **1/2**.\n3/4 är **mer** än hälften.\n2/5 är **mindre** än hälften (hälften av 5 bitar är två och en halv bit).\nAlltså är 3/4 större än 2/5.",
+     "visual": {
+      "type": "compareLines",
+      "rows": [
+       {
+        "den": 4,
+        "highlight": 3
+       },
+       {
+        "den": 5,
+        "highlight": 2,
+        "color": "#ffb703"
+       }
+      ],
+      "guide": 0.5,
+      "caption": "Den streckade linjen är 1/2"
+     },
+     "try": {
+      "type": "single",
+      "q": "Vilket bråk är störst: 4/5 eller 1/2?",
+      "options": [
+       "4/5",
+       "1/2"
+      ],
+      "answer": 0,
+      "keepOrder": true,
+      "explain": "4/5 är mer än hälften – nästan en hel!",
+      "wrongFeedback": {
+       "1": "1/2 är precis hälften. 4/5 är mer än hälften."
+      }
+     }
+    },
+    {
+     "title": "Samma täljare – olika bitar",
+     "text": "2/3 eller 2/5? Båda har **2 bitar**.\nMen tredjedelar är **större** bitar än femtedelar.\nAlltså är 2/3 större än 2/5.",
+     "visual": {
+      "type": "compareBars",
+      "rows": [
+       {
+        "parts": 3,
+        "filled": 2
+       },
+       {
+        "parts": 5,
+        "filled": 2
+       }
+      ],
+      "caption": "2 stora bitar är mer än 2 små bitar"
+     },
+     "try": {
+      "type": "single",
+      "q": "Vilket bråk är störst: 2/7 eller 2/5?",
+      "options": [
+       "2/7",
+       "2/5"
+      ],
+      "answer": 1,
+      "keepOrder": true,
+      "explain": "Båda har 2 bitar. Femtedelar är större bitar än sjundedelar: 2/5 är störst.",
+      "wrongFeedback": {
+       "0": "7 är större än 5 – men sjundedelar är mindre bitar än femtedelar."
+      }
+     }
+    }
+   ],
+   "test": [
+    {
+     "type": "text",
+     "input": "fraction",
+     "q": "Skriv det största bråket: 3/9, 7/9 eller 5/9",
+     "answer": [
+      "7/9"
+     ],
+     "explain": "Samma nämnare. Flest bitar vinner: 7/9.",
+     "wrongFeedback": {
+      "3/9": "3/9 är minst. Samma nämnare – välj flest bitar.",
+      "5/9": "5 är inte flest. Titta igen!"
+     },
+     "twin": {
+      "type": "text",
+      "input": "fraction",
+      "q": "Skriv det största bråket: 4/10, 9/10 eller 6/10",
+      "answer": [
+       "9/10"
+      ],
+      "explain": "Samma nämnare. Flest bitar vinner: 9/10."
+     }
+    },
+    {
+     "type": "single",
+     "q": "Planet ✈️ har flugit 5/6 av sträckan. Helikoptern 🚁 har flugit 2/6 av sträckan. Vem har kommit längst?",
+     "options": [
+      "Planet",
+      "Helikoptern",
+      "De har kommit lika långt"
+     ],
+     "answer": 0,
+     "keepOrder": true,
+     "explain": "Samma nämnare. 5 bitar är mer än 2 bitar: planet har kommit längst."
+    },
+    {
+     "type": "single",
+     "q": "Vilket bråk är störst: 1/3 eller 1/5?",
+     "options": [
+      "1/3",
+      "1/5"
+     ],
+     "answer": 0,
+     "keepOrder": true,
+     "explain": "Tredjedelar är större bitar än femtedelar: 1/3 är störst.",
+     "wrongFeedback": {
+      "1": "5 är större än 3 – men femtedelar är mindre bitar."
+     }
+    },
+    {
+     "type": "single",
+     "q": "Vilket bråk är störst: 1/6 eller 3/4?",
+     "options": [
+      "1/6",
+      "3/4"
+     ],
+     "answer": 1,
+     "keepOrder": true,
+     "explain": "1/6 är mindre än hälften. 3/4 är mer än hälften. Alltså är 3/4 störst.",
+     "wrongFeedback": {
+      "0": "1/6 är mindre än hälften, men 3/4 är mer än hälften."
+     }
+    },
+    {
+     "type": "single",
+     "q": "Vilket bråk är störst: 3/4 eller 3/8?",
+     "options": [
+      "3/4",
+      "3/8"
+     ],
+     "answer": 0,
+     "keepOrder": true,
+     "explain": "Båda har 3 bitar. Fjärdedelar är större bitar än åttondelar: 3/4 är störst.",
+     "wrongFeedback": {
+      "1": "8 är större än 4 – men åttondelar är mindre bitar."
+     }
+    },
+    {
+     "type": "multi",
+     "q": "Vilka två bråk är **större** än 1/2?",
+     "options": [
+      "3/4",
+      "4/5",
+      "2/5",
+      "1/3"
+     ],
+     "answer": [
+      0,
+      1
+     ],
+     "explain": "3/4 och 4/5 är mer än hälften. 2/5 och 1/3 är mindre än hälften."
+    },
+    {
+     "type": "single",
+     "q": "Vilket bråk är minst?",
+     "options": [
+      "1/2",
+      "1/4",
+      "1/8",
+      "1/3"
+     ],
+     "answer": 2,
+     "explain": "Störst nämnare = minst bit. 1/8 är minst.",
+     "wrongFeedback": {
+      "0": "1/2 är den största biten.",
+      "3": "Tredjedelar är ganska stora bitar. Leta efter störst nämnare."
+     }
+    },
+    {
+     "type": "single",
+     "q": "Ett tåg har kört 3/4 av vägen. Ett annat tåg har kört 1/2 av vägen. Vilket tåg har kört längst?",
+     "options": [
+      "Tåget som har kört 3/4",
+      "Tåget som har kört 1/2",
+      "De har kört lika långt"
+     ],
+     "answer": 0,
+     "keepOrder": true,
+     "hint": "Jämför med en halv.",
+     "explain": "3/4 är mer än hälften. Tåget som har kört 3/4 har kört längst."
+    },
+    {
+     "type": "text",
+     "input": "fraction",
+     "q": "Vilket bråk är störst: 1/2 eller 2/5? Skriv det största bråket.",
+     "answer": [
+      "1/2"
+     ],
+     "hint": "Är 2/5 mer eller mindre än hälften?",
+     "explain": "2/5 är mindre än hälften (hälften av 5 är två och en halv). Alltså är 1/2 störst.",
+     "wrongFeedback": {
+      "2/5": "2/5 är mindre än hälften. Hälften av 5 bitar är två och en halv bit."
+     },
+     "twin": {
+      "type": "text",
+      "input": "fraction",
+      "q": "Vilket bråk är störst: 1/2 eller 3/5? Skriv det största bråket.",
+      "answer": [
+       "3/5"
+      ],
+      "hint": "Är 3/5 mer eller mindre än hälften?",
+      "explain": "Hälften av 5 är två och en halv. 3 bitar är mer än hälften, så 3/5 är störst.",
+      "wrongFeedback": {
+       "1/2": "Hälften av 5 är två och en halv. 3 bitar är mer än hälften."
+      }
+     }
+    },
+    {
+     "type": "multi",
+     "q": "Vilka två bråk är **mindre** än 1/2?",
+     "options": [
+      "1/3",
+      "2/5",
+      "3/4",
+      "5/6"
+     ],
+     "answer": [
+      0,
+      1
+     ],
+     "explain": "1/3 och 2/5 är mindre än hälften. 3/4 och 5/6 är mer än hälften."
+    }
+   ]
+  },
+  {
+   "id": "procent",
+   "title": "Procent",
+   "learn": [
+    {
+     "title": "Vad är procent?",
+     "text": "**Procent** betyder **hundradelar**. Tänk dig att det hela är delat i 100 lika små delar. Tecknet för procent är **%**.\nDet hela är alltid **100 %**.\nEtt fulladdat batteri 🔋 är 100 %.",
+     "visual": {
+      "type": "bar",
+      "parts": 4,
+      "filled": 4,
+      "caption": "Hela = 100 %"
+     },
+     "try": {
+      "type": "single",
+      "q": "Ett batteri är fulladdat. Hur många procent är det?",
+      "options": [
+       "100 %",
+       "10 %",
+       "1 %"
+      ],
+      "answer": 0,
+      "keepOrder": true,
+      "explain": "Det hela, alltså fulladdat, är 100 %."
+     }
+    },
+    {
+     "title": "50 % = hälften",
+     "text": "**50 %** är samma sak som **hälften**, alltså 1/2.\n50 % av 20 flygplan = hälften av 20 = **10 plan**.",
+     "visual": {
+      "type": "bar",
+      "parts": 2,
+      "filled": 1,
+      "caption": "1/2 = 50 %"
+     },
+     "try": {
+      "type": "text",
+      "input": "number",
+      "q": "Hur mycket är 50 % av 30?",
+      "answer": [
+       "15"
+      ],
+      "explain": "50 % = hälften. Hälften av 30 = 15.",
+      "wrongFeedback": {
+       "60": "Du räknade gånger. Hälften blir mindre än 30.",
+       "50": "50 är procenttalet. Ta hälften av 30."
+      }
+     }
+    },
+    {
+     "title": "25 % och 75 %",
+     "text": "Dela det hela i **4** lika stora delar. Varje del är **25 %**.\n1/4 = 25 %\n2/4 = 50 %\n3/4 = 75 %\n4/4 = 100 %",
+     "visual": {
+      "type": "compareBars",
+      "rows": [
+       {
+        "parts": 4,
+        "filled": 1
+       },
+       {
+        "parts": 4,
+        "filled": 3
+       }
+      ],
+      "caption": "1/4 = 25 % och 3/4 = 75 %"
+     },
+     "try": {
+      "type": "single",
+      "q": "Hur många procent är 3/4?",
+      "options": [
+       "75 %",
+       "34 %",
+       "25 %"
+      ],
+      "answer": 0,
+      "explain": "3 fjärdedelar = 25 + 25 + 25 = 75 %.",
+      "wrongFeedback": {
+       "1": "Man kan inte bara sätta ihop siffrorna. 3 fjärdedelar = 25 + 25 + 25 = 75 %.",
+       "2": "25 % är bara en fjärdedel. Du ska ta tre."
+      }
+     }
+    },
+    {
+     "title": "Procent av ett antal",
+     "text": "25 % är samma sak som 1/4.\n25 % av 12 skepp = 12 delat med 4 = **3** skepp.\n75 % är 3/4. Då tar du 3 grupper: 3 + 3 + 3 = **9** skepp.",
+     "visual": {
+      "type": "groups",
+      "total": 12,
+      "groups": 4,
+      "highlight": 3,
+      "icon": "🚢",
+      "caption": "12 skepp i 4 grupper. 3 grupper = 75 % = 9 skepp."
+     },
+     "try": {
+      "type": "text",
+      "input": "number",
+      "q": "Hur mycket är 25 % av 20?",
+      "answer": [
+       "5"
+      ],
+      "explain": "25 % = 1/4. 20 delat med 4 = 5.",
+      "wrongFeedback": {
+       "80": "Du räknade gånger. 25 % är en fjärdedel – dela med 4.",
+       "10": "10 är 50 %, alltså hälften. 25 % är hälften av det."
+      }
+     }
+    },
+    {
+     "title": "Hälften på många sätt",
+     "text": "Hälften kan skrivas på många sätt:\n1/2 = 2/4 = 3/6 = **50 %**\nMed decimaltal skrivs hälften **0,5** eller **0,50**.\n0,50 betyder 50 hundradelar – samma som 50 %.",
+     "visual": {
+      "type": "compareBars",
+      "rows": [
+       {
+        "parts": 2,
+        "filled": 1
+       },
+       {
+        "parts": 4,
+        "filled": 2
+       }
+      ],
+      "caption": "1/2 = 2/4 = 50 %"
+     },
+     "try": {
+      "type": "multi",
+      "q": "Vilka två visar hälften?",
+      "options": [
+       "50 %",
+       "2/4",
+       "2/1",
+       "5 %"
+      ],
+      "answer": [
+       0,
+       1
+      ],
+      "explain": "50 % och 2/4 är båda hälften. 2/1 är två hela, och 5 % är en mycket liten del."
+     }
+    }
+   ],
+   "test": [
+    {
+     "type": "single",
+     "q": "Hur många procent är blå?",
+     "visual": {
+      "type": "bar",
+      "parts": 4,
+      "filled": 1
+     },
+     "options": [
+      "25 %",
+      "50 %",
+      "75 %",
+      "4 %"
+     ],
+     "answer": 0,
+     "explain": "4 lika delar och 1 är blå. 1/4 = 25 %.",
+     "wrongFeedback": {
+      "1": "50 % är hälften – två delar. Här är bara en del blå.",
+      "2": "75 % är tre delar. Här är bara en del blå.",
+      "3": "4 % är väldigt lite. Hela är 100 %, så varje del är 25 %."
+     }
+    },
+    {
+     "type": "single",
+     "q": "Hur många procent är 1/2?",
+     "options": [
+      "50 %",
+      "12 %",
+      "2 %",
+      "20 %"
+     ],
+     "answer": 0,
+     "explain": "1/2 är hälften, och hälften är 50 %.",
+     "wrongFeedback": {
+      "1": "Man kan inte bara sätta ihop siffrorna 1 och 2. Hälften = 50 %."
+     }
+    },
+    {
+     "type": "text",
+     "input": "number",
+     "q": "Hur mycket är 50 % av 40?",
+     "answer": [
+      "20"
+     ],
+     "explain": "50 % = hälften. Hälften av 40 = 20.",
+     "wrongFeedback": {
+      "80": "Du räknade gånger. 50 % = hälften."
+     },
+     "twin": {
+      "type": "text",
+      "input": "number",
+      "q": "Hur mycket är 50 % av 16?",
+      "answer": [
+       "8"
+      ],
+      "explain": "50 % = hälften. Hälften av 16 = 8.",
+      "wrongFeedback": {
+       "32": "Du räknade gånger. 50 % = hälften."
+      }
+     }
+    },
+    {
+     "type": "single",
+     "q": "Hur många procent är blå?",
+     "visual": {
+      "type": "bar",
+      "parts": 4,
+      "filled": 3
+     },
+     "options": [
+      "75 %",
+      "25 %",
+      "3 %",
+      "34 %"
+     ],
+     "answer": 0,
+     "explain": "3 av 4 delar är blå. 3/4 = 75 %.",
+     "wrongFeedback": {
+      "1": "25 % är den vita delen.",
+      "2": "Varje del är 25 %. Tre delar = 75 %.",
+      "3": "Man kan inte sätta ihop siffrorna 3 och 4. Tre fjärdedelar = 75 %."
+     }
+    },
+    {
+     "type": "multi",
+     "q": "Vilka två är lika mycket som hälften?",
+     "options": [
+      "50 %",
+      "0,50",
+      "0,05",
+      "2/1"
+     ],
+     "answer": [
+      0,
+      1
+     ],
+     "explain": "50 % och 0,50 är hälften (50 hundradelar). 0,05 är bara 5 hundradelar, och 2/1 är två hela."
+    },
+    {
+     "type": "text",
+     "input": "number",
+     "q": "Ett tåg har 8 vagnar. 25 % av vagnarna är sovvagnar. Hur många sovvagnar finns det?",
+     "answer": [
+      "2"
+     ],
+     "explain": "25 % = 1/4. 8 delat med 4 = 2 sovvagnar.",
+     "wrongFeedback": {
+      "4": "4 vagnar är 50 % – hälften. 25 % är en fjärdedel: dela med 4.",
+      "32": "Du räknade gånger. 25 % = 1/4 – dela med 4."
+     },
+     "twin": {
+      "type": "text",
+      "input": "number",
+      "q": "Ett tåg har 16 vagnar. 25 % av vagnarna är restaurangvagnar. Hur många restaurangvagnar finns det?",
+      "answer": [
+       "4"
+      ],
+      "explain": "25 % = 1/4. 16 delat med 4 = 4 vagnar.",
+      "wrongFeedback": {
+       "8": "8 vagnar är 50 % – hälften. 25 % är en fjärdedel."
+      }
+     }
+    },
+    {
+     "type": "text",
+     "input": "number",
+     "q": "50 % av rutan är blå och 25 % är gul. Hur många procent av rutan är målad?",
+     "visual": {
+      "type": "bar",
+      "parts": 4,
+      "filled": 2,
+      "filled2": 1
+     },
+     "answer": [
+      "75"
+     ],
+     "explain": "50 % + 25 % = 75 %.",
+     "wrongFeedback": {
+      "25": "25 % är den vita delen som inte är målad."
+     },
+     "twin": {
+      "type": "text",
+      "input": "number",
+      "q": "75 % av rutan är blå och 25 % är gul. Hur många procent av rutan är målad?",
+      "visual": {
+       "type": "bar",
+       "parts": 4,
+       "filled": 3,
+       "filled2": 1
+      },
+      "answer": [
+       "100"
+      ],
+      "explain": "75 % + 25 % = 100 % – hela rutan är målad.",
+      "wrongFeedback": {
+       "75": "75 % är bara den blå delen. Lägg till den gula."
+      }
+     }
+    },
+    {
+     "type": "text",
+     "input": "number",
+     "q": "Det finns 12 äpplen. Du äter 75 % av äpplena. Hur många äpplen är kvar?",
+     "answer": [
+      "3"
+     ],
+     "hint": "Om du äter 75 %, då är 25 % kvar.",
+     "explain": "75 % = 3/4. 3/4 av 12 = 9 äpplen äter du. Kvar: 12 − 9 = 3. Snabbare: kvar är 25 % = 1/4 av 12 = 3.",
+     "wrongFeedback": {
+      "9": "9 äpplen är de du **äter**. Frågan är hur många som är **kvar**."
+     },
+     "twin": {
+      "type": "text",
+      "input": "number",
+      "q": "Det finns 8 apelsiner. Du äter 75 % av apelsinerna. Hur många apelsiner är kvar?",
+      "answer": [
+       "2"
+      ],
+      "explain": "Kvar är 25 % = 1/4. 8 delat med 4 = 2 apelsiner.",
+      "wrongFeedback": {
+       "6": "6 apelsiner är de du **äter**. Hur många är **kvar**?"
+      }
+     }
+    },
+    {
+     "type": "text",
+     "input": "number",
+     "q": "Hur många procent är 1/4?",
+     "answer": [
+      "25"
+     ],
+     "explain": "1/4 är en av 4 lika delar. 100 % delat i 4 = 25 %.",
+     "wrongFeedback": {
+      "14": "Man kan inte sätta ihop siffrorna 1 och 4. En fjärdedel = 25 %.",
+      "4": "Hela är 100 %. En fjärdedel av 100 är 25."
+     },
+     "twin": {
+      "type": "text",
+      "input": "number",
+      "q": "Hur många procent är 3/4?",
+      "answer": [
+       "75"
+      ],
+      "explain": "3/4 = 25 % + 25 % + 25 % = 75 %.",
+      "wrongFeedback": {
+       "34": "Man kan inte sätta ihop siffrorna 3 och 4. Tre fjärdedelar = 75 %."
+      }
+     }
+    },
+    {
+     "type": "text",
+     "input": "fraction",
+     "q": "Skriv 75 % som ett bråk i enklaste form.",
+     "answer": [
+      "3/4"
+     ],
+     "explain": "75 % = tre fjärdedelar = 3/4.",
+     "wrongFeedback": {
+      "75/100": "Rätt värde! Men förkorta så långt det går: 3/4.",
+      "6/8": "Rätt värde! Men förkorta: dela båda med 2.",
+      "1/4": "1/4 är 25 %. Du behöver tre fjärdedelar."
+     },
+     "twin": {
+      "type": "text",
+      "input": "fraction",
+      "q": "Skriv 25 % som ett bråk i enklaste form.",
+      "answer": [
+       "1/4"
+      ],
+      "explain": "25 % = en fjärdedel = 1/4.",
+      "wrongFeedback": {
+       "25/100": "Rätt värde! Men förkorta så långt det går: 1/4."
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "mixed": [
+  {
+   "type": "single",
+   "q": "Hur stor andel av pizzan är blå?",
+   "visual": {
+    "type": "pie",
+    "parts": 8,
+    "filled": 3
+   },
+   "options": [
+    "3/8",
+    "5/8",
+    "3/5",
+    "8/3"
+   ],
+   "answer": 0,
+   "explain": "8 bitar, 3 är blå: 3/8.",
+   "wrongFeedback": {
+    "1": "5/8 är de vita bitarna.",
+    "2": "Nämnaren ska vara alla bitar: 8.",
+    "3": "Täljare och nämnare har bytt plats."
+   }
+  },
+  {
+   "type": "text",
+   "input": "fraction",
+   "q": "Hur stor andel av kulorna är blå? Svara i enklaste form.",
+   "visual": {
+    "type": "set",
+    "items": [
+     "🔵",
+     "🔵",
+     "🔵",
+     "🔵",
+     "🔴",
+     "🔴"
+    ],
+    "label": "4 blå och 2 röda kulor"
+   },
+   "answer": [
+    "2/3"
+   ],
+   "explain": "4 av 6 är blå: 4/6. Dela båda med 2: 2/3.",
+   "wrongFeedback": {
+    "4/6": "Rätt andel! Men förkorta: dela båda med 2.",
+    "4/2": "Nämnaren ska vara **alla** kulor: 6."
+   },
+   "twin": {
+    "type": "text",
+    "input": "fraction",
+    "q": "Hur stor andel av kulorna är blå? Svara i enklaste form.",
+    "visual": {
+     "type": "set",
+     "items": [
+      "🔵",
+      "🔵",
+      "🔴",
+      "🔴",
+      "🔴",
+      "🔴",
+      "🔴",
+      "🔴"
+     ],
+     "label": "2 blå och 6 röda kulor"
+    },
+    "answer": [
+     "1/4"
+    ],
+    "explain": "2 av 8 är blå: 2/8. Dela båda med 2: 1/4.",
+    "wrongFeedback": {
+     "2/8": "Rätt andel! Men förkorta: dela båda med 2."
+    }
+   }
+  },
+  {
+   "type": "single",
+   "q": "Vilket bråk är störst: 3/10 eller 3/4?",
+   "options": [
+    "3/10",
+    "3/4"
+   ],
+   "answer": 1,
+   "keepOrder": true,
+   "explain": "Båda har 3 bitar. Fjärdedelar är mycket större bitar än tiondelar: 3/4 är störst.",
+   "wrongFeedback": {
+    "0": "10 är större än 4 – men tiondelar är mindre bitar."
+   }
+  },
+  {
+   "type": "text",
+   "input": "number",
+   "q": "Hur mycket är 25 % av 16?",
+   "answer": [
+    "4"
+   ],
+   "explain": "25 % = 1/4. 16 delat med 4 = 4.",
+   "wrongFeedback": {
+    "8": "8 är 50 %, alltså hälften. 25 % är en fjärdedel."
+   },
+   "twin": {
+    "type": "text",
+    "input": "number",
+    "q": "Hur mycket är 25 % av 24?",
+    "answer": [
+     "6"
+    ],
+    "explain": "25 % = 1/4. 24 delat med 4 = 6.",
+    "wrongFeedback": {
+     "12": "12 är 50 %, alltså hälften. 25 % är en fjärdedel."
+    }
+   }
+  },
+  {
+   "type": "text",
+   "input": "number",
+   "q": "Hur många procent är 2/8?",
+   "answer": [
+    "25"
+   ],
+   "hint": "Förkorta 2/8 först.",
+   "explain": "2/8 = 1/4 = 25 %.",
+   "wrongFeedback": {
+    "28": "Man kan inte sätta ihop siffrorna. Förkorta först: 2/8 = 1/4 = 25 %.",
+    "2": "Förkorta först: 2/8 = 1/4. En fjärdedel = 25 %."
+   },
+   "twin": {
+    "type": "text",
+    "input": "number",
+    "q": "Hur många procent är 4/8?",
+    "answer": [
+     "50"
+    ],
+    "hint": "Förkorta 4/8 först.",
+    "explain": "4/8 = 1/2 = 50 %.",
+    "wrongFeedback": {
+     "48": "Man kan inte sätta ihop siffrorna. Förkorta först: 4/8 = 1/2 = 50 %."
+    }
+   }
+  },
+  {
+   "type": "multi",
+   "q": "Vilka två är lika mycket som 75 %?",
+   "options": [
+    "3/4",
+    "6/8",
+    "7/5",
+    "1/4"
+   ],
+   "answer": [
+    0,
+    1
+   ],
+   "explain": "75 % = 3/4. Och 6/8 kan förkortas till 3/4. 1/4 är 25 %, och 7/5 är mer än en hel."
+  },
+  {
+   "type": "text",
+   "input": "number",
+   "q": "Två pizzor. Varje barn får en sjättedels pizza. Hur många barn räcker pizzorna till?",
+   "answer": [
+    "12"
+   ],
+   "hint": "Rita! Varje pizza blir 6 bitar.",
+   "explain": "Varje pizza blir 6 bitar. 6 + 6 = 12 barn.",
+   "wrongFeedback": {
+    "8": "Du la ihop 2 + 6. Rita: varje pizza blir 6 bitar: 6 + 6."
+   },
+   "twin": {
+    "type": "text",
+    "input": "number",
+    "q": "Tre pizzor. Varje barn får en halv pizza. Hur många barn räcker pizzorna till?",
+    "answer": [
+     "6"
+    ],
+    "explain": "Varje pizza blir 2 halvor. 2 + 2 + 2 = 6 barn.",
+    "wrongFeedback": {
+     "5": "Du la ihop 3 + 2. Varje pizza blir 2 halvor: 2 + 2 + 2."
+    }
+   }
+  },
+  {
+   "type": "text",
+   "input": "number",
+   "q": "Repetition: Hur mycket är 2/3 av 15?",
+   "answer": [
+    "10"
+   ],
+   "explain": "15 delat med 3 = 5. Sedan 5 gånger 2 = 10.",
+   "wrongFeedback": {
+    "5": "5 är bara 1/3. Du ska ta 2 tredjedelar: 5 + 5."
+   },
+   "twin": {
+    "type": "text",
+    "input": "number",
+    "q": "Repetition: Hur mycket är 3/4 av 20?",
+    "answer": [
+     "15"
+    ],
+    "explain": "20 delat med 4 = 5. Sedan 5 gånger 3 = 15.",
+    "wrongFeedback": {
+     "5": "5 är bara 1/4. Du ska ta 3 fjärdedelar."
+    }
+   }
+  },
+  {
+   "type": "single",
+   "q": "Pilen pekar på ett bråk. Hur många procent är det?",
+   "visual": {
+    "type": "numberLine",
+    "den": 4,
+    "arrow": 3,
+    "labels": "ends"
+   },
+   "options": [
+    "75 %",
+    "34 %",
+    "3 %",
+    "25 %"
+   ],
+   "answer": 0,
+   "explain": "4 lika delar och pilen står 3 steg från 0: 3/4 = 75 %.",
+   "wrongFeedback": {
+    "1": "Man kan inte sätta ihop siffrorna. 3/4 = 75 %.",
+    "3": "25 % är 1/4 – ett steg från 0. Pilen står 3 steg från 0."
+   }
+  },
+  {
+   "type": "text",
+   "input": "number",
+   "q": "En tredjedel av frukterna är äpplen. Resten är 10 bananer. Hur många frukter finns det totalt?",
+   "answer": [
+    "15"
+   ],
+   "hint": "Rita en remsa i 3 delar. 2 delar är bananer.",
+   "explain": "2 delar = 10 bananer, så 1 del = 5. Totalt: 5 + 5 + 5 = 15 frukter.",
+   "wrongFeedback": {
+    "30": "10 är 2 delar, inte 1 del. Dela 10 med 2 först.",
+    "5": "5 är bara äpplena. Lägg till bananerna."
+   },
+   "twin": {
+    "type": "text",
+    "input": "number",
+    "q": "En fjärdedel av frukterna är äpplen. Resten är 9 bananer. Hur många frukter finns det totalt?",
+    "answer": [
+     "12"
+    ],
+    "hint": "Rita en remsa i 4 delar. 3 delar är bananer.",
+    "explain": "3 delar = 9 bananer, så 1 del = 3. Totalt: 3 + 3 + 3 + 3 = 12 frukter."
+   }
+  }
+ ]
+}

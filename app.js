@@ -90,7 +90,7 @@
   var C = { fill: '#3fa7d6', fill2: '#ffb703', line: '#1b2333', soft: '#dbe7f3' };
   function bar(o) {
     var w = 300, h = 46, parts = o.parts, fw = w / parts, s = '';
-    for (var i = 0; i < parts; i++) s += '<rect x="' + (10 + i * fw) + '" y="8" width="' + fw + '" height="' + h + '" fill="' + (i < o.filled ? (o.color || C.fill) : '#fff') + '" stroke="' + C.line + '" stroke-width="2"/>';
+    for (var i = 0; i < parts; i++) s += '<rect x="' + (10 + i * fw) + '" y="8" width="' + fw + '" height="' + h + '" fill="' + (i < o.filled ? (o.color || C.fill) : i < o.filled + (o.filled2 || 0) ? C.fill2 : '#fff') + '" stroke="' + C.line + '" stroke-width="2"/>';
     return '<svg viewBox="0 0 320 62" role="img" aria-label="' + esc(o.label || (o.filled + ' av ' + parts + ' delar färgade')) + '">' + s + '</svg>';
   }
   function compareBars(o) {
@@ -160,6 +160,29 @@
     }
     return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="max-width:' + Math.max(W, 200) + 'px" role="img" aria-label="' + esc(o.label || (o.total + ' saker i ' + o.groups + ' lika stora grupper')) + '">' + s + '</svg>';
   }
+  function pie(o) {
+    // o: {parts, filled, filled2?, count?} – one or more round pizzas/cakes cut in equal slices
+    var n = o.parts, cnt = o.count || 1, r = 64, s = '', k = 0;
+    for (var p = 0; p < cnt; p++) {
+      var cx = 76 + p * 156, cy = 76;
+      for (var i = 0; i < n; i++, k++) {
+        var col = k < o.filled ? C.fill : k < o.filled + (o.filled2 || 0) ? C.fill2 : '#fff';
+        if (n === 1) { s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + col + '" stroke="' + C.line + '" stroke-width="2.5"/>'; continue; }
+        var a0 = (i / n) * 2 * Math.PI - Math.PI / 2, a1 = ((i + 1) / n) * 2 * Math.PI - Math.PI / 2;
+        var x0 = cx + r * Math.cos(a0), y0 = cy + r * Math.sin(a0), x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+        s += '<path d="M' + cx + ' ' + cy + ' L' + x0.toFixed(2) + ' ' + y0.toFixed(2) + ' A' + r + ' ' + r + ' 0 0 1 ' + x1.toFixed(2) + ' ' + y1.toFixed(2) + ' Z" fill="' + col + '" stroke="' + C.line + '" stroke-width="2.5" stroke-linejoin="round"/>';
+      }
+    }
+    var W = cnt * 156 - 4;
+    return '<svg viewBox="0 0 ' + W + ' 152" style="max-width:' + (cnt === 1 ? 210 : Math.min(W, 380)) + 'px" role="img" aria-label="' + esc(o.label || (cnt > 1 ? cnt + ' cirklar, var och en delad i ' + n + ' lika stora bitar' : 'Cirkel delad i ' + n + ' lika stora bitar, ' + o.filled + ' färgade')) + '">' + s + '</svg>';
+  }
+  function itemSet(o) {
+    // o: {items:[emoji...], gone:[indexes shown as eaten/removed]}
+    var gone = o.gone || [];
+    return '<div class="set" role="img" aria-label="' + esc(o.label || o.items.length + ' saker') + '">' + o.items.map(function (it, i) {
+      return '<span class="' + (gone.indexOf(i) >= 0 ? 'gone' : '') + '" aria-hidden="true">' + esc(it) + '</span>';
+    }).join('') + '</div>';
+  }
   function word(v) {
     return '<div class="word"><div class="emo" aria-hidden="true">' + esc(v.emoji || '') + '</div><div class="en" lang="en">' + esc(v.en) + '</div><div class="sv">' + esc(v.sv) + '</div>' + speakBtn(v.en, 'en', 'Lyssna') + '</div>';
   }
@@ -170,7 +193,7 @@
       var inner = v.type === 'intLine' ? intLineSVG(v) : v.type === 'barModel' ? barStatic(v) : tableHTML(v, v.answer);
       return '<div class="vis">' + inner + (v.caption ? '<div class="note">' + fmt(v.caption) + '</div>' : '') + '</div>';
     }
-    var f = { bar: bar, compareBars: compareBars, numberLine: numberLine, compareLines: compareLines, groups: groups }[v.type];
+    var f = { bar: bar, compareBars: compareBars, numberLine: numberLine, compareLines: compareLines, groups: groups, pie: pie, set: itemSet }[v.type];
     var svg = f ? f(v) : (v.type === 'emoji' ? '<div style="font-size:48px">' + esc(v.text) + '</div>' : '');
     return '<div class="vis">' + svg + (v.caption ? '<div class="note">' + fmt(v.caption) + '</div>' : '') + '</div>';
   }
@@ -188,7 +211,7 @@
   }
   // returns {status:'ok'|'near'|'no'|'digits', shown, key}
   function parseNumber(raw) {
-    var m = String(raw || '').trim().toLowerCase().match(/^(-?\d+)\s*[a-zåäö]*\s*[.!]?$/);
+    var m = String(raw || '').trim().toLowerCase().match(/^(-?\d+)\s*(?:%|[a-zåäö]*)\s*[.!]?$/);
     return m ? m[1] : null;
   }
   function checkText(q, raw) {
@@ -697,7 +720,7 @@
         var st = assignmentStatus(a);
         var prog = st.total ? '<p class="note" style="margin:6px 0 0">' + (st.done >= st.total ? (a.kind === 'missions' ? '✅ Alla delar klara' : '✅ Alla tester gjorda') : '🎯 ' + st.done + ' av ' + st.total + (a.kind === 'missions' ? ' delar klara' : ' tester gjorda')) + '</p>' : '';
         return '<a class="card tile" href="#/a/' + a.id + '"><div class="mission"><div class="ico">' + (a.icon || subj.icon) + '</div><div><h3>' + esc(a.title) + '</h3>' +
-          '<span class="pill">' + esc(a.week || '') + '</span> ' + (a.due ? '<span class="note">Läxa till ' + esc(a.due) + '</span>' : '') +
+          '<span class="pill">' + esc(a.week || '') + '</span> ' + (a.due ? '<span class="note">' + esc(a.dueLabel || 'Läxa till') + ' ' + esc(a.due) + '</span>' : '') +
           '<p class="muted" style="margin:6px 0 0">' + esc(a.summary || '') + '</p>' + prog + '</div></div></a>';
       }).join('') : '<div class="card empty"><div class="big">🛰️</div><p><b>Inga uppdrag här än.</b></p><p class="muted">Nya uppdrag dyker upp när skolan ger läxor eller prov i ' + esc(subj.name) + '.</p></div>';
       setView(storageBanner() + tabs + '<h1>' + subj.icon + ' ' + esc(subj.name) + '</h1>' + body);

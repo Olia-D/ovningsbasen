@@ -29,6 +29,29 @@
  ],
  "assignments": [
   {
+   "id": "matte-brak-procent-v49",
+   "subject": "matte",
+   "title": "Prov: bråk och procent",
+   "icon": "🍕",
+   "week": "Vecka 49",
+   "due": "onsdag 2/12",
+   "dueLabel": "Prov",
+   "summary": "Inför provet: andelar, kluriga bråkproblem, jämföra bråk och procent.",
+   "parts": 5,
+   "file": "content/matte-brak-procent-v49.json"
+  },
+  {
+   "id": "engelska-glosor-v48",
+   "subject": "engelska",
+   "title": "Glosor: kök och trädgård",
+   "icon": "🦆",
+   "week": "Vecka 48",
+   "due": "måndag 23/11",
+   "summary": "10 glosor om mat, kök och trädgård – lyssna, lär dig och testa stavningen.",
+   "parts": 3,
+   "file": "content/engelska-glosor-v48.json"
+  },
+  {
    "id": "matte-problemlosning",
    "subject": "matte",
    "title": "Problemlösning: bygg en modell",
