@@ -1167,10 +1167,10 @@
       (d.intro ? '<details class="intro"><summary>' + ico('speech', 18) + ' Vad handlar uppdraget om?</summary><div class="row between" style="flex-wrap:nowrap;align-items:flex-start"><p class="lead" style="margin:0;flex:1">' + fmt(d.intro) + '</p>' + speakBtn(d.intro) + '</div></details>' : '') + '</section>';
     html += '<section class="route" aria-label="Karta"><svg class="path" aria-hidden="true"></svg><div class="ship" aria-hidden="true">' + marker() + '</div><ol class="stns">';
     st.forEach(function (s, i) {
-      var cur = i === ci, side = i % 2 ? ' r' : '';
+      var cur = i === ci, side = '', sway = SWAY[i % SWAY.length];
       var node = s.status === 'won' ? ico('check', 26) : s.status === 'lost' ? ico('repeat', 24) : s.status === 'learning' ? ico('book', 22) : s.kind === 'mixed' ? ico('trophy', 24) : s.n;
       var head = '<span class="sk">' + (s.kind === 'mixed' ? (d.kind === 'missions' ? 'Slutuppdrag' : 'Alla delar') : 'Del ' + s.n) + '</span><b class="stt">' + esc(s.title) + '</b><span class="sl">' + statusLine(d, s) + '</span>';
-      html += '<li class="stn' + side + ' ' + s.status + (cur ? ' cur' : '') + '" data-i="' + i + '"><span class="node" aria-hidden="true" data-depth="' + (i + 1) * 10 + ' m">' + node + '</span>';
+      html += '<li class="stn' + side + ' ' + s.status + (cur ? ' cur' : '') + '" style="--f:' + sway + '" data-i="' + i + '"><span class="node" aria-hidden="true" data-depth="' + (i + 1) * 10 + ' m">' + node + '</span>';
       if (cur) {
         var ac = actions(d, s);
         html += '<div class="scard open" aria-current="step">' + head +
@@ -1183,7 +1183,7 @@
       html += '</li>';
     });
     var won = allWon(st);
-    html += '<li class="stn goal' + (st.length % 2 ? ' r' : '') + (won ? ' won' : '') + (ci === st.length ? ' cur' : '') + '" data-i="' + st.length + '"><span class="node chestnode" aria-hidden="true">' + chestSVG(won) + '</span><div class="scard' + (won ? ' open' : '') + '"><span class="sk">Mål · ' + (st.length + 1) * 10 + ' m</span><b class="stt">' + (won ? 'Skattkistan är öppen – du fick en medalj!' : 'Skattkistan öppnas när alla stationer är klara') + '</b></div></li>';
+    html += '<li class="stn goal' + (won ? ' won' : '') + (ci === st.length ? ' cur' : '') + '" data-i="' + st.length + '"><span class="node chestnode" aria-hidden="true">' + chestSVG(won) + '</span><div class="scard' + (won ? ' open' : '') + '"><span class="sk">Mål · ' + (st.length + 1) * 10 + ' m</span><b class="stt">' + (won ? 'Skattkistan är öppen – du fick en medalj!' : 'Skattkistan öppnas när alla stationer är klara') + '</b></div></li>';
     html += '</ol><span class="seabed" aria-hidden="true"></span></section>';
     setView(html);
     app.querySelectorAll('[data-sel]').forEach(function (b) {
@@ -1191,6 +1191,7 @@
     });
     drawRoute(aid, ci, currentIdx(aid, st, false));
   }
+  var SWAY = [0.12, 0.6, 0.95, 0.45, 0.05, 0.7, 0.3, 0.85]; // how far each station sits from the left: one gently swaying dive line
   var lastShip = {};
   function drawRoute(aid, ci, base) {
     var route = app.querySelector('.route'); if (!route) return;
@@ -1209,7 +1210,7 @@
       for (var i = 1; i < p.length; i++) { if (i <= ci) done += seg(p, i - 1, i); else rest += (rest ? '' : 'M ' + p[i - 1][0] + ' ' + p[i - 1][1]) + seg(p, i - 1, i); }
       svg.innerHTML = (rest ? '<path d="' + rest + '" class="todo"/>' : '') + '<path d="' + done + '" class="did"/>';
       var to = p[Math.min(ci, p.length - 1)], from = lastShip[aid] != null ? p[Math.min(lastShip[aid], p.length - 1)] : to;
-      var put = function (q) { ship.style.left = (q[0] - 48) + 'px'; ship.style.top = (q[1] - 92) + 'px'; };
+      var put = function (q) { ship.style.left = Math.max(2, Math.min(route.clientWidth - 98, q[0] - 48)) + 'px'; ship.style.top = (q[1] - 92) + 'px'; };
       if (animate && from !== to) { ship.classList.add('still'); put(from); void ship.offsetWidth; ship.classList.remove('still'); }
       else ship.classList.add('still');
       put(to); if (!animate) setTimeout(function () { ship.classList.remove('still'); }, 50);
