@@ -292,3 +292,6 @@ body:not(.focus) .rank{visibility:hidden}
 .tchip b{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.25}
 .tchip.on.old{opacity:1}
 .morelinks a{display:block}
+.code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:18px;font-weight:700;letter-spacing:.06em;background:var(--sky);color:var(--navy);border-radius:12px;padding:10px 12px;text-align:center;overflow-wrap:anywhere}
+.navi.small{min-height:44px;font-size:16px;opacity:.85}
+@media (min-width:900px){.navi.small{margin-top:16px}}

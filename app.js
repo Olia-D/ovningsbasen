@@ -15,8 +15,10 @@
     try { var p = JSON.parse(localStorage.getItem(KEY)); return (p && typeof p === 'object' && !Array.isArray(p)) ? p : {}; } catch (e) { return {}; }
   }
   function saveProgress() {
+    progress.ts = Date.now();
     try { localStorage.setItem(KEY, JSON.stringify(progress)); } catch (e) { /* private mode: keep in memory */ }
     renderRank();
+    if (typeof schedulePush === 'function') schedulePush();
   }
   function rec(id) { progress.items = progress.items || {}; return progress.items[id] = progress.items[id] || {}; }
 
@@ -709,6 +711,156 @@
     return { done: done, total: total };
   }
 
+  // ---------- cross-device sync (Firestore REST, no SDK). Config in sync-config.js ----------
+  var SYNC = window.OVB_SYNC && window.OVB_SYNC.projectId ? window.OVB_SYNC : null;
+  var CKEY = 'ovb-sync-code', DKEY = 'ovb-device';
+  var syncState = { last: null, err: null, busy: false, again: false };
+  function lsGet(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
+  function lsSet(k, v) { try { if (v) localStorage.setItem(k, v); else localStorage.removeItem(k); } catch (e) { } }
+  function deviceId() { var d = lsGet(DKEY); if (!d) { d = 'd' + Math.random().toString(36).slice(2, 10); lsSet(DKEY, d); } return d; }
+  function syncCode() { return lsGet(CKEY); }
+  var ALPHA = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var a = new Uint8Array(20), s = '';
+    (window.crypto || window.msCrypto).getRandomValues(a);
+    for (var i = 0; i < 20; i++) { s += ALPHA[a[i] % 32]; if (i % 4 === 3 && i < 19) s += '-'; }
+    return s;
+  }
+  function cleanCode(s) {
+    var c = String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/O/g, '0');
+    if (c.length !== 20 || /[01IO]/.test(c)) return null;
+    return c.match(/.{4}/g).join('-');
+  }
+  function docUrl(code, write) {
+    var u = (SYNC.base || 'https://firestore.googleapis.com/v1') + '/projects/' + SYNC.projectId + '/databases/(default)/documents/progress/' + encodeURIComponent(code) + '?' + (SYNC.apiKey ? 'key=' + encodeURIComponent(SYNC.apiKey) + '&' : '');
+    return write ? u + 'updateMask.fieldPaths=data&updateMask.fieldPaths=updated' : u;
+  }
+  function pull(code) {
+    return fetch(docUrl(code), { cache: 'no-store' }).then(function (r) {
+      if (r.status === 404) return null;
+      if (!r.ok) throw new Error('Synk: ' + r.status);
+      return r.json().then(function (j) { var v = j.fields && j.fields.data && j.fields.data.stringValue; return v ? JSON.parse(v) : null; });
+    });
+  }
+  function push(code, p) {
+    return fetch(docUrl(code, true), { method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fields: { data: { stringValue: JSON.stringify(p) }, updated: { integerValue: String(Date.now()) } } }) })
+      .then(function (r) { if (!r.ok) throw new Error('Synk: ' + r.status); });
+  }
+  function xpTotal(p) { var t = 0; Object.keys(p.xpBy || {}).forEach(function (k) { t += +p.xpBy[k] || 0; }); return t; }
+  function migrateXP(p) { if (!p.xpBy) { p.xpBy = {}; if (p.xp) p.xpBy[deviceId()] = p.xp; } p.xp = xpTotal(p); return p; }
+  function addXP(n) { migrateXP(progress); var d = deviceId(); progress.xpBy[d] = (progress.xpBy[d] || 0) + n; progress.xp = xpTotal(progress); }
+  function mergeProgress(a, b) {
+    a = migrateXP(JSON.parse(JSON.stringify(a || {}))); b = migrateXP(JSON.parse(JSON.stringify(b || {})));
+    var out = a;
+    Object.keys(b.xpBy).forEach(function (k) { out.xpBy[k] = Math.max(out.xpBy[k] || 0, b.xpBy[k] || 0); });
+    out.xp = xpTotal(out);
+    var ai = a.items || {}, bi = b.items || {}, items = {};
+    Object.keys(ai).concat(Object.keys(bi)).forEach(function (k) {
+      if (items[k]) return;
+      var x = ai[k] || {}, y = bi[k] || {}, newer = (y.updated || '') > (x.updated || '') ? y : x, m = JSON.parse(JSON.stringify(newer));
+      if (x.learned || y.learned) m.learned = true;
+      if (x.best != null || y.best != null) m.best = Math.max(x.best == null ? -1 : x.best, y.best == null ? -1 : y.best);
+      if (!m.times && (x.times || y.times)) { m.times = x.times || y.times; m.self = x.self || y.self; }
+      items[k] = m;
+    });
+    out.items = items;
+    out.medals = (a.medals || []).concat((b.medals || []).filter(function (id) { return (a.medals || []).indexOf(id) < 0; }));
+    var bNewer = (b.ts || 0) > (a.ts || 0);
+    out.pos = bNewer ? Object.assign({}, a.pos, b.pos) : Object.assign({}, b.pos, a.pos);
+    out.ts = Math.max(a.ts || 0, b.ts || 0);
+    return out;
+  }
+  var pushTimer;
+  function schedulePush() { if (!SYNC || !syncCode()) return; clearTimeout(pushTimer); pushTimer = setTimeout(function () { syncNow(); }, 1500); }
+  function writeLocal() { try { localStorage.setItem(KEY, JSON.stringify(progress)); } catch (e) { } renderRank(); }
+  function syncNow() {
+    var code = syncCode();
+    if (!SYNC || !code) return Promise.resolve(false);
+    if (syncState.busy) { syncState.again = true; return Promise.resolve(false); }
+    syncState.busy = true;
+    var before = JSON.stringify(progress);
+    return pull(code).then(function (remote) {
+      if (remote) { var merged = mergeProgress(progress, remote); Object.keys(progress).forEach(function (k) { delete progress[k]; }); Object.assign(progress, merged); writeLocal(); }
+      return push(code, progress);
+    }).then(function () {
+      syncState.last = new Date(); syncState.err = null;
+      return JSON.stringify(progress) !== before;
+    }, function (e) { syncState.err = e && e.message || 'fel'; return false; })
+      .then(function (changed) {
+        syncState.busy = false;
+        if (syncState.again) { syncState.again = false; schedulePush(); }
+        return changed;
+      });
+  }
+  function calmRoute() { var h = location.hash; return !/\/(learn|test|retry|mixed)/.test(h); }
+  function syncAndRefresh() { syncNow().then(function (changed) { if (changed && calmRoute() && !/^#\/sync/.test(location.hash)) route(); }); }
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') syncAndRefresh(); });
+
+  function hhmm(d) { return d ? ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) : ''; }
+  function syncLink(code) { return location.href.split('#')[0] + '#/sync/' + code; }
+  function viewSync(joinCode) {
+    focusMode(false);
+    loadAll().then(function (all) { renderSide(all, 'sync'); });
+    var code = syncCode(), html = '<h1>🔄 Synka mellan enheter</h1>';
+    if (!SYNC) {
+      setView(html + '<div class="card"><p>Synk är inte påslagen än. Framsteg sparas bara på den här enheten.</p></div>'); return;
+    }
+    if (joinCode) {
+      var c = cleanCode(joinCode);
+      if (!c) { setView(html + '<div class="card"><p>Koden ser inte rätt ut. Kolla att du har hela länken.</p><a class="btn" href="#/sync">Tillbaka</a></div>'); return; }
+      setView(html + '<div class="card"><p class="lead">Vill du koppla den här enheten till synk-koden?</p><p class="code">' + c + '</p>' +
+        '<p class="note">Poäng och klara tester från båda enheterna slås ihop. Inget försvinner.</p>' +
+        '<div class="stack"><button class="btn wide" type="button" id="join">Ja, koppla</button><a class="btn secondary wide" href="#/">Avbryt</a></div><div id="msg" aria-live="polite"></div></div>');
+      app.querySelector('#join').addEventListener('click', function () {
+        var b = this; b.disabled = true; app.querySelector('#msg').innerHTML = '<p class="note">Kopplar…</p>';
+        pull(c).then(function (remote) {
+          if (!remote) { app.querySelector('#msg').innerHTML = '<p class="lostline">Hittar ingen sparning för den koden.</p>'; b.disabled = false; return; }
+          lsSet(CKEY, c);
+          return syncNow().then(function () { location.replace('#/sync'); });
+        }).catch(function () { app.querySelector('#msg').innerHTML = '<p class="lostline">Kunde inte nå synk-tjänsten. Kolla internet och försök igen.</p>'; b.disabled = false; });
+      });
+      return;
+    }
+    if (!code) {
+      setView(html + '<div class="card"><p class="lead">Framsteg sparas nu bara på den här enheten.</p><p>Slå på synk så finns poäng, medaljer och klara tester på alla enheter.</p>' +
+        '<button class="btn wide" type="button" id="create">Slå på synk</button><div id="msg" aria-live="polite"></div></div>' +
+        '<div class="card"><h2 style="margin-top:0">Har du redan en kod?</h2><p class="note">Skriv koden från den andra enheten (eller öppna synk-länken där).</p>' +
+        '<input class="txt" id="codein" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX" aria-label="Synk-kod"><div class="row end" style="margin-top:10px"><button class="btn" type="button" id="go">Koppla</button></div></div>');
+      app.querySelector('#create').addEventListener('click', function () {
+        var b = this, c = newCode(); b.disabled = true;
+        push(c, progress).then(function () { lsSet(CKEY, c); syncState.last = new Date(); viewSync(); })
+          .catch(function () { app.querySelector('#msg').innerHTML = '<p class="lostline">Kunde inte nå synk-tjänsten. Kolla internet och försök igen.</p>'; b.disabled = false; });
+      });
+      app.querySelector('#go').addEventListener('click', function () {
+        var c = cleanCode(app.querySelector('#codein').value);
+        if (!c) { alert('Koden ska ha 20 tecken, till exempel ABCD-EFGH-JKLM-NPQR-STUV.'); return; }
+        location.hash = '#/sync/' + c;
+      });
+      return;
+    }
+    var link = syncLink(code);
+    setView(html + '<div class="card"><p class="lead">✅ Synk är på för den här enheten.</p>' +
+      '<p class="note" id="st">' + (syncState.err ? '⚠️ Senaste försöket misslyckades – försöker igen nästa gång.' : syncState.last ? 'Senast synkad ' + hhmm(syncState.last) : 'Synkar…') + '</p>' +
+      '<button class="btn secondary" type="button" id="now">Synka nu</button></div>' +
+      '<div class="card"><h2 style="margin-top:0">Lägg till en enhet</h2><p>Öppna den här länken på den andra enheten (skicka den till dig själv eller använd AirDrop):</p>' +
+      '<p class="code">' + code + '</p><div class="stack">' +
+      (navigator.share ? '<button class="btn wide" type="button" id="share">Dela länken</button>' : '') +
+      '<button class="btn ' + (navigator.share ? 'secondary ' : '') + 'wide" type="button" id="copy">Kopiera länken</button></div><div id="msg" aria-live="polite"></div>' +
+      '<p class="note">Håll koden hemlig – den som har den kan se och ändra framstegen.</p></div>' +
+      '<details class="card"><summary>Koppla från den här enheten</summary><p class="note">Framstegen finns kvar här och i molnet, men den här enheten slutar synka.</p><button class="btn secondary" type="button" id="off">Koppla från</button></details>');
+    var st = function () { var e = app.querySelector('#st'); if (e) e.textContent = syncState.err ? '⚠️ Kunde inte synka just nu. Kolla internet.' : 'Senast synkad ' + hhmm(syncState.last); };
+    if (!syncState.last) syncNow().then(st);
+    app.querySelector('#now').addEventListener('click', function () { syncNow().then(st); });
+    app.querySelector('#copy').addEventListener('click', function () {
+      var done = function () { app.querySelector('#msg').innerHTML = '<p class="note">Länken är kopierad ✓</p>'; };
+      if (navigator.clipboard) navigator.clipboard.writeText(link).then(done, function () { prompt('Kopiera länken:', link); });
+      else prompt('Kopiera länken:', link);
+    });
+    var sh = app.querySelector('#share'); if (sh) sh.addEventListener('click', function () { navigator.share({ title: 'Övningsbasen – synk', url: link }).catch(function () { }); });
+    app.querySelector('#off').addEventListener('click', function () { lsSet(CKEY, ''); syncState.last = null; viewSync(); });
+  }
+
   // ---------- progress helpers (read-only peek never creates records) ----------
   function peek(id) { return ((progress.items || {})[id]) || {}; }
   function bestLine(best, total) { return best != null ? ' <span class="note">· Bästa: ' + best + ' av ' + total + '</span>' : ''; }
@@ -842,6 +994,7 @@
       if (!any && active !== s.id) return; // subjects without any homework stay hidden
       h += '<a class="navi' + (active === s.id ? ' on' : '') + (any ? '' : ' dim') + '" href="#/s/' + s.id + '"' + (active === s.id ? ' aria-current="page"' : '') + '><span class="ni">' + s.icon + '</span><span class="nl">' + esc(s.name) + '</span>' + (open ? '<span class="nb" aria-label="' + open + ' att göra">' + open + '</span>' : '') + '</a>';
     });
+    if (SYNC) h += '<a class="navi small' + (active === 'sync' ? ' on' : '') + '" href="#/sync"' + (active === 'sync' ? ' aria-current="page"' : '') + '><span class="ni">🔄</span><span class="nl">Synk' + (syncCode() ? ' ✓' : '') + '</span></a>';
     side.innerHTML = h;
     var on = side.querySelector('.on');
     if (on && side.scrollWidth > side.clientWidth + 2) { var d = on.getBoundingClientRect().left - side.getBoundingClientRect().left; side.scrollLeft += d - 16; }
@@ -1089,7 +1242,7 @@
     try { history.replaceState(null, '', '#/a/' + s.a.id); } catch (e) { }
     var isM = s.a.kind === 'missions';
     var gained = isM ? n * (s.retry ? 5 : 10) : s.right * (s.retry ? 5 : 10);
-    progress.xp = (progress.xp || 0) + gained;
+    addXP(gained);
     var before = rankOf(progress.xp - gained)[1], after = rankOf(progress.xp)[1];
     var stars = null, ratio = s.right / n;
     if (!s.retry) { r.best = Math.max(r.best || 0, s.right); r.last = s.right; stars = starsFor(s.right, n); r.missed = s.missed.slice(); if (s.right / n >= 0.7) r.practiced = false; }
@@ -1142,6 +1295,7 @@
   // ---------- router ----------
   function route() {
     var h = location.hash.replace(/^#\/?/, '').split('/');
+    if (h[0] === 'sync') return viewSync(h[1]);
     if (h[0] === 's' && h[1]) return viewSubject(h[1]);
     if (h[0] === 'a' && h[1]) {
       if (h[2] === 'mixed') return startQuiz(h[1], 'mixed', h[3] === 'retry' ? 'missed' : undefined);
@@ -1169,6 +1323,8 @@
   function schedule() { clearTimeout(routeTimer); routeTimer = setTimeout(route, 0); }
   window.addEventListener('popstate', schedule);
   window.addEventListener('hashchange', schedule);
+  migrateXP(progress); // xp is kept per device so two devices' points add up when synced
   renderRank();
   route();
+  if (SYNC && syncCode()) syncAndRefresh();
 })();
