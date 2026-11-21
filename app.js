@@ -1056,14 +1056,14 @@
   function isDone(x) { return allWon(stationsFor(x.d)); }
   function renderSide(all, active) {
     var side = document.getElementById('side'); if (!side) return;
-    var h = '<a class="navi' + (active === 'home' ? ' on' : '') + '" href="#/"' + (active === 'home' ? ' aria-current="page"' : '') + '><span class="ni">' + ico('home') + '</span><span class="nl">Start</span></a>';
+    var h = '';
     all.m.subjects.forEach(function (s) {
       var open = all.list.filter(function (x) { return x.a.subject === s.id && !isPast(x.a) && !isDone(x); }).length;
       var any = all.list.some(function (x) { return x.a.subject === s.id; });
       if (!any && active !== s.id) return; // subjects without any homework stay hidden
       h += '<a class="navi' + (active === s.id ? ' on' : '') + (any ? '' : ' dim') + '" href="#/s/' + s.id + '"' + (active === s.id ? ' aria-current="page"' : '') + '><span class="ni">' + subjIco(s.id) + '</span><span class="nl">' + esc(s.name) + '</span>' + (open ? '<span class="nb" aria-label="' + open + ' att göra">' + open + '</span>' : '') + '</a>';
     });
-    if (SYNC) h += '<a class="navi small' + (active === 'sync' ? ' on' : '') + '" href="#/sync"' + (active === 'sync' ? ' aria-current="page"' : '') + '><span class="ni">' + ico('cloud') + '</span><span class="nl">Synk' + (syncCode() ? ' ✓' : '') + '</span></a>';
+    var sb = document.querySelector('.synk'); if (sb) { sb.hidden = !SYNC; sb.classList.toggle('on', !!(SYNC && syncCode())); }
     side.innerHTML = h;
     var on = side.querySelector('.on');
     if (on && side.scrollWidth > side.clientWidth + 2) { var d = on.getBoundingClientRect().left - side.getBoundingClientRect().left; side.scrollLeft += d - 16; }
@@ -1124,6 +1124,15 @@
   }
 
   // ---------- subject: banner + task bar + route map ----------
+  function viewDefault() {
+    focusMode(false);
+    loadAll().then(function (all) {
+      var act = sortActive(all.list), pick = act[0] || all.list[0];
+      var sid = pick ? pick.a.subject : (all.m.subjects[0] || {}).id;
+      if (sid) { location.replace('#/s/' + sid); return; }
+      setView('<div class="card empty"><p><b>Inga uppdrag än.</b></p></div>');
+    }).catch(showError);
+  }
   function viewSubject(sid) {
     focusMode(false);
     loadAll().then(function (all) {
@@ -1381,7 +1390,7 @@
       }
       return viewAssignment(h[1]);
     }
-    viewHome();
+    viewDefault();
   }
   window.__ovbTest = { checkText: checkText, fracWords: fracWords };
   // same-hash links (e.g. after replaceState) must still navigate; Avbryt cancels the saved quiz

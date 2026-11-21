@@ -401,3 +401,8 @@ button.scard:hover{background:#fff}
 .stn.goal .scard{max-width:280px;text-align:center}
 .stn.goal .scard::before{top:-7px;left:calc(50% - 7px);transform:rotate(45deg)}
 .stn.goal .node.chestnode{margin-left:0}
+/* no start page: subjects only, sync lives in the header */
+.top .rank{margin-left:auto}
+.synk{position:relative;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;color:#fff;background:rgba(255,255,255,.1)}
+.synk:focus-visible{outline:3px solid var(--gold2);outline-offset:2px}
+.synk.on::after{content:"";position:absolute;right:7px;top:8px;width:9px;height:9px;border-radius:50%;background:var(--done);border:2px solid var(--deep)}
