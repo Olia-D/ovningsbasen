@@ -738,14 +738,22 @@
   function pull(code) {
     return fetch(docUrl(code), { cache: 'no-store' }).then(function (r) {
       if (r.status === 404) return null;
-      if (!r.ok) throw new Error('Synk: ' + r.status);
+      if (!r.ok) return failed(r);
       return r.json().then(function (j) { var v = j.fields && j.fields.data && j.fields.data.stringValue; return v ? JSON.parse(v) : null; });
     });
+  }
+  function failed(r) {
+    return r.text().then(function (t) { var m = ''; try { m = JSON.parse(t).error.message; } catch (e) { m = t.slice(0, 160); } throw new Error(r.status + ' ' + m); }, function () { throw new Error(String(r.status)); });
+  }
+  function errText(e) {
+    var m = e && e.message || '';
+    var hint = /^403/.test(m) ? 'Reglerna i Firestore tillåter inte detta än (publicera reglerna).' : /^404/.test(m) ? 'Hittar ingen Firestore-databas i projektet (skapa databasen).' : /^40[01]/.test(m) ? 'Nyckeln eller projekt-id stämmer inte.' : m ? '' : 'Kolla internet och försök igen.';
+    return 'Kunde inte nå synk-tjänsten. ' + hint + (m ? ' <span class="note">(' + esc(m) + ')</span>' : '');
   }
   function push(code, p) {
     return fetch(docUrl(code, true), { method: 'PATCH', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ fields: { data: { stringValue: JSON.stringify(p) }, updated: { integerValue: String(Date.now()) } } }) })
-      .then(function (r) { if (!r.ok) throw new Error('Synk: ' + r.status); });
+      .then(function (r) { if (!r.ok) return failed(r); });
   }
   function xpTotal(p) { var t = 0; Object.keys(p.xpBy || {}).forEach(function (k) { t += +p.xpBy[k] || 0; }); return t; }
   function migrateXP(p) { if (!p.xpBy) { p.xpBy = {}; if (p.xp) p.xpBy[deviceId()] = p.xp; } p.xp = xpTotal(p); return p; }
@@ -818,7 +826,7 @@
           if (!remote) { app.querySelector('#msg').innerHTML = '<p class="lostline">Hittar ingen sparning för den koden.</p>'; b.disabled = false; return; }
           lsSet(CKEY, c);
           return syncNow().then(function () { location.replace('#/sync'); });
-        }).catch(function () { app.querySelector('#msg').innerHTML = '<p class="lostline">Kunde inte nå synk-tjänsten. Kolla internet och försök igen.</p>'; b.disabled = false; });
+        }).catch(function (e) { app.querySelector('#msg').innerHTML = '<p class="lostline">' + errText(e) + '</p>'; b.disabled = false; });
       });
       return;
     }
@@ -830,7 +838,7 @@
       app.querySelector('#create').addEventListener('click', function () {
         var b = this, c = newCode(); b.disabled = true;
         push(c, progress).then(function () { lsSet(CKEY, c); syncState.last = new Date(); viewSync(); })
-          .catch(function () { app.querySelector('#msg').innerHTML = '<p class="lostline">Kunde inte nå synk-tjänsten. Kolla internet och försök igen.</p>'; b.disabled = false; });
+          .catch(function (e) { app.querySelector('#msg').innerHTML = '<p class="lostline">' + errText(e) + '</p>'; b.disabled = false; });
       });
       app.querySelector('#go').addEventListener('click', function () {
         var c = cleanCode(app.querySelector('#codein').value);
