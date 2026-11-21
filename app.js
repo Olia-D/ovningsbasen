@@ -839,6 +839,7 @@
     all.m.subjects.forEach(function (s) {
       var open = all.list.filter(function (x) { return x.a.subject === s.id && !isPast(x.a) && !isDone(x); }).length;
       var any = all.list.some(function (x) { return x.a.subject === s.id; });
+      if (!any && active !== s.id) return; // subjects without any homework stay hidden
       h += '<a class="navi' + (active === s.id ? ' on' : '') + (any ? '' : ' dim') + '" href="#/s/' + s.id + '"' + (active === s.id ? ' aria-current="page"' : '') + '><span class="ni">' + s.icon + '</span><span class="nl">' + esc(s.name) + '</span>' + (open ? '<span class="nb" aria-label="' + open + ' att göra">' + open + '</span>' : '') + '</a>';
     });
     side.innerHTML = h;
