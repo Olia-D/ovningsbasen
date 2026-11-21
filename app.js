@@ -28,7 +28,7 @@
   function nextRank(xp) { for (var i = 0; i < RANKS.length; i++) if (xp < RANKS[i][0]) return RANKS[i]; return null; }
   function renderRank() {
     var xp = progress.xp || 0, r = rankOf(xp), n = nextRank(xp);
-    rankEl.innerHTML = '<b>' + r[1] + '</b><br>' + xp + ' poäng' + (n ? '<span class="tonext">' + (n[0] - xp) + ' kvar till ' + n[1] + '</span>' : ' ⭐');
+    rankEl.innerHTML = '<b>' + r[1] + '</b><br>' + xp + ' m' + (n ? '<span class="tonext">' + (n[0] - xp) + ' m kvar till ' + n[1] + '</span>' : '');
   }
 
   // ---------- text helpers ----------
@@ -911,73 +911,134 @@
   function actions(d, s) {
     var base = '#/a/' + d.id + (s.kind === 'mixed' ? '/mixed' : '/t/' + s.id), miss = d.kind === 'missions';
     var test = s.kind === 'mixed' ? base : base + '/test', learn = base + '/learn/0', missed = (s.r.missed || []).length;
-    var testLbl = s.kind === 'mixed' ? (miss ? '🧰 Starta' : '🏆 Starta blandat test') + ' · ' + s.len + (miss ? ' uppdrag' : ' frågor') : (miss ? '🎖️ Uppdrag · ' + s.len + ' st' : '🎯 Testa dig · ' + s.len + ' frågor');
-    if (s.status === 'new' && s.kind === 'topic') return { main: ['📘 Lär dig · ' + s.learnLen + ' kort', learn], more: [['Hoppa direkt till ' + (miss ? 'uppdragen' : 'testet'), test]] };
-    if (s.status === 'new' || s.status === 'learning') return { main: [testLbl, test], more: s.kind === 'topic' ? [['📘 Lär dig igen', learn]] : [] };
-    if (s.status === 'lost') return { main: [missed ? '🔁 Öva på det du missade (' + missed + ')' : '🔁 Gör testet igen', missed ? base + '/retry' : test], more: (s.kind === 'topic' ? [['📘 Repetera Lär dig', learn]] : []).concat(missed ? [['Gör hela testet igen', test]] : []), lost: true };
-    return { main: [(miss ? '🎖️ Gör uppdragen igen' : '🎯 Gör testet igen'), test], more: s.kind === 'topic' ? [['📘 Lär dig igen', learn]] : [], again: true };
+    var testLbl = s.kind === 'mixed' ? (miss ? 'Starta' : 'Starta blandat test') + ' · ' + s.len + (miss ? ' uppdrag' : ' frågor') : (miss ? 'Uppdrag · ' + s.len + ' st' : 'Testa dig · ' + s.len + ' frågor');
+    if (s.status === 'new' && s.kind === 'topic') return { main: ['Lär dig · ' + s.learnLen + ' kort', learn], more: [['Hoppa direkt till ' + (miss ? 'uppdragen' : 'testet'), test]] };
+    if (s.status === 'new' || s.status === 'learning') return { main: [testLbl, test], more: s.kind === 'topic' ? [['Lär dig igen', learn]] : [] };
+    if (s.status === 'lost') return { main: [missed ? 'Öva på det du missade (' + missed + ')' : 'Gör testet igen', missed ? base + '/retry' : test], more: (s.kind === 'topic' ? [['Repetera Lär dig', learn]] : []).concat(missed ? [['Gör hela testet igen', test]] : []), lost: true };
+    return { main: [(miss ? 'Gör uppdragen igen' : 'Gör testet igen'), test], more: s.kind === 'topic' ? [['Lär dig igen', learn]] : [], again: true };
   }
   function statusLine(d, s) {
     var r = s.r, miss = d.kind === 'missions';
     if (s.status === 'new') return '<span class="note">Inte startad</span>';
-    if (s.status === 'learning') return '<span class="note">📘 Lär dig klar · ' + (miss ? 'uppdragen' : 'testet') + ' kvar</span>';
-    if (s.status === 'lost') return '<span class="lostline">🔁 ' + r.best + ' av ' + s.len + ' · öva mer här</span>';
-    if (miss) return '<span class="note">✅ Klara · helt själv ' + r.best + ' av ' + s.len + '</span>';
-    return starHTML(starsFor(r.best, s.len) || 2) + ' <span class="note">' + r.best + ' av ' + s.len + (r.practiced && r.best / s.len < 0.7 ? ' · övat 💪' : '') + '</span>';
+    if (s.status === 'learning') return '<span class="note">Lär dig klar · ' + (miss ? 'uppdragen' : 'testet') + ' kvar</span>';
+    if (s.status === 'lost') return '<span class="lostline">' + r.best + ' av ' + s.len + ' · öva mer här</span>';
+    if (miss) return '<span class="note">Klara · helt själv ' + r.best + ' av ' + s.len + '</span>';
+    return starHTML(starsFor(r.best, s.len) || 2) + ' <span class="note">' + r.best + ' av ' + s.len + (r.practiced && r.best / s.len < 0.7 ? ' · övat' : '') + '</span>';
   }
 
-  // ---------- the cadet (original character; rank shows on cap and shoulders, medals on chest) ----------
-  function rankIdx(xp) { var k = 0; for (var i = 0; i < RANKS.length; i++) if (xp >= RANKS[i][0]) k = i; return k; }
-  function cadetSVG(rk, medals, size) {
-    var s = '', gold = '#ffd166', navy = '#13294b';
-    s += '<path d="M18 150 L22 114 Q28 96 60 94 Q92 96 98 114 L102 150 Z" fill="#1f3a68"/>';
-    s += '<path d="M44 95 L60 120 L76 95 Z" fill="#fff"/><path d="M52 97 L60 110 L68 97 Z" fill="#3fa7d6"/>';
-    s += '<circle cx="60" cy="128" r="2.6" fill="' + gold + '"/><circle cx="60" cy="140" r="2.6" fill="' + gold + '"/>';
-    // shoulder boards with rank stripes
-    var thin = rk <= 3 ? rk : rk - 4, thick = rk >= 4;
-    [[20, 101], [78, 101]].forEach(function (p) {
-      s += '<rect x="' + p[0] + '" y="' + p[1] + '" width="22" height="10" rx="3" fill="' + navy + '"/>';
-      var x = p[0] + 3;
-      if (thick) { s += '<rect x="' + x + '" y="' + (p[1] + 2) + '" width="4" height="6" fill="' + gold + '"/>'; x += 6; }
-      for (var i = 0; i < thin; i++) { s += '<rect x="' + x + '" y="' + (p[1] + 2) + '" width="2" height="6" fill="' + gold + '"/>'; x += 4; }
-    });
-    // medals (right chest)
-    var cols = ['#e63946', '#2a9d8f', '#3a86ff', '#f4a261'];
-    for (var m = 0; m < Math.min(medals, 4); m++) {
-      var mx = 68 + m * 7;
-      s += '<rect x="' + (mx - 2.5) + '" y="116" width="5" height="6" fill="' + cols[m] + '"/><circle cx="' + mx + '" cy="125" r="3.2" fill="' + gold + '" stroke="#b8860b" stroke-width=".8"/>';
-    }
-    if (medals > 4) s += '<text x="98" y="136" font-size="9" font-family="Lexend,sans-serif" font-weight="700" fill="' + gold + '" text-anchor="end">+' + (medals - 4) + '</text>';
-    s += '<rect x="52" y="82" width="16" height="15" fill="#f2c6a0"/>';
-    s += '<circle cx="60" cy="62" r="27" fill="#f6d1b1"/>';
-    s += '<path d="M33 60 Q33 42 60 40 Q87 42 87 60 Q80 50 60 50 Q40 50 33 60 Z" fill="#6b4a2b"/>';
-    s += '<circle cx="50" cy="65" r="3.4" fill="#1b2333"/><circle cx="70" cy="65" r="3.4" fill="#1b2333"/><circle cx="51.2" cy="63.8" r="1" fill="#fff"/><circle cx="71.2" cy="63.8" r="1" fill="#fff"/>';
-    s += '<circle cx="43" cy="73" r="4.5" fill="#f4a3a3" opacity=".55"/><circle cx="77" cy="73" r="4.5" fill="#f4a3a3" opacity=".55"/>';
-    s += '<path d="M51 76 Q60 84 69 76" stroke="#8a3b12" stroke-width="3" fill="none" stroke-linecap="round"/>';
-    // cap
-    s += '<ellipse cx="60" cy="36" rx="33" ry="11" fill="' + (rk >= 3 ? navy : '#fff') + '" stroke="#c9d5e3" stroke-width="1.5"/>';
-    s += '<rect x="30" y="36" width="60" height="10" rx="4" fill="' + navy + '"/>';
-    s += '<path d="M35 46 Q60 56 85 46 L84 44 Q60 52 36 44 Z" fill="' + (rk >= 3 ? gold : '#0d1d36') + '"/>';
-    if (rk >= 7) s += '<path d="M60 35.5 l1.8 3.6 4 .6 -2.9 2.8 .7 4 -3.6-1.9 -3.6 1.9 .7-4 -2.9-2.8 4-.6z" fill="' + gold + '"/>';
-    else s += '<circle cx="60" cy="41" r="4.6" fill="' + gold + '"/><path d="M60 38.4 v5.4 M57.6 42 q2.4 2.6 4.8 0" stroke="' + navy + '" stroke-width="1.2" fill="none"/>';
-    return '<svg class="cadet" viewBox="0 0 120 150" width="' + size + '" height="' + Math.round(size * 1.25) + '" role="img" aria-label="Din kadett: ' + RANKS[rk][1] + (medals ? ', ' + medals + (medals === 1 ? ' medalj' : ' medaljer') : '') + '">' + s + '</svg>';
+  // ---------- art: one flat, rounded style (icons, captain, submarine) ----------
+  var ICONS = {
+    pie: '<circle cx="12" cy="12" r="9"/><path d="M12 3v9h9"/>',
+    speech: '<path d="M4 5h16v11H10l-6 4z"/>',
+    cards: '<rect x="3" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a2 2 0 0 1 2 2v11"/>',
+    blocks: '<rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/><rect x="8" y="3" width="8" height="8" rx="1.5"/>',
+    clipboard: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 12l2 2 4-4"/>',
+    repeat: '<path d="M4 11a8 8 0 0 1 14-5l2 2M20 4v4h-4M20 13a8 8 0 0 1-14 5l-2-2M4 20v-4h4"/>',
+    medal: '<circle cx="12" cy="15" r="6"/><path d="M8.5 3 12 9l3.5-6"/>',
+    map: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>',
+    lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+    check: '<path d="M5 12.5l4.5 4.5L19 7"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    cloud: '<path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 9a4.5 4.5 0 0 0 1 9z"/>',
+    home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>',
+    arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+    book: '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/>',
+    flask: '<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 15h9"/>',
+    globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+    trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M9 20h6M10 17h4"/>',
+    flag: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'
+  };
+  function ico(name, size, cls) {
+    return '<svg class="ic' + (cls ? ' ' + cls : '') + '" width="' + (size || 22) + '" height="' + (size || 22) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[name] || '') + '</svg>';
   }
-  function marker() { // the submarine with the cadet in the hatch
-    return '<svg viewBox="0 0 90 56" width="78" height="49" aria-hidden="true">' +
-      '<circle cx="40" cy="15" r="9" fill="#f6d1b1"/><path d="M31 13 Q40 2 49 13 Z" fill="#fff" stroke="#c9d5e3"/><rect x="31" y="11" width="18" height="4" rx="2" fill="#13294b"/>' +
-      '<circle cx="37" cy="17" r="1.4" fill="#1b2333"/><circle cx="43" cy="17" r="1.4" fill="#1b2333"/>' +
-      '<rect x="31" y="20" width="18" height="10" rx="3" fill="#ffd166"/>' +
-      '<ellipse cx="42" cy="38" rx="36" ry="14" fill="#ffd166" stroke="#c99a1c" stroke-width="1.5"/>' +
-      '<circle cx="28" cy="38" r="4" fill="#13294b"/><circle cx="42" cy="38" r="4" fill="#13294b"/><circle cx="56" cy="38" r="4" fill="#13294b"/>' +
-      '<path d="M78 38 l9 -8 v16 z" fill="#ffd166" stroke="#c99a1c" stroke-width="1.5"/></svg>';
+  var SUBJ = { matte: 'pie', engelska: 'speech', svenska: 'book', no: 'flask', so: 'globe' };
+  function subjIco(id, size) { return ico(SUBJ[id] || 'book', size); }
+  function asgIcoName(a, d) { if (d && d.kind === 'missions') return 'blocks'; if (/^glosor/i.test(a.title || '')) return 'cards'; return SUBJ[a.subject] || 'book'; }
+  function tile(a, d, size) { return '<span class="tile-ic t-' + esc(a.subject || 'x') + '">' + ico(asgIcoName(a, d), size || 22) + '</span>'; }
+  function ring(done, total) {
+    var r = 16, c = 2 * Math.PI * r, f = total ? done / total : 0;
+    return '<svg class="ring" width="40" height="40" viewBox="0 0 40 40" role="img" aria-label="' + done + ' av ' + total + ' klara"><circle cx="20" cy="20" r="' + r + '" fill="none" stroke="#E3EAF2" stroke-width="4"/>' +
+      (done ? '<circle cx="20" cy="20" r="' + r + '" fill="none" stroke="#3BB37A" stroke-width="4" stroke-linecap="round" stroke-dasharray="' + (c * f).toFixed(1) + ' ' + c.toFixed(1) + '" transform="rotate(-90 20 20)"/>' : '') +
+      '<text x="20" y="24" text-anchor="middle" font-size="11" font-weight="600" fill="#5B6475" font-family="Lexend, sans-serif">' + done + '/' + total + '</text></svg>';
+  }
+
+  // the captain: rank shows on cap and shoulders, medals on the chest; pose = rest | cheer | think
+  function rankIdx(xp) { var k = 0; for (var i = 0; i < RANKS.length; i++) if (xp >= RANKS[i][0]) k = i; return k; }
+  function cadetSVG(rk, medals, size, pose) {
+    var s = '', gold = '#FFC94A', navy = '#1B3A6B', dark = '#0F2547', ink = '#14213D', skin = '#F6CBA6';
+    if (pose === 'cheer') s += '<path d="M38 110 Q22 96 18 72" fill="none" stroke="' + navy + '" stroke-width="11" stroke-linecap="round"/><path d="M82 110 Q98 96 102 72" fill="none" stroke="' + navy + '" stroke-width="11" stroke-linecap="round"/><circle cx="18" cy="67" r="6.5" fill="' + skin + '"/><circle cx="102" cy="67" r="6.5" fill="' + skin + '"/>';
+    s += '<path d="M28 140 Q28 100 60 98 Q92 100 92 140 Z" fill="' + navy + '"/><path d="M50 99 L60 114 L70 99 Z" fill="#fff"/>';
+    s += '<circle cx="60" cy="122" r="2.4" fill="' + gold + '"/><circle cx="60" cy="132" r="2.4" fill="' + gold + '"/>';
+    if (pose !== 'cheer') {
+      var thin = rk <= 3 ? rk : rk - 4, thick = rk >= 4;
+      [[29, 101], [73, 101]].forEach(function (p) {
+        s += '<rect x="' + p[0] + '" y="' + p[1] + '" width="18" height="8" rx="3" fill="' + (rk ? dark : gold) + '"/>';
+        var x = p[0] + 3;
+        if (thick) { s += '<rect x="' + x + '" y="' + (p[1] + 2) + '" width="4" height="4" fill="' + gold + '"/>'; x += 6; }
+        for (var i = 0; i < thin; i++) { s += '<rect x="' + x + '" y="' + (p[1] + 2) + '" width="2" height="4" fill="' + gold + '"/>'; x += 3.5; }
+      });
+    }
+    var cols = ['#FF7A59', '#3BB37A', '#5FC2E3'];
+    for (var m = 0; m < Math.min(medals, 3); m++) {
+      var mx = 68 + m * 7;
+      s += '<rect x="' + (mx - 2.5) + '" y="111" width="5" height="6" fill="' + cols[m] + '"/><circle cx="' + mx + '" cy="121" r="3.2" fill="' + gold + '"/>';
+    }
+    if (medals > 3) s += '<text x="90" y="134" font-size="9" font-family="Lexend,sans-serif" font-weight="700" fill="' + gold + '" text-anchor="end">+' + (medals - 3) + '</text>';
+    s += '<rect x="53" y="84" width="14" height="16" rx="4" fill="#E9B48C"/><circle cx="33" cy="64" r="6" fill="#F0BC95"/><circle cx="87" cy="64" r="6" fill="#F0BC95"/>';
+    s += '<circle cx="60" cy="62" r="27" fill="' + skin + '"/>';
+    s += '<path d="M34 58 Q34 48 41 46 L39 62 Z" fill="#7A4A2A"/><path d="M86 58 Q86 48 79 46 L81 62 Z" fill="#7A4A2A"/>';
+    s += '<path d="M31 44 Q33 20 60 19 Q87 20 89 44 Z" fill="' + (rk >= 3 ? navy : '#fff') + '"/>';
+    s += '<rect x="30" y="39" width="60" height="9" rx="3" fill="' + (rk >= 3 ? dark : navy) + '"/>';
+    if (rk >= 3) s += '<rect x="30" y="41" width="60" height="1.8" fill="' + gold + '"/>' + (rk >= 5 ? '<rect x="30" y="44.4" width="60" height="1.8" fill="' + gold + '"/>' : '');
+    s += '<path d="M34 47 Q60 57 86 47 Q85 53 60 56 Q35 53 34 47 Z" fill="' + dark + '"/>';
+    if (rk >= 3) s += '<path d="M34 47 Q60 57 86 47" fill="none" stroke="' + gold + '" stroke-width="1.6"/>';
+    s += rk >= 7 ? '<path d="M60 23.5l2 4 4.4.6-3.2 3.1.8 4.4-4-2.1-4 2.1.8-4.4-3.2-3.1 4.4-.6z" fill="' + gold + '"/>' : '<circle cx="60" cy="30" r="5.5" fill="' + gold + '"/>';
+    if (pose === 'cheer') {
+      s += '<path d="M45.5 66 Q49 61 52.5 66" fill="none" stroke="' + ink + '" stroke-width="2.6" stroke-linecap="round"/><path d="M67.5 66 Q71 61 74.5 66" fill="none" stroke="' + ink + '" stroke-width="2.6" stroke-linecap="round"/>';
+      s += '<circle cx="42" cy="74" r="4.5" fill="#FF8F7A" fill-opacity=".45"/><circle cx="78" cy="74" r="4.5" fill="#FF8F7A" fill-opacity=".45"/><path d="M50 75 Q60 90 70 75 Z" fill="#8A2F2F"/>';
+    } else if (pose === 'think') {
+      s += '<ellipse cx="51" cy="63" rx="3" ry="3.6" fill="' + ink + '"/><ellipse cx="73" cy="63" rx="3" ry="3.6" fill="' + ink + '"/><circle cx="52" cy="61.8" r="1" fill="#fff"/><circle cx="74" cy="61.8" r="1" fill="#fff"/>';
+      s += '<circle cx="42" cy="74" r="4.5" fill="#FF8F7A" fill-opacity=".45"/><path d="M54 79 Q60 77 66 80" fill="none" stroke="' + ink + '" stroke-width="2.4" stroke-linecap="round"/>';
+      s += '<path d="M86 116 Q86 100 74 93" fill="none" stroke="' + navy + '" stroke-width="11" stroke-linecap="round"/><circle cx="71" cy="89" r="6.5" fill="' + skin + '"/>';
+    } else {
+      s += '<ellipse cx="49" cy="65" rx="3.2" ry="4" fill="' + ink + '"/><ellipse cx="71" cy="65" rx="3.2" ry="4" fill="' + ink + '"/><circle cx="50.2" cy="63.5" r="1.1" fill="#fff"/><circle cx="72.2" cy="63.5" r="1.1" fill="#fff"/>';
+      s += '<circle cx="42" cy="74" r="4.5" fill="#FF8F7A" fill-opacity=".45"/><circle cx="78" cy="74" r="4.5" fill="#FF8F7A" fill-opacity=".45"/><path d="M52 77 Q60 84 68 77" fill="none" stroke="' + ink + '" stroke-width="2.6" stroke-linecap="round"/>';
+    }
+    return '<svg class="cadet" viewBox="0 0 120 140" width="' + size + '" height="' + Math.round(size * 140 / 120) + '" role="img" aria-label="Din kapten: ' + RANKS[rk][1] + (medals ? ', ' + medals + (medals === 1 ? ' medalj' : ' medaljer') : '') + '">' + s + '</svg>';
+  }
+  // the submarine, with the captain looking out of the big window
+  function subSVG(w, label) {
+    return '<svg class="sub" width="' + w + '" height="' + Math.round(w * 0.55) + '" viewBox="0 0 200 110" ' + (label ? 'role="img" aria-label="' + esc(label) + '"' : 'aria-hidden="true"') + '>' +
+      '<path d="M26 58 L8 44 Q4 42 4 48 V82 Q4 88 8 86 L26 72 Z" fill="#E89A2E"/>' +
+      '<rect x="80" y="16" width="50" height="34" rx="12" fill="#FFC94A"/><rect x="88" y="24" width="12" height="9" rx="3" fill="#8FD3EA"/>' +
+      '<path d="M118 16 V5 H130" fill="none" stroke="#14395F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<rect x="20" y="38" width="160" height="60" rx="30" fill="#FFC94A"/><path d="M20 70 H180 Q180 98 150 98 H50 Q20 98 20 70 Z" fill="#F2AE3C"/>' +
+      '<path d="M46 46 H112" stroke="#FFE19A" stroke-width="4" stroke-linecap="round"/>' +
+      '<circle cx="56" cy="66" r="9" fill="#E9EEF5"/><circle cx="56" cy="66" r="6" fill="#5FC2E3"/><circle cx="86" cy="66" r="9" fill="#E9EEF5"/><circle cx="86" cy="66" r="6" fill="#5FC2E3"/>' +
+      '<circle cx="110" cy="54" r="1.6" fill="#E39B2E"/><circle cx="110" cy="84" r="1.6" fill="#E39B2E"/>' +
+      '<circle cx="140" cy="64" r="20" fill="#E9EEF5"/><circle cx="140" cy="64" r="15" fill="#8FD3EA"/><circle cx="140" cy="69" r="8" fill="#F6CBA6"/>' +
+      '<path d="M131 64 Q132 54 140 54 Q148 54 149 64 Z" fill="#fff"/><rect x="131" y="62" width="18" height="3.5" rx="1.5" fill="#1B3A6B"/>' +
+      '<circle cx="137" cy="70" r="1.2" fill="#14213D"/><circle cx="143" cy="70" r="1.2" fill="#14213D"/><path d="M137.5 73 Q140 75 142.5 73" stroke="#14213D" stroke-width="1.2" fill="none" stroke-linecap="round"/>' +
+      '<path d="M128 57 Q131 51 138 50" stroke="#fff" stroke-opacity=".85" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="178" cy="66" r="3" fill="#FFF3C4"/></svg>';
+  }
+  function marker() { return subSVG(96); }
+  function chestSVG(open) {
+    return '<svg class="chest" width="84" height="67" viewBox="0 0 80 64" aria-hidden="true"><ellipse cx="40" cy="60" rx="38" ry="4" fill="#000" fill-opacity=".25"/>' +
+      (open ? '<path d="M6 30 Q6 4 40 2 Q74 4 74 30 Z" fill="#A86B34" transform="translate(0 -14)"/><circle cx="28" cy="24" r="6" fill="#FFD45C"/><circle cx="40" cy="21" r="7" fill="#FFC94A"/><circle cx="52" cy="24" r="6" fill="#FFD45C"/>' : '') +
+      '<rect x="6" y="28" width="68" height="32" rx="5" fill="#8B5A2B"/>' +
+      (open ? '' : '<path d="M6 32 Q6 8 40 8 Q74 8 74 32 Z" fill="#A86B34"/>') +
+      '<rect x="18" y="' + (open ? 28 : 9) + '" width="5" height="' + (open ? 32 : 51) + '" fill="#FFC94A" fill-opacity=".85"/><rect x="57" y="' + (open ? 28 : 9) + '" width="5" height="' + (open ? 32 : 51) + '" fill="#FFC94A" fill-opacity=".85"/>' +
+      '<rect x="6" y="28" width="68" height="6" fill="#FFC94A"/><rect x="34" y="26" width="12" height="15" rx="2.5" fill="#FFC94A"/><circle cx="40" cy="33" r="2" fill="#6B3F1A"/>' +
+      '<path d="M68 2v8M64 6h8" stroke="#FFE08A" stroke-width="2" stroke-linecap="round"/></svg>';
   }
   function medalCount() { return (progress.medals || []).length; }
+  // rank progress as a depth gauge (1 point = 1 metre)
   function xpBar() {
     var xp = progress.xp || 0, r = rankOf(xp), n = nextRank(xp);
-    var pct = n ? Math.round(100 * (xp - r[0]) / (n[0] - r[0])) : 100;
-    return '<div class="lvl"><b>' + r[1] + '</b><span class="note">' + (n ? (n[0] - xp) + ' poäng kvar till ' + n[1] : 'Högsta graden! ⭐') + '</span>' +
-      '<div class="progress" aria-hidden="true"><i style="width:' + pct + '%"></i></div>' +
-      (medalCount() ? '<span class="note">🏅 ' + medalCount() + (medalCount() === 1 ? ' medalj' : ' medaljer') + '</span>' : '') + '</div>';
+    var pct = n ? Math.max(6, Math.round(100 * (xp - r[0]) / (n[0] - r[0]))) : 100;
+    return '<div class="gauge"><div class="gtop"><b>' + r[1] + '</b><span>' + (n ? (n[0] - xp) + ' m kvar till ' + n[1] : 'Högsta graden!') + '</span></div>' +
+      '<div class="gbar" aria-hidden="true"><i style="width:' + pct + '%"></i></div>' +
+      '<div class="gfoot"><span>' + (r[0] === 0 ? 'Ytan' : esc(r[1]) + ' · ' + r[0] + ' m') + '</span><span>' + (medalCount() ? ico('medal', 14) + ' ' + medalCount() + ' · ' : '') + (n ? esc(n[1]) + ' · ' + n[0] + ' m' : xp + ' m') + '</span></div></div>';
   }
   function awardMedal(aid) {
     progress.medals = progress.medals || [];
@@ -995,14 +1056,14 @@
   function isDone(x) { return allWon(stationsFor(x.d)); }
   function renderSide(all, active) {
     var side = document.getElementById('side'); if (!side) return;
-    var h = '<a class="navi' + (active === 'home' ? ' on' : '') + '" href="#/"' + (active === 'home' ? ' aria-current="page"' : '') + '><span class="ni">🧭</span><span class="nl">Start</span></a>';
+    var h = '<a class="navi' + (active === 'home' ? ' on' : '') + '" href="#/"' + (active === 'home' ? ' aria-current="page"' : '') + '><span class="ni">' + ico('home') + '</span><span class="nl">Start</span></a>';
     all.m.subjects.forEach(function (s) {
       var open = all.list.filter(function (x) { return x.a.subject === s.id && !isPast(x.a) && !isDone(x); }).length;
       var any = all.list.some(function (x) { return x.a.subject === s.id; });
       if (!any && active !== s.id) return; // subjects without any homework stay hidden
-      h += '<a class="navi' + (active === s.id ? ' on' : '') + (any ? '' : ' dim') + '" href="#/s/' + s.id + '"' + (active === s.id ? ' aria-current="page"' : '') + '><span class="ni">' + s.icon + '</span><span class="nl">' + esc(s.name) + '</span>' + (open ? '<span class="nb" aria-label="' + open + ' att göra">' + open + '</span>' : '') + '</a>';
+      h += '<a class="navi' + (active === s.id ? ' on' : '') + (any ? '' : ' dim') + '" href="#/s/' + s.id + '"' + (active === s.id ? ' aria-current="page"' : '') + '><span class="ni">' + subjIco(s.id) + '</span><span class="nl">' + esc(s.name) + '</span>' + (open ? '<span class="nb" aria-label="' + open + ' att göra">' + open + '</span>' : '') + '</a>';
     });
-    if (SYNC) h += '<a class="navi small' + (active === 'sync' ? ' on' : '') + '" href="#/sync"' + (active === 'sync' ? ' aria-current="page"' : '') + '><span class="ni">🔄</span><span class="nl">Synk' + (syncCode() ? ' ✓' : '') + '</span></a>';
+    if (SYNC) h += '<a class="navi small' + (active === 'sync' ? ' on' : '') + '" href="#/sync"' + (active === 'sync' ? ' aria-current="page"' : '') + '><span class="ni">' + ico('cloud') + '</span><span class="nl">Synk' + (syncCode() ? ' ✓' : '') + '</span></a>';
     side.innerHTML = h;
     var on = side.querySelector('.on');
     if (on && side.scrollWidth > side.clientWidth + 2) { var d = on.getBoundingClientRect().left - side.getBoundingClientRect().left; side.scrollLeft += d - 16; }
@@ -1020,22 +1081,27 @@
     loadAll().then(function (all) {
       renderSide(all, 'home');
       var act = sortActive(all.list), next = act[0];
-      var html = storageBanner() + '<section class="hero card"><div class="herorow">' + cadetSVG(rankIdx(progress.xp || 0), medalCount(), 92) +
-        '<div class="herotxt"><p class="bubble">' + (next ? 'Hej, kadett! Här är ditt nästa uppdrag.' : 'Hej, kadett! Allt är klart just nu. Snyggt! 🎉') + '</p>' + xpBar() + '</div></div></section>';
+      var html = storageBanner() + '<section class="sea-hero"><span class="rays" aria-hidden="true"></span>' +
+        '<span class="bubs" aria-hidden="true"><i></i><i></i><i></i></span>' +
+        '<div class="hero-top"><div class="hero-sub bob">' + subSVG(180, 'Ubåten med din kapten') + '</div>' +
+        '<p class="speech"><b>Hej, kadett!</b><span>' + (next ? 'Dags för nästa dyk.' : 'Allt är klart just nu. Snyggt jobbat!') + '</span></p></div>' +
+        xpBar() + '</section>';
       if (next) {
         var st = stationsFor(next.d), ci = currentIdx(next.a.id, st), s = st[ci] || st[0], ac = actions(next.d, s);
         var subj = all.m.subjects.filter(function (x) { return x.id === next.a.subject; })[0] || {};
-        html += '<section class="card nextcard" aria-labelledby="nx"><p class="kicker">Nästa · ' + (subj.icon || '') + ' ' + esc(subj.name || '') + '</p>' +
-          '<h1 id="nx">' + (next.a.icon || '') + ' ' + esc(next.a.title) + '</h1><p>' + dueChip(next.a) + '</p>' +
-          '<p class="lead" style="margin:10px 0 4px"><b>' + (s.kind === 'mixed' ? esc(s.title) : 'Del ' + s.n + ': ' + esc(s.title)) + '</b></p>' +
-          '<a class="btn wide big" href="' + ac.main[1] + '">' + esc(ac.main[0]) + ' →</a>' +
-          '<p style="margin:10px 0 0"><a class="more" href="#/a/' + next.a.id + '">🗺️ Visa kartan</a></p></section>';
+        var segs = st.map(function (x, i) { return '<i class="' + (x.status === 'won' ? 'won' : i === ci ? 'cur' : '') + '"></i>'; }).join('');
+        html += '<section class="card nextcard" aria-labelledby="nx"><div class="nxhead">' + tile(next.a, next.d, 24) +
+          '<div><p class="kicker">Nästa dyk · ' + esc(subj.name || '') + '</p><h1 id="nx">' + esc(next.a.title) + '</h1></div></div>' +
+          '<p class="nxchip">' + dueChip(next.a) + '</p>' +
+          '<div class="segs"><span class="segbar" aria-hidden="true">' + segs + '</span><span class="note">' + (s.kind === 'mixed' ? esc(s.title) : 'Station ' + s.n + ' av ' + st.length + ': ' + esc(s.title)) + '</span></div>' +
+          '<a class="btn wide big" href="' + ac.main[1] + '">' + esc(ac.main[0]) + ico('arrow', 20) + '</a>' +
+          '<p class="nxmore"><a class="more" href="#/a/' + next.a.id + '">' + ico('map', 18) + ' Visa kartan</a></p></section>';
       }
       var later = act.slice(1);
       if (later.length) {
-        html += '<h2>Sen</h2><ul class="later">' + later.map(function (x) {
+        html += '<h2>Snart</h2><ul class="later">' + later.map(function (x) {
           var st = stationsFor(x.d), done = st.filter(function (s) { return s.status === 'won'; }).length;
-          return '<li><a class="lrow" href="#/a/' + x.a.id + '"><span class="li">' + (x.a.icon || '') + '</span><span class="lt"><b>' + esc(x.a.title) + '</b><span class="lm">' + dueChip(x.a) + ' <span class="note">' + done + ' av ' + st.length + ' klara</span></span></span><span aria-hidden="true">›</span></a></li>';
+          return '<li><a class="lrow" href="#/a/' + x.a.id + '">' + tile(x.a, x.d) + '<span class="lt"><b>' + esc(x.a.title) + '</b><span class="lm">' + dueChip(x.a) + '</span></span>' + ring(done, st.length) + '</a></li>';
         }).join('') + '</ul>';
       }
       var weak = [], old = [];
@@ -1044,13 +1110,13 @@
         if (isPast(x.a) || isDone(x)) old.push(x);
       });
       if (weak.length || old.length) {
-        html += '<details class="card rep"><summary>🔁 Repetera <span class="note">(' + (weak.length + old.length) + ')</span></summary>' +
+        html += '<details class="card rep"><summary>' + ico('repeat', 20) + ' Repetera <span class="note">(' + (weak.length + old.length) + ')</span></summary>' +
           (weak.length ? '<p class="note" style="margin-top:10px">Öva mer på:</p><ul class="later">' + weak.map(function (w) {
             var ac = actions(w.x.d, w.s);
-            return '<li><a class="lrow" href="' + ac.main[1] + '"><span class="li">' + (w.x.a.icon || '') + '</span><span class="lt"><b>' + esc(w.s.kind === 'mixed' ? w.s.title : w.s.title) + '</b><span class="lm note">' + esc(w.x.a.title) + ' · ' + w.s.r.best + ' av ' + w.s.len + '</span></span><span aria-hidden="true">›</span></a></li>';
+            return '<li><a class="lrow" href="' + ac.main[1] + '">' + tile(w.x.a, w.x.d) + '<span class="lt"><b>' + esc(w.s.title) + '</b><span class="lm note">' + esc(w.x.a.title) + ' · ' + w.s.r.best + ' av ' + w.s.len + '</span></span><span aria-hidden="true">›</span></a></li>';
           }).join('') + '</ul>' : '') +
           (old.length ? '<p class="note" style="margin-top:10px">Tidigare uppdrag:</p><ul class="later">' + old.map(function (x) {
-            return '<li><a class="lrow" href="#/a/' + x.a.id + '"><span class="li">' + (x.a.icon || '') + '</span><span class="lt"><b>' + esc(x.a.title) + '</b><span class="lm note">' + esc(x.a.week || '') + (isDone(x) ? ' · 🏅 klart' : '') + '</span></span><span aria-hidden="true">›</span></a></li>';
+            return '<li><a class="lrow" href="#/a/' + x.a.id + '">' + tile(x.a, x.d) + '<span class="lt"><b>' + esc(x.a.title) + '</b><span class="lm note">' + esc(x.a.week || '') + (isDone(x) ? ' · medalj klar' : '') + '</span></span><span aria-hidden="true">›</span></a></li>';
           }).join('') + '</ul>' : '') + '</details>';
       }
       setView(html);
@@ -1068,7 +1134,7 @@
       var subj = all.m.subjects.filter(function (s) { return s.id === sid; })[0];
       if (!subj) { location.replace('#/'); return; }
       renderSide(all, subj.id);
-      setView(banner(subj, [], null) + '<div class="card empty"><div class="big">🛰️</div><p><b>Inga uppdrag här än.</b></p><p class="muted">Nya uppdrag dyker upp när skolan ger läxor eller prov i ' + esc(subj.name) + '.</p></div>');
+      setView(banner(subj, [], null) + '<div class="card empty"><div class="big">' + subSVG(120) + '</div><p><b>Inga uppdrag här än.</b></p><p class="muted">Nya uppdrag dyker upp när skolan ger läxor eller prov i ' + esc(subj.name) + '.</p></div>');
     }).catch(showError);
   }
   function viewAssignment(aid) {
@@ -1081,12 +1147,12 @@
       var act = sortActive(mine), rest = mine.filter(function (x) { return act.indexOf(x) < 0; });
       var chip = function (x, old) {
         var st = stationsFor(x.d), done = st.filter(function (s) { return s.status === 'won'; }).length;
-        return '<a class="tchip' + (x.a.id === aid ? ' on' : '') + (old ? ' old' : '') + '" href="#/a/' + x.a.id + '"' + (x.a.id === aid ? ' aria-current="page"' : '') + '><span class="ti">' + (x.a.icon || '') + '</span><span><b>' + esc(x.a.title) + '</b><span class="tm">' + (isDone(x) ? '🏅 klart' : (x.a.due ? esc(x.a.dueLabel || 'Läxa') + ' ' + esc(x.a.due) : esc(x.a.week || '')) + ' · ' + done + '/' + st.length) + '</span></span></a>';
+        return '<a class="tchip' + (x.a.id === aid ? ' on' : '') + (old ? ' old' : '') + '" href="#/a/' + x.a.id + '"' + (x.a.id === aid ? ' aria-current="page"' : '') + '>' + tile(x.a, x.d, 20) + '<span><b>' + esc(x.a.title) + '</b><span class="tm">' + (isDone(x) ? 'Medalj klar' : (x.a.due ? esc(x.a.dueLabel || 'Läxa') + ' ' + esc(x.a.due) : esc(x.a.week || '')) + ' · ' + done + '/' + st.length) + '</span></span></a>';
       };
       chips = '<nav class="tasks" aria-label="Uppdrag i ' + esc(subj.name) + '">' + act.map(function (x) { return chip(x, false); }).join('') +
         (rest.length ? (act.length ? '<span class="tsep">Tidigare</span>' : '') + rest.map(function (x) { return chip(x, true); }).join('') : '') + '</nav>';
     }
-    return storageBanner() + '<section class="banner"><div class="brow"><h1>' + subj.icon + ' ' + esc(subj.name) + '</h1><div class="bcadet">' + cadetSVG(rankIdx(progress.xp || 0), medalCount(), 54) + xpBar() + '</div></div>' + chips + '</section>';
+    return storageBanner() + '<section class="banner"><div class="brow"><h1>' + subjIco(subj.id, 26) + ' ' + esc(subj.name) + '</h1><div class="bcadet">' + cadetSVG(rankIdx(progress.xp || 0), medalCount(), 54) + xpBar() + '</div></div>' + chips + '</section>';
   }
   function renderSubjectMap(all, aid) {
     var x = all.list.filter(function (y) { return y.a.id === aid; })[0];
@@ -1097,19 +1163,19 @@
     var st = stationsFor(d), ci = currentIdx(aid, st, true), done = st.filter(function (s) { return s.status === 'won'; }).length;
     if (allWon(st)) awardMedal(aid);
     var html = banner(subj, mine, aid);
-    html += '<section class="ahead"><h2>' + (a.icon || '') + ' ' + esc(a.title) + '</h2><p class="row" style="gap:8px">' + dueChip(a) + '<span class="note">' + done + ' av ' + st.length + ' klara</span></p>' +
-      (d.intro ? '<details class="intro"><summary>💬 Vad handlar uppdraget om?</summary><div class="row between" style="flex-wrap:nowrap;align-items:flex-start"><p class="lead" style="margin:0;flex:1">' + fmt(d.intro) + '</p>' + speakBtn(d.intro) + '</div></details>' : '') + '</section>';
+    html += '<section class="ahead"><h2>' + tile(a, d, 22) + ' ' + esc(a.title) + '</h2><p class="row" style="gap:8px">' + dueChip(a) + '<span class="note">' + done + ' av ' + st.length + ' klara</span></p>' +
+      (d.intro ? '<details class="intro"><summary>' + ico('speech', 18) + ' Vad handlar uppdraget om?</summary><div class="row between" style="flex-wrap:nowrap;align-items:flex-start"><p class="lead" style="margin:0;flex:1">' + fmt(d.intro) + '</p>' + speakBtn(d.intro) + '</div></details>' : '') + '</section>';
     html += '<section class="route" aria-label="Karta"><svg class="path" aria-hidden="true"></svg><div class="ship" aria-hidden="true">' + marker() + '</div><ol class="stns">';
     st.forEach(function (s, i) {
       var cur = i === ci, side = i % 2 ? ' r' : '';
-      var node = s.status === 'won' ? '⭐' : s.status === 'lost' ? '🔁' : s.status === 'learning' ? '📘' : s.kind === 'mixed' ? '🏆' : s.n;
+      var node = s.status === 'won' ? ico('check', 26) : s.status === 'lost' ? ico('repeat', 24) : s.status === 'learning' ? ico('book', 22) : s.kind === 'mixed' ? ico('trophy', 24) : s.n;
       var head = '<span class="sk">' + (s.kind === 'mixed' ? (d.kind === 'missions' ? 'Slutuppdrag' : 'Alla delar') : 'Del ' + s.n) + '</span><b class="stt">' + esc(s.title) + '</b><span class="sl">' + statusLine(d, s) + '</span>';
-      html += '<li class="stn' + side + ' ' + s.status + (cur ? ' cur' : '') + '" data-i="' + i + '"><span class="node" aria-hidden="true">' + node + '</span>';
+      html += '<li class="stn' + side + ' ' + s.status + (cur ? ' cur' : '') + '" data-i="' + i + '"><span class="node" aria-hidden="true" data-depth="' + (i + 1) * 10 + ' m">' + node + '</span>';
       if (cur) {
         var ac = actions(d, s);
         html += '<div class="scard open" aria-current="step">' + head +
-          (ac.lost ? '<p class="practice">Här kan du bli ännu bättre. Öva lite till – sedan går du vidare! 💪</p>' : '') +
-          '<a class="btn wide' + (ac.again ? ' secondary' : '') + '" href="' + ac.main[1] + '">' + esc(ac.main[0]) + '</a>' +
+          (ac.lost ? '<p class="practice">Här kan du bli ännu bättre. Öva lite till – sedan går du vidare!</p>' : '') +
+          '<a class="btn wide' + (ac.again ? ' secondary' : '') + '" href="' + ac.main[1] + '">' + esc(ac.main[0]) + ico('arrow', 20) + '</a>' +
           (ac.more.length ? '<p class="morelinks">' + ac.more.map(function (m) { return '<a href="' + m[1] + '">' + esc(m[0]) + '</a>'; }).join('') + '</p>' : '') + '</div>';
       } else {
         html += '<button class="scard" type="button" data-sel="' + s.id + '">' + head + '</button>';
@@ -1117,8 +1183,8 @@
       html += '</li>';
     });
     var won = allWon(st);
-    html += '<li class="stn goal' + (st.length % 2 ? ' r' : '') + (won ? ' won' : '') + (ci === st.length ? ' cur' : '') + '" data-i="' + st.length + '"><span class="node" aria-hidden="true">' + (won ? '🏅' : '🏁') + '</span><div class="scard' + (won ? ' open' : '') + '"><span class="sk">Mål</span><b class="stt">' + (won ? 'Uppdraget klart – du fick en medalj!' : 'Klara alla stationer = medalj 🏅') + '</b></div></li>';
-    html += '</ol></section>';
+    html += '<li class="stn goal' + (st.length % 2 ? ' r' : '') + (won ? ' won' : '') + (ci === st.length ? ' cur' : '') + '" data-i="' + st.length + '"><span class="node chestnode" aria-hidden="true">' + chestSVG(won) + '</span><div class="scard' + (won ? ' open' : '') + '"><span class="sk">Mål · ' + (st.length + 1) * 10 + ' m</span><b class="stt">' + (won ? 'Skattkistan är öppen – du fick en medalj!' : 'Skattkistan öppnas när alla stationer är klara') + '</b></div></li>';
+    html += '</ol><span class="seabed" aria-hidden="true"></span></section>';
     setView(html);
     app.querySelectorAll('[data-sel]').forEach(function (b) {
       b.addEventListener('click', function () { var sid = b.getAttribute('data-sel'); selected[aid] = sid; st.forEach(function (x) { if (x.id === sid && x.status !== 'won') { progress.pos = progress.pos || {}; progress.pos[aid] = sid; saveProgress(); } }); renderSubjectMap(all, aid); var c = app.querySelector('.stn.cur'); if (c) try { c.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { } });
@@ -1143,7 +1209,7 @@
       for (var i = 1; i < p.length; i++) { if (i <= ci) done += seg(p, i - 1, i); else rest += (rest ? '' : 'M ' + p[i - 1][0] + ' ' + p[i - 1][1]) + seg(p, i - 1, i); }
       svg.innerHTML = (rest ? '<path d="' + rest + '" class="todo"/>' : '') + '<path d="' + done + '" class="did"/>';
       var to = p[Math.min(ci, p.length - 1)], from = lastShip[aid] != null ? p[Math.min(lastShip[aid], p.length - 1)] : to;
-      var put = function (q) { ship.style.left = (q[0] - 39) + 'px'; ship.style.top = (q[1] - 72) + 'px'; };
+      var put = function (q) { ship.style.left = (q[0] - 48) + 'px'; ship.style.top = (q[1] - 92) + 'px'; };
       if (animate && from !== to) { ship.classList.add('still'); put(from); void ship.offsetWidth; ship.classList.remove('still'); }
       else ship.classList.add('still');
       put(to); if (!animate) setTimeout(function () { ship.classList.remove('still'); }, 50);
@@ -1270,7 +1336,7 @@
     var retryBtn = m ? '<button class="btn' + (ratio < 0.5 ? ' secondary' : '') + ' wide retry" type="button">' + retryLabel + '</button>' : '';
     var html = '<div class="card result pop"><div class="big">' + big + '</div><p class="score">' + s.right + ' av ' + n + ' rätt</p>' +
       (stars != null ? '<p>' + starHTML(stars) + '</p>' : '') + '<p class="lead">' + msg + '</p>' +
-      '<p><span class="badge">+' + gained + ' poäng</span></p>' +
+      '<p><span class="badge">+' + gained + ' m djupare</span></p>' +
       (before !== after ? '<p class="lead">🎖️ Ny grad: <b>' + after + '</b>!</p>' : '') +
       (before !== after || newMedal ? '<div class="levelup">' + cadetSVG(rankIdx(progress.xp), medalCount(), 96) + '</div>' : '') +
       (newMedal ? '<p class="lead">🏅 Du klarade hela uppdraget och fick en medalj!</p>' : '') + '</div>' +
@@ -1281,7 +1347,7 @@
       var mm = s.missed.length;
       html = '<div class="card result pop"><div class="big">🎖️</div><p class="score">' + n + ' uppdrag klara!</p>' +
         '<p class="lead">' + (s.right === n ? 'Alla helt själv – riktigt starkt! 🏅' : s.right > 0 ? s.right + ' av dem helt själv. Bra jobbat!' : 'Du tog hjälp av Visa mig – det är så man lär sig. Bra jobbat!') + '</p>' +
-        '<p><span class="badge">+' + gained + ' poäng</span></p>' + (before !== after ? '<p class="lead">🎖️ Ny grad: <b>' + after + '</b>!</p>' : '') + '</div>' +
+        '<p><span class="badge">+' + gained + ' m djupare</span></p>' + (before !== after ? '<p class="lead">🎖️ Ny grad: <b>' + after + '</b>!</p>' : '') + '</div>' +
         (!s.retry ? '<p class="note" style="text-align:center">🎖️ Bra jobbat! Ta en paus när du vill.</p>' : '') +
         '<div class="stack">' + (mm ? '<button class="btn wide retry" type="button">' + (mm === 1 ? 'Gör om uppdraget där du tog hjälp' : 'Gör om de ' + mm + ' där du tog hjälp') + '</button>' : '') +
         '<a class="btn secondary wide" href="#/a/' + s.a.id + '">🗺️ Till kartan</a></div>';
