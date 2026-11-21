@@ -100,7 +100,7 @@ p{margin:8px 0}
 .opt.missed{border-style:dashed}
 .stack{display:flex;flex-direction:column;gap:10px;margin-top:8px}
 .btn.wide{width:100%}
-.btn:focus-visible,.opt:focus-within,.tab:focus-visible,input:focus-visible,summary:focus-visible,.speak:focus-visible{outline:3px solid #e85d04;outline-offset:2px}
+.btn:focus-visible,.opt:focus-within,.tab:focus-visible,input:focus-visible,summary:focus-visible,.speak:focus-visible{outline:3px solid #0F5E95;outline-offset:2px}
 .rank{min-width:0;overflow-wrap:anywhere}
 .tonext{display:block;font-size:12px;opacity:.8}
 @media (max-width:379px){.brand span{display:none}.tonext{display:none}}
@@ -201,7 +201,7 @@ button.bm-box{cursor:pointer}
 .navi.on{background:var(--navy);border-color:var(--navy);color:#fff}
 .navi.dim{opacity:.6}
 .navi .nb{min-width:24px;height:24px;border-radius:12px;background:#e85d04;color:#fff;font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;padding:0 6px}
-.navi:focus-visible{outline:3px solid #e85d04;outline-offset:2px}
+.navi:focus-visible{outline:3px solid #0F5E95;outline-offset:2px}
 body.focus .side{display:none}
 @media (min-width:900px){
   .shell{display:grid;grid-template-columns:220px minmax(0,1fr);gap:8px;align-items:start}
@@ -268,7 +268,7 @@ body.focus .side{display:none}
 .stn.goal .node{background:#fffaf0}
 .scard{flex:1;min-width:0;max-width:440px;display:flex;flex-direction:column;gap:2px;text-align:left;font:inherit;color:inherit;background:rgba(255,255,255,.92);border:2px solid #d3deea;border-radius:16px;padding:10px 14px;cursor:pointer}
 button.scard:hover{border-color:#9cc3e4}
-button.scard:focus-visible{outline:3px solid #e85d04;outline-offset:2px}
+button.scard:focus-visible{outline:3px solid #0F5E95;outline-offset:2px}
 .scard.open{background:#fff;border:3px solid var(--gold);cursor:default;box-shadow:var(--shadow);padding:14px 16px}
 .stn.goal .scard{cursor:default}
 .sk{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
@@ -392,11 +392,8 @@ button.scard:hover{background:#fff}
 .stn .sk{font-size:11.5px}
 .stn .sl{font-size:14px}
 .stn .sl .note,.stn .lostline{font-size:13.5px}
-.stn.cur{flex-direction:column;align-items:flex-start;margin-left:0;margin-top:132px;gap:34px}
+.stn.cur{margin-top:118px}
 .stn.cur:first-child{margin-top:40px}
-.stn.cur .node{margin-left:calc((100% - 300px) * var(--f, 0))}
-.stn.cur .scard{width:100%;max-width:none;padding:16px 18px;border-radius:24px}
-.stn.cur .scard::before{top:-7px;left:calc((100% - 300px) * var(--f, 0) + 25px);transform:rotate(45deg)}
 .stn.goal,.stn.goal.cur{flex-direction:column;align-items:center;margin:20px 0 0;gap:12px}
 .stn.goal .scard{max-width:280px;text-align:center}
 .stn.goal .scard::before{top:-7px;left:calc(50% - 7px);transform:rotate(45deg)}
@@ -406,3 +403,13 @@ button.scard:hover{background:#fff}
 .synk{position:relative;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;color:#fff;background:rgba(255,255,255,.1)}
 .synk:focus-visible{outline:3px solid var(--gold2);outline-offset:2px}
 .synk.on::after{content:"";position:absolute;right:7px;top:8px;width:9px;height:9px;border-radius:50%;background:var(--done);border:2px solid var(--deep)}
+/* map v3: the circle is the button, the bubble shows the stats */
+a.node{text-decoration:none;cursor:pointer;transition:transform .12s}
+a.node:active{transform:scale(.94)}
+a.node:focus-visible{outline:3px solid #fff;outline-offset:4px}
+.stn.cur .node{flex:0 0 78px;width:78px;height:78px}
+.stn.cur .scard{max-width:240px;padding:10px 14px 11px}
+.scard .tap{display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-size:14px;font-weight:700;color:#0F5E95}
+.scard .morelinks{margin:6px 0 0;font-size:13.5px}
+.scard .morelinks a{display:inline-block;padding:4px 0;min-height:32px}
+.txt:focus,.fracin input:focus{border-color:#0F5E95}

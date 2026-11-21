@@ -946,7 +946,8 @@
     flask: '<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 15h9"/>',
     globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
     trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M9 20h6M10 17h4"/>',
-    flag: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'
+    flag: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+    play: '<path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/>'
   };
   function ico(name, size, cls) {
     return '<svg class="ic' + (cls ? ' ' + cls : '') + '" width="' + (size || 22) + '" height="' + (size || 22) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[name] || '') + '</svg>';
@@ -1177,26 +1178,23 @@
     html += '<section class="route" aria-label="Karta"><svg class="path" aria-hidden="true"></svg><div class="ship" aria-hidden="true">' + marker() + '</div><ol class="stns">';
     st.forEach(function (s, i) {
       var cur = i === ci, side = '', sway = SWAY[i % SWAY.length];
-      var node = s.status === 'won' ? ico('check', 26) : s.status === 'lost' ? ico('repeat', 24) : s.status === 'learning' ? ico('book', 22) : s.kind === 'mixed' ? ico('trophy', 24) : s.n;
-      var head = '<span class="sk">' + (s.kind === 'mixed' ? (d.kind === 'missions' ? 'Slutuppdrag' : 'Alla delar') : 'Del ' + s.n) + '</span><b class="stt">' + esc(s.title) + '</b><span class="sl">' + statusLine(d, s) + '</span>';
-      html += '<li class="stn' + side + ' ' + s.status + (cur ? ' cur' : '') + '" style="--f:' + sway + '" data-i="' + i + '"><span class="node" aria-hidden="true" data-depth="' + (i + 1) * 10 + ' m">' + node + '</span>';
-      if (cur) {
-        var ac = actions(d, s);
-        html += '<div class="scard open" aria-current="step">' + head +
-          (ac.lost ? '<p class="practice">Här kan du bli ännu bättre. Öva lite till – sedan går du vidare!</p>' : '') +
-          '<a class="btn wide' + (ac.again ? ' secondary' : '') + '" href="' + ac.main[1] + '">' + esc(ac.main[0]) + ico('arrow', 20) + '</a>' +
-          (ac.more.length ? '<p class="morelinks">' + ac.more.map(function (m) { return '<a href="' + m[1] + '">' + esc(m[0]) + '</a>'; }).join('') + '</p>' : '') + '</div>';
-      } else {
-        html += '<button class="scard" type="button" data-sel="' + s.id + '">' + head + '</button>';
-      }
+      var node = cur && s.status !== 'won' ? ico('play', 30) : s.status === 'won' ? ico('check', 26) : s.status === 'lost' ? ico('repeat', 24) : s.status === 'learning' ? ico('book', 22) : s.kind === 'mixed' ? ico('trophy', 24) : s.n;
+      var label = s.kind === 'mixed' ? (d.kind === 'missions' ? 'Slutuppdrag' : 'Alla delar') : 'Del ' + s.n;
+      var ac = actions(d, s);
+      // the circle is the button: tapping it starts this station; the bubble only shows how it went
+      html += '<li class="stn' + side + ' ' + s.status + (cur ? ' cur' : '') + '" style="--f:' + sway + '" data-i="' + i + '">' +
+        '<a class="node" href="' + ac.main[1] + '" data-go="' + s.id + '" data-depth="' + (i + 1) * 10 + ' m" aria-label="' + esc(label + ': ' + s.title + ' – ' + ac.main[0]) + '"' + (cur ? ' aria-current="step"' : '') + '>' + node + '</a>' +
+        '<div class="scard' + (cur ? ' open' : '') + '"><span class="sk">' + label + '</span><b class="stt">' + esc(s.title) + '</b><span class="sl">' + statusLine(d, s) + '</span>' +
+        (cur ? '<span class="tap">' + ico('play', 14) + ' ' + esc(ac.main[0]) + '</span>' : '') +
+        (cur && ac.more.length ? '<p class="morelinks">' + ac.more.map(function (m) { return '<a href="' + m[1] + '">' + esc(m[0]) + '</a>'; }).join('') + '</p>' : '') + '</div>';
       html += '</li>';
     });
     var won = allWon(st);
     html += '<li class="stn goal' + (won ? ' won' : '') + (ci === st.length ? ' cur' : '') + '" data-i="' + st.length + '"><span class="node chestnode" aria-hidden="true">' + chestSVG(won) + '</span><div class="scard' + (won ? ' open' : '') + '"><span class="sk">Mål · ' + (st.length + 1) * 10 + ' m</span><b class="stt">' + (won ? 'Skattkistan är öppen – du fick en medalj!' : 'Skattkistan öppnas när alla stationer är klara') + '</b></div></li>';
     html += '</ol><span class="seabed" aria-hidden="true"></span></section>';
     setView(html);
-    app.querySelectorAll('[data-sel]').forEach(function (b) {
-      b.addEventListener('click', function () { var sid = b.getAttribute('data-sel'); selected[aid] = sid; st.forEach(function (x) { if (x.id === sid && x.status !== 'won') { progress.pos = progress.pos || {}; progress.pos[aid] = sid; saveProgress(); } }); renderSubjectMap(all, aid); var c = app.querySelector('.stn.cur'); if (c) try { c.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { } });
+    app.querySelectorAll('[data-go]').forEach(function (b) {
+      b.addEventListener('click', function () { var sid = b.getAttribute('data-go'); selected[aid] = sid; st.forEach(function (x) { if (x.id === sid && x.status !== 'won') { progress.pos = progress.pos || {}; progress.pos[aid] = sid; saveProgress(); } }); });
     });
     drawRoute(aid, ci, currentIdx(aid, st, false));
   }
