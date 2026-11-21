@@ -42,7 +42,7 @@ with sync_playwright() as p:
         page = b.new_page(viewport=vp)
         page.on("pageerror", lambda e: errors.append(f"pageerror: {e}"))
         page.on("console", lambda m: errors.append(f"console {m.type}: {m.text}") if m.type == "error" and "TUNNEL" not in m.text else None)
-        page.goto(BASE + "/#/"); page.wait_for_selector(".tab")
+        page.goto(BASE + "/#/"); page.wait_for_selector(".navi")
         for a in manifest["assignments"]:
             data = json.loads((ROOT / a["file"]).read_text())
             if data.get("kind") == "missions": continue
@@ -58,7 +58,7 @@ with sync_playwright() as p:
                     sw = page.evaluate("document.documentElement.scrollWidth"); cw = page.evaluate("document.documentElement.clientWidth")
                     if sw > cw + 2: problems.append(f"horizontal overflow {vp['width']}px on learn {t['id']}#{i}")
                 for mode in ["all-correct", "first-wrong"]:
-                    page.goto(f"{BASE}/#/s/{a['subject']}"); page.wait_for_selector(".tab"); page.goto(f"{BASE}/#/a/{a['id']}"); page.wait_for_selector("h1"); page.goto(f"{BASE}/#/a/{a['id']}/t/{t['id']}/test"); page.wait_for_selector(".qbox")
+                    page.goto(f"{BASE}/#/s/{a['subject']}"); page.wait_for_selector(".navi"); page.goto(f"{BASE}/#/a/{a['id']}"); page.wait_for_selector("h1"); page.goto(f"{BASE}/#/a/{a['id']}/t/{t['id']}/test"); page.wait_for_selector(".qbox")
                     for k in range(len(t["test"])):
                         box = page.locator(".qbox")
                         q = t["test"][int(box.get_attribute("data-idx"))]
@@ -76,13 +76,13 @@ with sync_playwright() as p:
                         answer(page, rq.get("twin", rq), page.locator(".qbox"), True); page.locator(".nextq").click()
                         page.wait_for_selector(".result")
             if data.get("mixed"):
-                page.goto(f"{BASE}/#/s/{a['subject']}"); page.wait_for_selector(".tab")
+                page.goto(f"{BASE}/#/s/{a['subject']}"); page.wait_for_selector(".navi")
                 page.goto(f"{BASE}/#/a/{a['id']}/mixed"); page.wait_for_selector(".qbox")
                 for _ in data["mixed"]:
                     q = data["mixed"][int(page.locator(".qbox").get_attribute("data-idx"))]
                     answer(page, q, page.locator(".qbox"), True); page.locator(".nextq").click()
                 page.wait_for_selector(".result")
-            page.goto(f"{BASE}/#/s/{a['subject']}"); page.wait_for_selector(".tab"); page.goto(f"{BASE}/#/a/{a['id']}"); page.wait_for_selector(".stars")
+            page.goto(f"{BASE}/#/s/{a['subject']}"); page.wait_for_selector(".navi"); page.goto(f"{BASE}/#/a/{a['id']}"); page.wait_for_selector(".stars")
         # typo logic
         r = page.evaluate("""() => { const c = window.__ovbTest.checkText; return [
           c({answer:['spindel']}, 'spindell').status,

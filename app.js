@@ -709,53 +709,300 @@
     return { done: done, total: total };
   }
 
-  function viewSubject(sid) {
-    loadManifest().then(function (m) {
-      var subj = m.subjects.filter(function (s) { return s.id === sid; })[0] || m.subjects[0];
-      var tabs = '<nav class="tabs" aria-label="Ämnen">' + m.subjects.map(function (s) {
-        return '<a class="tab" href="#/s/' + s.id + '"' + (s.id === subj.id ? ' aria-current="page"' : '') + '>' + s.icon + ' ' + esc(s.name) + '</a>';
-      }).join('') + '</nav>';
-      var list = m.assignments.filter(function (a) { return a.subject === subj.id; });
-      var body = list.length ? list.map(function (a) {
-        var st = assignmentStatus(a);
-        var prog = st.total ? '<p class="note" style="margin:6px 0 0">' + (st.done >= st.total ? (a.kind === 'missions' ? '✅ Alla delar klara' : '✅ Alla tester gjorda') : '🎯 ' + st.done + ' av ' + st.total + (a.kind === 'missions' ? ' delar klara' : ' tester gjorda')) + '</p>' : '';
-        return '<a class="card tile" href="#/a/' + a.id + '"><div class="mission"><div class="ico">' + (a.icon || subj.icon) + '</div><div><h3>' + esc(a.title) + '</h3>' +
-          '<span class="pill">' + esc(a.week || '') + '</span> ' + (a.due ? '<span class="note">' + esc(a.dueLabel || 'Läxa till') + ' ' + esc(a.due) + '</span>' : '') +
-          '<p class="muted" style="margin:6px 0 0">' + esc(a.summary || '') + '</p>' + prog + '</div></div></a>';
-      }).join('') : '<div class="card empty"><div class="big">🛰️</div><p><b>Inga uppdrag här än.</b></p><p class="muted">Nya uppdrag dyker upp när skolan ger läxor eller prov i ' + esc(subj.name) + '.</p></div>';
-      setView(storageBanner() + tabs + '<h1>' + subj.icon + ' ' + esc(subj.name) + '</h1>' + body);
-    }).catch(showError);
-  }
+  // ---------- progress helpers (read-only peek never creates records) ----------
+  function peek(id) { return ((progress.items || {})[id]) || {}; }
   function bestLine(best, total) { return best != null ? ' <span class="note">· Bästa: ' + best + ' av ' + total + '</span>' : ''; }
+  var selected = {}; // station the child tapped on the map this visit (aid -> station id)
+  function setPos(aid, sid) { progress.pos = progress.pos || {}; if (progress.pos[aid] !== sid) { progress.pos[aid] = sid; saveProgress(); } selected[aid] = sid; }
 
-  function viewAssignment(aid) {
-    loadAssignment(aid).then(function (a) {
-      var html = '<a class="crumb" href="#/s/' + a.subject + '">← ' + esc(a.subjectName || 'Tillbaka') + '</a>';
-      html += '<h1>' + (a.icon || '') + ' ' + esc(a.title) + '</h1>';
-      if (a.intro) html += '<div class="card"><div class="row between" style="flex-wrap:nowrap;align-items:flex-start"><p class="lead" style="margin:0;flex:1">' + fmt(a.intro) + '</p>' + speakBtn(a.intro) + '</div></div>';
-      a.topics.forEach(function (t, i) {
-        var r = rec(a.id + '/' + t.id), sTest = starsFor(r.best, t.test.length);
-        html += '<div class="card"><h2 style="margin-top:0">Del ' + (i + 1) + ': ' + esc(t.title) + '</h2><ul class="steps">' +
-          '<li class="step"><span class="lbl">📘 Lär dig ' + (r.learned ? '<span class="note">✓ klar</span>' : '') + '</span><a class="btn small' + (r.learned ? ' secondary' : '') + '" href="#/a/' + a.id + '/t/' + t.id + '/learn/0">' + (r.learned ? 'Igen' : 'Starta') + '</a></li>' +
-          '<li class="step"><span class="lbl">' + (a.kind === 'missions' ? '🎖️ Uppdrag <span class="note">(' + t.test.length + ' st)</span><br>' + (r.best != null ? '<span class="note">✓ klara · helt själv: ' + r.best + ' av ' + t.test.length + '</span>' : '<span class="note">inte gjort än</span>') : '🎯 Testa dig <span class="note">(' + t.test.length + ' frågor)</span><br>' + starHTML(sTest) + bestLine(r.best, t.test.length)) + '</span><a class="btn small' + (r.best != null ? ' secondary' : '') + '" href="#/a/' + a.id + '/t/' + t.id + '/test">' + (r.best != null ? 'Igen' : 'Starta') + '</a></li>' +
-          '</ul></div>';
+  // ---------- dates ----------
+  function today() { var d = new Date(); d.setHours(0, 0, 0, 0); return d; }
+  function parseDate(s) { if (!s) return null; var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function daysLeft(a) { var d = parseDate(a.dueDate); return d ? Math.round((d - today()) / 864e5) : null; }
+  function isPast(a) { var n = daysLeft(a); return n != null && n < 0; }
+  function dueChip(a) {
+    if (!a.due) return a.week ? '<span class="pill">' + esc(a.week) + '</span>' : '';
+    var n = daysLeft(a), when = n == null || n < 0 ? '' : n === 0 ? ' · i dag!' : n === 1 ? ' · i morgon' : ' · om ' + n + ' dagar';
+    return '<span class="pill due' + (n != null && n >= 0 && n <= 2 ? ' soon' : '') + '">' + esc(a.dueLabel || 'Läxa') + ' ' + esc(a.due) + when + '</span>';
+  }
+
+  // ---------- stations: one per Del, then the mixed test ----------
+  function stationsFor(d) {
+    var miss = d.kind === 'missions', list = d.topics.map(function (t, i) {
+      var r = peek(d.id + '/' + t.id), len = t.test.length, tested = r.best != null;
+      var won = tested && (miss || r.best / len >= 0.7 || !!r.practiced);
+      return { id: t.id, n: i + 1, title: t.title, len: len, learnLen: t.learn.length, r: r, kind: 'topic',
+        status: won ? 'won' : tested ? 'lost' : r.learned ? 'learning' : 'new' };
+    });
+    if (d.mixed && d.mixed.length) {
+      var r = peek(d.id + '/mixed'), len = d.mixed.length, tested = r.best != null, won = tested && (miss || r.best / len >= 0.7 || !!r.practiced);
+      list.push({ id: 'mixed', title: miss ? (d.mixedTitle || 'Välj verktyg själv') : 'Blandat test', len: len, r: r, kind: 'mixed', status: won ? 'won' : tested ? 'lost' : 'new' });
+    }
+    return list;
+  }
+  function allWon(st) { return st.every(function (s) { return s.status === 'won'; }); }
+  function currentIdx(aid, st, useSel) {
+    var sel = useSel ? selected[aid] : null, want = sel || (progress.pos || {})[aid], i = -1;
+    st.forEach(function (s, k) { if (s.id === want) i = k; });
+    if (i >= 0 && (sel || st[i].status !== 'won')) return i;
+    for (var k = 0; k < st.length; k++) { var j = (i + 1 + k) % st.length; if (st[j].status !== 'won') return j; }
+    return st.length; // goal
+  }
+  function actions(d, s) {
+    var base = '#/a/' + d.id + (s.kind === 'mixed' ? '/mixed' : '/t/' + s.id), miss = d.kind === 'missions';
+    var test = s.kind === 'mixed' ? base : base + '/test', learn = base + '/learn/0', missed = (s.r.missed || []).length;
+    var testLbl = s.kind === 'mixed' ? (miss ? '🧰 Starta' : '🏆 Starta blandat test') + ' · ' + s.len + (miss ? ' uppdrag' : ' frågor') : (miss ? '🎖️ Uppdrag · ' + s.len + ' st' : '🎯 Testa dig · ' + s.len + ' frågor');
+    if (s.status === 'new' && s.kind === 'topic') return { main: ['📘 Lär dig · ' + s.learnLen + ' kort', learn], more: [['Hoppa direkt till ' + (miss ? 'uppdragen' : 'testet'), test]] };
+    if (s.status === 'new' || s.status === 'learning') return { main: [testLbl, test], more: s.kind === 'topic' ? [['📘 Lär dig igen', learn]] : [] };
+    if (s.status === 'lost') return { main: [missed ? '🔁 Öva på det du missade (' + missed + ')' : '🔁 Gör testet igen', missed ? base + '/retry' : test], more: (s.kind === 'topic' ? [['📘 Repetera Lär dig', learn]] : []).concat(missed ? [['Gör hela testet igen', test]] : []), lost: true };
+    return { main: [(miss ? '🎖️ Gör uppdragen igen' : '🎯 Gör testet igen'), test], more: s.kind === 'topic' ? [['📘 Lär dig igen', learn]] : [], again: true };
+  }
+  function statusLine(d, s) {
+    var r = s.r, miss = d.kind === 'missions';
+    if (s.status === 'new') return '<span class="note">Inte startad</span>';
+    if (s.status === 'learning') return '<span class="note">📘 Lär dig klar · ' + (miss ? 'uppdragen' : 'testet') + ' kvar</span>';
+    if (s.status === 'lost') return '<span class="lostline">🔁 ' + r.best + ' av ' + s.len + ' · öva mer här</span>';
+    if (miss) return '<span class="note">✅ Klara · helt själv ' + r.best + ' av ' + s.len + '</span>';
+    return starHTML(starsFor(r.best, s.len) || 2) + ' <span class="note">' + r.best + ' av ' + s.len + (r.practiced && r.best / s.len < 0.7 ? ' · övat 💪' : '') + '</span>';
+  }
+
+  // ---------- the cadet (original character; rank shows on cap and shoulders, medals on chest) ----------
+  function rankIdx(xp) { var k = 0; for (var i = 0; i < RANKS.length; i++) if (xp >= RANKS[i][0]) k = i; return k; }
+  function cadetSVG(rk, medals, size) {
+    var s = '', gold = '#ffd166', navy = '#13294b';
+    s += '<path d="M18 150 L22 114 Q28 96 60 94 Q92 96 98 114 L102 150 Z" fill="#1f3a68"/>';
+    s += '<path d="M44 95 L60 120 L76 95 Z" fill="#fff"/><path d="M52 97 L60 110 L68 97 Z" fill="#3fa7d6"/>';
+    s += '<circle cx="60" cy="128" r="2.6" fill="' + gold + '"/><circle cx="60" cy="140" r="2.6" fill="' + gold + '"/>';
+    // shoulder boards with rank stripes
+    var thin = rk <= 3 ? rk : rk - 4, thick = rk >= 4;
+    [[20, 101], [78, 101]].forEach(function (p) {
+      s += '<rect x="' + p[0] + '" y="' + p[1] + '" width="22" height="10" rx="3" fill="' + navy + '"/>';
+      var x = p[0] + 3;
+      if (thick) { s += '<rect x="' + x + '" y="' + (p[1] + 2) + '" width="4" height="6" fill="' + gold + '"/>'; x += 6; }
+      for (var i = 0; i < thin; i++) { s += '<rect x="' + x + '" y="' + (p[1] + 2) + '" width="2" height="6" fill="' + gold + '"/>'; x += 4; }
+    });
+    // medals (right chest)
+    var cols = ['#e63946', '#2a9d8f', '#3a86ff', '#f4a261'];
+    for (var m = 0; m < Math.min(medals, 4); m++) {
+      var mx = 68 + m * 7;
+      s += '<rect x="' + (mx - 2.5) + '" y="116" width="5" height="6" fill="' + cols[m] + '"/><circle cx="' + mx + '" cy="125" r="3.2" fill="' + gold + '" stroke="#b8860b" stroke-width=".8"/>';
+    }
+    if (medals > 4) s += '<text x="98" y="136" font-size="9" font-family="Lexend,sans-serif" font-weight="700" fill="' + gold + '" text-anchor="end">+' + (medals - 4) + '</text>';
+    s += '<rect x="52" y="82" width="16" height="15" fill="#f2c6a0"/>';
+    s += '<circle cx="60" cy="62" r="27" fill="#f6d1b1"/>';
+    s += '<path d="M33 60 Q33 42 60 40 Q87 42 87 60 Q80 50 60 50 Q40 50 33 60 Z" fill="#6b4a2b"/>';
+    s += '<circle cx="50" cy="65" r="3.4" fill="#1b2333"/><circle cx="70" cy="65" r="3.4" fill="#1b2333"/><circle cx="51.2" cy="63.8" r="1" fill="#fff"/><circle cx="71.2" cy="63.8" r="1" fill="#fff"/>';
+    s += '<circle cx="43" cy="73" r="4.5" fill="#f4a3a3" opacity=".55"/><circle cx="77" cy="73" r="4.5" fill="#f4a3a3" opacity=".55"/>';
+    s += '<path d="M51 76 Q60 84 69 76" stroke="#8a3b12" stroke-width="3" fill="none" stroke-linecap="round"/>';
+    // cap
+    s += '<ellipse cx="60" cy="36" rx="33" ry="11" fill="' + (rk >= 3 ? navy : '#fff') + '" stroke="#c9d5e3" stroke-width="1.5"/>';
+    s += '<rect x="30" y="36" width="60" height="10" rx="4" fill="' + navy + '"/>';
+    s += '<path d="M35 46 Q60 56 85 46 L84 44 Q60 52 36 44 Z" fill="' + (rk >= 3 ? gold : '#0d1d36') + '"/>';
+    if (rk >= 7) s += '<path d="M60 35.5 l1.8 3.6 4 .6 -2.9 2.8 .7 4 -3.6-1.9 -3.6 1.9 .7-4 -2.9-2.8 4-.6z" fill="' + gold + '"/>';
+    else s += '<circle cx="60" cy="41" r="4.6" fill="' + gold + '"/><path d="M60 38.4 v5.4 M57.6 42 q2.4 2.6 4.8 0" stroke="' + navy + '" stroke-width="1.2" fill="none"/>';
+    return '<svg class="cadet" viewBox="0 0 120 150" width="' + size + '" height="' + Math.round(size * 1.25) + '" role="img" aria-label="Din kadett: ' + RANKS[rk][1] + (medals ? ', ' + medals + (medals === 1 ? ' medalj' : ' medaljer') : '') + '">' + s + '</svg>';
+  }
+  function marker() { // the submarine with the cadet in the hatch
+    return '<svg viewBox="0 0 90 56" width="78" height="49" aria-hidden="true">' +
+      '<circle cx="40" cy="15" r="9" fill="#f6d1b1"/><path d="M31 13 Q40 2 49 13 Z" fill="#fff" stroke="#c9d5e3"/><rect x="31" y="11" width="18" height="4" rx="2" fill="#13294b"/>' +
+      '<circle cx="37" cy="17" r="1.4" fill="#1b2333"/><circle cx="43" cy="17" r="1.4" fill="#1b2333"/>' +
+      '<rect x="31" y="20" width="18" height="10" rx="3" fill="#ffd166"/>' +
+      '<ellipse cx="42" cy="38" rx="36" ry="14" fill="#ffd166" stroke="#c99a1c" stroke-width="1.5"/>' +
+      '<circle cx="28" cy="38" r="4" fill="#13294b"/><circle cx="42" cy="38" r="4" fill="#13294b"/><circle cx="56" cy="38" r="4" fill="#13294b"/>' +
+      '<path d="M78 38 l9 -8 v16 z" fill="#ffd166" stroke="#c99a1c" stroke-width="1.5"/></svg>';
+  }
+  function medalCount() { return (progress.medals || []).length; }
+  function xpBar() {
+    var xp = progress.xp || 0, r = rankOf(xp), n = nextRank(xp);
+    var pct = n ? Math.round(100 * (xp - r[0]) / (n[0] - r[0])) : 100;
+    return '<div class="lvl"><b>' + r[1] + '</b><span class="note">' + (n ? (n[0] - xp) + ' poäng kvar till ' + n[1] : 'Högsta graden! ⭐') + '</span>' +
+      '<div class="progress" aria-hidden="true"><i style="width:' + pct + '%"></i></div>' +
+      (medalCount() ? '<span class="note">🏅 ' + medalCount() + (medalCount() === 1 ? ' medalj' : ' medaljer') + '</span>' : '') + '</div>';
+  }
+  function awardMedal(aid) {
+    progress.medals = progress.medals || [];
+    if (progress.medals.indexOf(aid) >= 0) return false;
+    progress.medals.push(aid); saveProgress(); return true;
+  }
+
+  // ---------- side navigation (big, always there outside lessons) ----------
+  function loadAll() {
+    return loadManifest().then(function (m) {
+      return Promise.all(m.assignments.map(function (a) { return loadAssignmentRaw(a.id).then(function (d) { return { a: a, d: d }; }, function () { return null; }); }))
+        .then(function (list) { return { m: m, list: list.filter(Boolean) }; });
+    });
+  }
+  function isDone(x) { return allWon(stationsFor(x.d)); }
+  function renderSide(all, active) {
+    var side = document.getElementById('side'); if (!side) return;
+    var h = '<a class="navi' + (active === 'home' ? ' on' : '') + '" href="#/"' + (active === 'home' ? ' aria-current="page"' : '') + '><span class="ni">🧭</span><span class="nl">Start</span></a>';
+    all.m.subjects.forEach(function (s) {
+      var open = all.list.filter(function (x) { return x.a.subject === s.id && !isPast(x.a) && !isDone(x); }).length;
+      var any = all.list.some(function (x) { return x.a.subject === s.id; });
+      h += '<a class="navi' + (active === s.id ? ' on' : '') + (any ? '' : ' dim') + '" href="#/s/' + s.id + '"' + (active === s.id ? ' aria-current="page"' : '') + '><span class="ni">' + s.icon + '</span><span class="nl">' + esc(s.name) + '</span>' + (open ? '<span class="nb" aria-label="' + open + ' att göra">' + open + '</span>' : '') + '</a>';
+    });
+    side.innerHTML = h;
+    var on = side.querySelector('.on');
+    if (on && side.scrollWidth > side.clientWidth + 2) { var d = on.getBoundingClientRect().left - side.getBoundingClientRect().left; side.scrollLeft += d - 16; }
+  }
+  function focusMode(on) { document.body.classList.toggle('focus', !!on); }
+
+  // ---------- Start: one next step, then "Sen" and "Repetera" ----------
+  function sortActive(list) {
+    return list.filter(function (x) { return !isPast(x.a) && !isDone(x); }).sort(function (p, q) {
+      var a = daysLeft(p.a), b = daysLeft(q.a); a = a == null ? 999 : a; b = b == null ? 999 : b; return a - b;
+    });
+  }
+  function viewHome() {
+    focusMode(false);
+    loadAll().then(function (all) {
+      renderSide(all, 'home');
+      var act = sortActive(all.list), next = act[0];
+      var html = storageBanner() + '<section class="hero card"><div class="herorow">' + cadetSVG(rankIdx(progress.xp || 0), medalCount(), 92) +
+        '<div class="herotxt"><p class="bubble">' + (next ? 'Hej, kadett! Här är ditt nästa uppdrag.' : 'Hej, kadett! Allt är klart just nu. Snyggt! 🎉') + '</p>' + xpBar() + '</div></div></section>';
+      if (next) {
+        var st = stationsFor(next.d), ci = currentIdx(next.a.id, st), s = st[ci] || st[0], ac = actions(next.d, s);
+        var subj = all.m.subjects.filter(function (x) { return x.id === next.a.subject; })[0] || {};
+        html += '<section class="card nextcard" aria-labelledby="nx"><p class="kicker">Nästa · ' + (subj.icon || '') + ' ' + esc(subj.name || '') + '</p>' +
+          '<h1 id="nx">' + (next.a.icon || '') + ' ' + esc(next.a.title) + '</h1><p>' + dueChip(next.a) + '</p>' +
+          '<p class="lead" style="margin:10px 0 4px"><b>' + (s.kind === 'mixed' ? esc(s.title) : 'Del ' + s.n + ': ' + esc(s.title)) + '</b></p>' +
+          '<a class="btn wide big" href="' + ac.main[1] + '">' + esc(ac.main[0]) + ' →</a>' +
+          '<p style="margin:10px 0 0"><a class="more" href="#/a/' + next.a.id + '">🗺️ Visa kartan</a></p></section>';
+      }
+      var later = act.slice(1);
+      if (later.length) {
+        html += '<h2>Sen</h2><ul class="later">' + later.map(function (x) {
+          var st = stationsFor(x.d), done = st.filter(function (s) { return s.status === 'won'; }).length;
+          return '<li><a class="lrow" href="#/a/' + x.a.id + '"><span class="li">' + (x.a.icon || '') + '</span><span class="lt"><b>' + esc(x.a.title) + '</b><span class="lm">' + dueChip(x.a) + ' <span class="note">' + done + ' av ' + st.length + ' klara</span></span></span><span aria-hidden="true">›</span></a></li>';
+        }).join('') + '</ul>';
+      }
+      var weak = [], old = [];
+      all.list.forEach(function (x) {
+        stationsFor(x.d).forEach(function (s) { if (s.status === 'lost') weak.push({ x: x, s: s }); });
+        if (isPast(x.a) || isDone(x)) old.push(x);
       });
-      if (a.mixed && a.mixed.length) {
-        var rm = rec(a.id + '/mixed');
-        html += '<div class="card"><h2 style="margin-top:0">' + (a.kind === 'missions' ? '🧰 ' + esc(a.mixedTitle || 'Välj verktyg själv') : '🏆 Blandat test') + '</h2><p class="muted">' + esc(a.mixedIntro || 'Frågor från alla delar. Gör det en annan dag än delarna – då minns hjärnan bättre.') + '</p><div class="row between"><span>' + (a.kind === 'missions' ? (rm.best != null ? '<span class="note">✓ klara · helt själv: ' + rm.best + ' av ' + a.mixed.length + '</span>' : '<span class="note">inte gjort än</span>') : starHTML(starsFor(rm.best, a.mixed.length)) + bestLine(rm.best, a.mixed.length)) + '</span><a class="btn small' + (rm.best != null ? ' secondary' : '') + '" href="#/a/' + a.id + '/mixed">' + (rm.best != null ? 'Igen' : 'Starta') + '</a></div></div>';
+      if (weak.length || old.length) {
+        html += '<details class="card rep"><summary>🔁 Repetera <span class="note">(' + (weak.length + old.length) + ')</span></summary>' +
+          (weak.length ? '<p class="note" style="margin-top:10px">Öva mer på:</p><ul class="later">' + weak.map(function (w) {
+            var ac = actions(w.x.d, w.s);
+            return '<li><a class="lrow" href="' + ac.main[1] + '"><span class="li">' + (w.x.a.icon || '') + '</span><span class="lt"><b>' + esc(w.s.kind === 'mixed' ? w.s.title : w.s.title) + '</b><span class="lm note">' + esc(w.x.a.title) + ' · ' + w.s.r.best + ' av ' + w.s.len + '</span></span><span aria-hidden="true">›</span></a></li>';
+          }).join('') + '</ul>' : '') +
+          (old.length ? '<p class="note" style="margin-top:10px">Tidigare uppdrag:</p><ul class="later">' + old.map(function (x) {
+            return '<li><a class="lrow" href="#/a/' + x.a.id + '"><span class="li">' + (x.a.icon || '') + '</span><span class="lt"><b>' + esc(x.a.title) + '</b><span class="lm note">' + esc(x.a.week || '') + (isDone(x) ? ' · 🏅 klart' : '') + '</span></span><span aria-hidden="true">›</span></a></li>';
+          }).join('') + '</ul>' : '') + '</details>';
       }
       setView(html);
     }).catch(showError);
+  }
+
+  // ---------- subject: banner + task bar + route map ----------
+  function viewSubject(sid) {
+    focusMode(false);
+    loadAll().then(function (all) {
+      var mine = all.list.filter(function (x) { return x.a.subject === sid; });
+      var act = sortActive(mine);
+      var pick = act[0] || mine[0];
+      if (pick) return renderSubjectMap(all, pick.a.id);
+      var subj = all.m.subjects.filter(function (s) { return s.id === sid; })[0];
+      if (!subj) { location.replace('#/'); return; }
+      renderSide(all, subj.id);
+      setView(banner(subj, [], null) + '<div class="card empty"><div class="big">🛰️</div><p><b>Inga uppdrag här än.</b></p><p class="muted">Nya uppdrag dyker upp när skolan ger läxor eller prov i ' + esc(subj.name) + '.</p></div>');
+    }).catch(showError);
+  }
+  function viewAssignment(aid) {
+    focusMode(false);
+    loadAll().then(function (all) { renderSubjectMap(all, aid); }).catch(showError);
+  }
+  function banner(subj, mine, aid) {
+    var chips = '';
+    if (mine.length) {
+      var act = sortActive(mine), rest = mine.filter(function (x) { return act.indexOf(x) < 0; });
+      var chip = function (x, old) {
+        var st = stationsFor(x.d), done = st.filter(function (s) { return s.status === 'won'; }).length;
+        return '<a class="tchip' + (x.a.id === aid ? ' on' : '') + (old ? ' old' : '') + '" href="#/a/' + x.a.id + '"' + (x.a.id === aid ? ' aria-current="page"' : '') + '><span class="ti">' + (x.a.icon || '') + '</span><span><b>' + esc(x.a.title) + '</b><span class="tm">' + (isDone(x) ? '🏅 klart' : (x.a.due ? esc(x.a.dueLabel || 'Läxa') + ' ' + esc(x.a.due) : esc(x.a.week || '')) + ' · ' + done + '/' + st.length) + '</span></span></a>';
+      };
+      chips = '<nav class="tasks" aria-label="Uppdrag i ' + esc(subj.name) + '">' + act.map(function (x) { return chip(x, false); }).join('') +
+        (rest.length ? (act.length ? '<span class="tsep">Tidigare</span>' : '') + rest.map(function (x) { return chip(x, true); }).join('') : '') + '</nav>';
+    }
+    return storageBanner() + '<section class="banner"><div class="brow"><h1>' + subj.icon + ' ' + esc(subj.name) + '</h1><div class="bcadet">' + cadetSVG(rankIdx(progress.xp || 0), medalCount(), 54) + xpBar() + '</div></div>' + chips + '</section>';
+  }
+  function renderSubjectMap(all, aid) {
+    var x = all.list.filter(function (y) { return y.a.id === aid; })[0];
+    if (!x) throw new Error('Hittar inte uppdraget');
+    var d = x.d, a = x.a, subj = all.m.subjects.filter(function (s) { return s.id === a.subject; })[0] || { icon: '', name: '' };
+    renderSide(all, subj.id);
+    var mine = all.list.filter(function (y) { return y.a.subject === a.subject; });
+    var st = stationsFor(d), ci = currentIdx(aid, st, true), done = st.filter(function (s) { return s.status === 'won'; }).length;
+    if (allWon(st)) awardMedal(aid);
+    var html = banner(subj, mine, aid);
+    html += '<section class="ahead"><h2>' + (a.icon || '') + ' ' + esc(a.title) + '</h2><p class="row" style="gap:8px">' + dueChip(a) + '<span class="note">' + done + ' av ' + st.length + ' klara</span></p>' +
+      (d.intro ? '<details class="intro"><summary>💬 Vad handlar uppdraget om?</summary><div class="row between" style="flex-wrap:nowrap;align-items:flex-start"><p class="lead" style="margin:0;flex:1">' + fmt(d.intro) + '</p>' + speakBtn(d.intro) + '</div></details>' : '') + '</section>';
+    html += '<section class="route" aria-label="Karta"><svg class="path" aria-hidden="true"></svg><div class="ship" aria-hidden="true">' + marker() + '</div><ol class="stns">';
+    st.forEach(function (s, i) {
+      var cur = i === ci, side = i % 2 ? ' r' : '';
+      var node = s.status === 'won' ? '⭐' : s.status === 'lost' ? '🔁' : s.status === 'learning' ? '📘' : s.kind === 'mixed' ? '🏆' : s.n;
+      var head = '<span class="sk">' + (s.kind === 'mixed' ? (d.kind === 'missions' ? 'Slutuppdrag' : 'Alla delar') : 'Del ' + s.n) + '</span><b class="stt">' + esc(s.title) + '</b><span class="sl">' + statusLine(d, s) + '</span>';
+      html += '<li class="stn' + side + ' ' + s.status + (cur ? ' cur' : '') + '" data-i="' + i + '"><span class="node" aria-hidden="true">' + node + '</span>';
+      if (cur) {
+        var ac = actions(d, s);
+        html += '<div class="scard open" aria-current="step">' + head +
+          (ac.lost ? '<p class="practice">Här kan du bli ännu bättre. Öva lite till – sedan går du vidare! 💪</p>' : '') +
+          '<a class="btn wide' + (ac.again ? ' secondary' : '') + '" href="' + ac.main[1] + '">' + esc(ac.main[0]) + '</a>' +
+          (ac.more.length ? '<p class="morelinks">' + ac.more.map(function (m) { return '<a href="' + m[1] + '">' + esc(m[0]) + '</a>'; }).join('') + '</p>' : '') + '</div>';
+      } else {
+        html += '<button class="scard" type="button" data-sel="' + s.id + '">' + head + '</button>';
+      }
+      html += '</li>';
+    });
+    var won = allWon(st);
+    html += '<li class="stn goal' + (st.length % 2 ? ' r' : '') + (won ? ' won' : '') + (ci === st.length ? ' cur' : '') + '" data-i="' + st.length + '"><span class="node" aria-hidden="true">' + (won ? '🏅' : '🏁') + '</span><div class="scard' + (won ? ' open' : '') + '"><span class="sk">Mål</span><b class="stt">' + (won ? 'Uppdraget klart – du fick en medalj!' : 'Klara alla stationer = medalj 🏅') + '</b></div></li>';
+    html += '</ol></section>';
+    setView(html);
+    app.querySelectorAll('[data-sel]').forEach(function (b) {
+      b.addEventListener('click', function () { var sid = b.getAttribute('data-sel'); selected[aid] = sid; st.forEach(function (x) { if (x.id === sid && x.status !== 'won') { progress.pos = progress.pos || {}; progress.pos[aid] = sid; saveProgress(); } }); renderSubjectMap(all, aid); var c = app.querySelector('.stn.cur'); if (c) try { c.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { } });
+    });
+    drawRoute(aid, ci, currentIdx(aid, st, false));
+  }
+  var lastShip = {};
+  function drawRoute(aid, ci, base) {
+    var route = app.querySelector('.route'); if (!route) return;
+    var svg = route.querySelector('.path'), ship = route.querySelector('.ship');
+    if (lastShip[aid] == null && progress.ship && progress.ship[aid] != null) lastShip[aid] = progress.ship[aid];
+    function centers() {
+      var rb = route.getBoundingClientRect();
+      return Array.prototype.map.call(route.querySelectorAll('.stn .node'), function (n) { var b = n.getBoundingClientRect(); return [b.left - rb.left + b.width / 2, b.top - rb.top + b.height / 2]; });
+    }
+    function seg(p, a, b) { var my = (p[a][1] + p[b][1]) / 2; return ' C ' + p[a][0] + ' ' + my + ', ' + p[b][0] + ' ' + my + ', ' + p[b][0] + ' ' + p[b][1]; }
+    function draw(animate) {
+      var p = centers(); if (!p.length) return;
+      var W = route.clientWidth, H = route.scrollHeight;
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H); svg.setAttribute('width', W); svg.setAttribute('height', H);
+      var done = 'M ' + p[0][0] + ' ' + p[0][1], rest = '';
+      for (var i = 1; i < p.length; i++) { if (i <= ci) done += seg(p, i - 1, i); else rest += (rest ? '' : 'M ' + p[i - 1][0] + ' ' + p[i - 1][1]) + seg(p, i - 1, i); }
+      svg.innerHTML = (rest ? '<path d="' + rest + '" class="todo"/>' : '') + '<path d="' + done + '" class="did"/>';
+      var to = p[Math.min(ci, p.length - 1)], from = lastShip[aid] != null ? p[Math.min(lastShip[aid], p.length - 1)] : to;
+      var put = function (q) { ship.style.left = (q[0] - 39) + 'px'; ship.style.top = (q[1] - 72) + 'px'; };
+      if (animate && from !== to) { ship.classList.add('still'); put(from); void ship.offsetWidth; ship.classList.remove('still'); }
+      else ship.classList.add('still');
+      put(to); if (!animate) setTimeout(function () { ship.classList.remove('still'); }, 50);
+    }
+    draw(true);
+    lastShip[aid] = ci;
+    progress.ship = progress.ship || {}; if (progress.ship[aid] !== base) { progress.ship[aid] = base; try { localStorage.setItem(KEY, JSON.stringify(progress)); } catch (e) { } }
+    if (window.__ovbResize) window.removeEventListener('resize', window.__ovbResize);
+    window.__ovbResize = function () { if (document.body.contains(route)) draw(false); };
+    window.addEventListener('resize', window.__ovbResize);
   }
 
   function viewLearn(aid, tid, idx) {
     loadAssignment(aid).then(function (a) {
       var t = a.topics.filter(function (x) { return x.id === tid; })[0];
       if (!t) throw new Error('Hittar inte delen');
+      focusMode(true); setPos(aid, tid);
       idx = Math.max(0, Math.min(idx, t.learn.length - 1));
       var c = t.learn[idx], last = idx === t.learn.length - 1;
       var dots = '<div class="dots" aria-label="Kort ' + (idx + 1) + ' av ' + t.learn.length + '">' + t.learn.map(function (_, i) { return '<i class="' + (i <= idx ? 'on' : '') + '"></i>'; }).join('') + '</div>';
-      var html = '<a class="crumb" href="#/a/' + a.id + '">← ' + esc(a.title) + '</a>' +
+      var html = '<a class="crumb" href="#/a/' + a.id + '">← Till kartan</a>' +
         '<p class="note" style="margin:0">📘 ' + esc(t.title) + ' · kort ' + (idx + 1) + ' av ' + t.learn.length + '</p>' + dots +
         '<div class="card pop"><div class="row between" style="flex-wrap:nowrap"><h2 style="margin:0;flex:1">' + fmt(c.title) + '</h2>' + speakBtn(c.title + '. ' + c.text + (c.visual && c.visual.caption ? '. ' + c.visual.caption : '')) + '</div>' +
         '<p class="lead">' + fmt(c.text) + '</p>' + visual(c.visual) +
@@ -799,6 +1046,8 @@
       var t = tid === 'mixed' ? null : a.topics.filter(function (x) { return x.id === tid; })[0];
       var all = tid === 'mixed' ? a.mixed : (t && t.test);
       if (!all) throw new Error('Hittar inte testet');
+      focusMode(true); setPos(aid, tid);
+      if (onlyIdx === 'missed') { var mm = (peek(aid + '/' + tid).missed || []).filter(function (i) { return i < all.length; }); onlyIdx = mm.length ? mm : null; }
       var saved = onlyIdx ? null : readSession(aid, tid);
       var idxs = onlyIdx || all.map(function (_, i) { return i; });
       if (!onlyIdx && !saved && a.kind !== 'missions' && rec(a.id + '/' + tid).best != null && idxs.length > 3) idxs = idxs.slice(0, 2).concat(shuffle(idxs.slice(2)));
@@ -842,13 +1091,16 @@
     progress.xp = (progress.xp || 0) + gained;
     var before = rankOf(progress.xp - gained)[1], after = rankOf(progress.xp)[1];
     var stars = null, ratio = s.right / n;
-    if (!s.retry) { r.best = Math.max(r.best || 0, s.right); r.last = s.right; stars = starsFor(s.right, n); }
+    if (!s.retry) { r.best = Math.max(r.best || 0, s.right); r.last = s.right; stars = starsFor(s.right, n); r.missed = s.missed.slice(); if (s.right / n >= 0.7) r.practiced = false; }
+    else { r.missed = s.missed.slice(); if (!s.missed.length) r.practiced = true; }
+    delete selected[s.a.id];
     r.updated = new Date().toISOString();
     saveProgress();
+    var newMedal = allWon(stationsFor(s.a)) && awardMedal(s.a.id);
     var big = s.right === n ? '🏆' : ratio >= 0.7 ? '🚀' : '💪';
     var msg = s.right === n ? 'Fullpott! Alla rätt!' : ratio >= 0.7 ? 'Riktigt bra jobbat!' : 'Bra kämpat! Varje försök gör hjärnan starkare.';
     var nextTip = '';
-    if (!s.retry && ratio >= 0.7) nextTip = s.tid === 'mixed' ? '🎖️ Blandat test klart! Ta en välförtjänt paus.' : '🎖️ Dags för paus! Nästa steg kan vänta till i morgon.';
+    if (!s.retry && ratio >= 0.7) nextTip = s.tid === 'mixed' ? '🎖️ Blandat test klart! Ta en välförtjänt paus.' : '🎖️ Bra jobbat! Ta en paus när du vill.';
     if (!s.retry && ratio < 0.5 && s.t) nextTip = '📘 Tips: titta på Lär dig en gång till och gör sedan testet igen.';
     var m = s.missed.length;
     var retryLabel = m === 1 ? 'Öva igen på frågan' : 'Öva igen på ' + m + ' frågor';
@@ -857,18 +1109,20 @@
     var html = '<div class="card result pop"><div class="big">' + big + '</div><p class="score">' + s.right + ' av ' + n + ' rätt</p>' +
       (stars != null ? '<p>' + starHTML(stars) + '</p>' : '') + '<p class="lead">' + msg + '</p>' +
       '<p><span class="badge">+' + gained + ' poäng</span></p>' +
-      (before !== after ? '<p class="lead">🎖️ Ny grad: <b>' + after + '</b>!</p>' : '') + '</div>' +
+      (before !== after ? '<p class="lead">🎖️ Ny grad: <b>' + after + '</b>!</p>' : '') +
+      (before !== after || newMedal ? '<div class="levelup">' + cadetSVG(rankIdx(progress.xp), medalCount(), 96) + '</div>' : '') +
+      (newMedal ? '<p class="lead">🏅 Du klarade hela uppdraget och fick en medalj!</p>' : '') + '</div>' +
       (nextTip ? '<p class="note" style="text-align:center">' + nextTip + '</p>' : '') +
       '<div class="stack">' + (ratio < 0.5 ? learnBtn + retryBtn : retryBtn + learnBtn) +
-      '<a class="btn secondary wide" href="#/a/' + s.a.id + '">Till uppdraget</a></div>';
+      '<a class="btn secondary wide" href="#/a/' + s.a.id + '">🗺️ Till kartan</a></div>';
     if (isM) {
       var mm = s.missed.length;
       html = '<div class="card result pop"><div class="big">🎖️</div><p class="score">' + n + ' uppdrag klara!</p>' +
         '<p class="lead">' + (s.right === n ? 'Alla helt själv – riktigt starkt! 🏅' : s.right > 0 ? s.right + ' av dem helt själv. Bra jobbat!' : 'Du tog hjälp av Visa mig – det är så man lär sig. Bra jobbat!') + '</p>' +
         '<p><span class="badge">+' + gained + ' poäng</span></p>' + (before !== after ? '<p class="lead">🎖️ Ny grad: <b>' + after + '</b>!</p>' : '') + '</div>' +
-        (!s.retry ? '<p class="note" style="text-align:center">🎖️ Dags för paus! Fortsätt gärna en annan dag.</p>' : '') +
+        (!s.retry ? '<p class="note" style="text-align:center">🎖️ Bra jobbat! Ta en paus när du vill.</p>' : '') +
         '<div class="stack">' + (mm ? '<button class="btn wide retry" type="button">' + (mm === 1 ? 'Gör om uppdraget där du tog hjälp' : 'Gör om de ' + mm + ' där du tog hjälp') + '</button>' : '') +
-        '<a class="btn secondary wide" href="#/a/' + s.a.id + '">Till uppdraget</a></div>';
+        '<a class="btn secondary wide" href="#/a/' + s.a.id + '">🗺️ Till kartan</a></div>';
     }
     setView(html);
     var rb = app.querySelector('.retry');
@@ -889,17 +1143,15 @@
     var h = location.hash.replace(/^#\/?/, '').split('/');
     if (h[0] === 's' && h[1]) return viewSubject(h[1]);
     if (h[0] === 'a' && h[1]) {
-      if (h[2] === 'mixed') return startQuiz(h[1], 'mixed');
+      if (h[2] === 'mixed') return startQuiz(h[1], 'mixed', h[3] === 'retry' ? 'missed' : undefined);
       if (h[2] === 't' && h[3]) {
         if (h[4] === 'learn') return viewLearn(h[1], h[3], parseInt(h[5] || '0', 10) || 0);
         if (h[4] === 'test') return startQuiz(h[1], h[3]);
+        if (h[4] === 'retry') return startQuiz(h[1], h[3], 'missed');
       }
       return viewAssignment(h[1]);
     }
-    loadManifest().then(function (m) {
-      var withContent = m.subjects.filter(function (s) { return m.assignments.some(function (a) { return a.subject === s.id; }); })[0];
-      viewSubject((withContent || m.subjects[0]).id);
-    }).catch(showError);
+    viewHome();
   }
   window.__ovbTest = { checkText: checkText, fracWords: fracWords };
   // same-hash links (e.g. after replaceState) must still navigate; Avbryt cancels the saved quiz

@@ -81,7 +81,7 @@ with sync_playwright() as p:
             groups = [(t["id"], t["test"]) for t in data["topics"]] + [("mixed", data.get("mixed", []))]
             for t in data["topics"]:
                 for i, c in enumerate(t["learn"]):
-                    page.goto(f"{BASE}/#/s/matte"); page.wait_for_selector(".tab")
+                    page.goto(f"{BASE}/#/s/matte"); page.wait_for_selector(".navi")
                     page.goto(f"{BASE}/#/a/{a['id']}/t/{t['id']}/learn/{i}"); page.wait_for_selector(".card h2")
                     if c.get("try"):
                         tb = page.locator(".trybox")
@@ -92,7 +92,7 @@ with sync_playwright() as p:
                         if tb.locator(".mdone .fb").count() == 0: problems.append(f"demo not completed {t['id']}#{i}")
             for tid, items in groups:
                 for helped in (False, True):
-                    page.goto(f"{BASE}/#/s/matte"); page.wait_for_selector(".tab")
+                    page.goto(f"{BASE}/#/s/matte"); page.wait_for_selector(".navi")
                     page.goto(f"{BASE}/#/a/{a['id']}"); page.wait_for_selector("h1")
                     page.goto(f"{BASE}/#/a/{a['id']}/" + ("mixed" if tid == "mixed" else f"t/{tid}/test")); page.wait_for_selector(".qbox")
                     for k in range(len(items)):

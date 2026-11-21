@@ -38,7 +38,8 @@
    "dueLabel": "Prov",
    "summary": "Inför provet: andelar, kluriga bråkproblem, jämföra bråk och procent.",
    "parts": 5,
-   "file": "content/matte-brak-procent-v49.json"
+   "file": "content/matte-brak-procent-v49.json",
+   "dueDate": "2026-12-02"
   },
   {
    "id": "engelska-glosor-v48",
@@ -49,7 +50,8 @@
    "due": "måndag 23/11",
    "summary": "10 glosor om mat, kök och trädgård – lyssna, lär dig och testa stavningen.",
    "parts": 3,
-   "file": "content/engelska-glosor-v48.json"
+   "file": "content/engelska-glosor-v48.json",
+   "dueDate": "2026-11-23"
   },
   {
    "id": "matte-problemlosning",
@@ -71,7 +73,8 @@
    "due": "måndag 16/11",
    "summary": "10 glosor om mat och smak – lyssna, lär dig och testa stavningen.",
    "parts": 3,
-   "file": "content/engelska-glosor-v47.json"
+   "file": "content/engelska-glosor-v47.json",
+   "dueDate": "2026-11-16"
   },
   {
    "id": "matte-brak-v47",
@@ -81,7 +84,8 @@
    "week": "Vecka 47",
    "summary": "Del av antal, bråk på tallinjen och enklaste form.",
    "file": "content/matte-brak-v47.json",
-   "parts": 3
+   "parts": 3,
+   "dueDate": "2026-11-19"
   }
  ]
 }

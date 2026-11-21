@@ -5,9 +5,9 @@
  "kind": "missions",
  "title": "Problemlösning: bygg en modell",
  "icon": "🧰",
- "intro": "Hej, kadett! Proffs räknar inte direkt. De **bygger en modell** först – sedan är uträkningen lätt.\nTa en del i taget, gärna en per dag.\nKör du fast? Tryck på 💡 **Visa mig** – det är helt okej.",
+ "intro": "Hej, kadett! Proffs räknar inte direkt. De **bygger en modell** först – sedan är uträkningen lätt.\nTa en del i taget.\nKör du fast? Tryck på 💡 **Visa mig** – det är helt okej.",
  "mixedTitle": "Välj verktyg själv",
- "mixedIntro": "Nu väljer du själv: tallinje, tabell eller stapelmodell. Efter varje uppdrag: rita samma modell snabbt i häftet. Gör det en annan dag än delarna.",
+ "mixedIntro": "Nu väljer du själv: tallinje, tabell eller stapelmodell. Efter varje uppdrag: rita samma modell snabbt i häftet.",
  "topics": [
   {
    "id": "tallinje",
